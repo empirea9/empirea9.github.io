@@ -1,0 +1,441 @@
+<!-- Only the .img-link hrefs have changed to your requested URLs below -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cinema | Ronogamy Portfolio</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- SF Pro Display font via apple fonts, fallback to system-ui -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;700&display=swap">
+  <style>
+    body {
+      background: #0c0c0d;
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-family: 'SF Pro Display', 'SF Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Arial, sans-serif;
+    }
+    .cinema-bg-blur {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      background-image: url('https://media.discordapp.net/attachments/1353715599762522173/1418139959654617128/image.png?ex=68cd0942&is=68cbb7c2&hm=f89f360d15ae2ddf463d27366aaab2f937b897f18e3ac04fda8bdeeae4a02a62&=&format=webp&quality=lossless&width=620&height=438');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      filter: blur(24px) brightness(0.7);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+    .cinema-content-wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100vw;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-family: inherit;
+    }
+    main {
+      margin-top: 110px;
+      margin-bottom: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .text-area {
+      width: 100vw;
+      text-align: center;
+      margin: 0 auto;
+      position: relative;
+    }
+    .cinema-typewriter {
+      font-size: 6.6rem;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 0 26px #000b, 0 0 4px #fff6;
+      letter-spacing: .01em;
+      font-family: 'SF Pro Display', 'SF Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Arial, sans-serif;
+      transition: color .2s;
+      cursor: pointer;
+      display: inline-block;
+      position: relative;
+      min-height: 1.1em;
+    }
+    .typewriter-cursor {
+      display: inline-block;
+      width: 32px;
+      height: 1.07em;
+      vertical-align: middle;
+      background: none;
+      border-right: 4px solid #fff;
+      animation: blink-cursor 1.1s steps(1) infinite;
+      margin-left: 2px;
+      position: absolute;
+    }
+    @keyframes blink-cursor {
+      0%, 50% { border-right: 4px solid #fff; }
+      51%, 100% { border-right: 4px solid transparent; }
+    }
+
+    /* Quadrant Styles - hidden by default, fade in on scroll */
+    .cinema-quadrant-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      width: 94vw;
+      max-width: 1400px;
+      margin: 450px auto 70px auto; /* Pushed WAY down */
+      padding: 0;
+      justify-content: center;
+      align-items: stretch;
+      opacity: 0;
+      transform: translateY(60px);
+      transition: opacity 1.1s cubic-bezier(.6,.1,.55,1), transform 0.9s cubic-bezier(.6,.1,.55,1);
+      will-change: opacity, transform;
+      font-family: inherit;
+    }
+    .cinema-quadrant-grid.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .cinema-quadrant {
+      position: relative;
+      border-radius: 28px;
+      box-shadow: 0 0 32px #2228;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 0;
+      min-height: 0;
+      width: 100%;
+      justify-content: flex-start;
+      padding-bottom: 48px;
+      background: transparent;
+      font-family: inherit;
+    }
+    .cinema-quadrant-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      filter: blur(38px) brightness(0.7);
+      opacity: 0.77;
+      object-fit: cover;
+      pointer-events: none;
+      transition: opacity .3s;
+    }
+    .cinema-quadrant-inner {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: inherit;
+    }
+    .cinema-quadrant-img {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 66px;
+      margin-bottom: 0;
+      position: relative;
+      z-index: 3;
+    }
+    .cinema-quadrant-img .img-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      max-width: 360px;
+      max-height: 360px;
+      aspect-ratio: 1/1;
+    }
+    .cinema-quadrant-img img {
+      width: 100%;
+      height: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 28px;
+      background: #222;
+      box-shadow: 0 4px 44px #1118;
+      display: block;
+      max-width: 360px;
+      max-height: 360px;
+      border: 5px solid #23242a55;
+    }
+    .cinema-quadrant-content {
+      width: 100%;
+      padding: 52px 40px 38px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      color: #ededed;
+      position: relative;
+      z-index: 4;
+      min-width: 0;
+      text-align: center;
+      font-family: inherit;
+    }
+    .cinema-quadrant-content h3 {
+      margin: 0 0 22px 0;
+      font-size: 2.4rem;
+      color: #fff;
+      text-shadow: 0 0 14px #fff4;
+      font-weight: 700;
+      font-family: inherit;
+    }
+    .cinema-quadrant-content p {
+      margin: 0 0 18px 0;
+      font-size: 1.18rem;
+      color: #ededed;
+      text-shadow: 0 0 8px #fff3;
+      font-family: inherit;
+    }
+    .cinema-quadrant-content .banner-reveal {
+      display: none;
+    }
+
+    @media (max-width: 1200px) {
+      .cinema-quadrant-img .img-link,
+      .cinema-quadrant-img img {
+        max-width: 260px;
+        max-height: 260px;
+      }
+      .cinema-quadrant-content {
+        padding: 36px 18px 24px 18px;
+      }
+      .cinema-quadrant-content h3 {
+        font-size: 1.5rem;
+      }
+    }
+    @media (max-width: 900px) {
+      main { margin-top: 40px; margin-bottom: 30px; }
+      .cinema-quadrant-grid {
+        grid-template-columns: 1fr;
+        gap: 38px;
+        justify-items: center;
+        margin: 320px auto 32px auto;
+      }
+      .cinema-quadrant-img .img-link,
+      .cinema-quadrant-img img {
+        max-width: 180px;
+        max-height: 180px;
+      }
+      .cinema-typewriter {
+        font-size: 3.2rem;
+      }
+    }
+    @media (max-width: 600px) {
+      .cinema-quadrant-content {
+        padding: 12px 6px 14px 6px;
+      }
+      .cinema-quadrant-content h3 {
+        font-size: 1.1rem;
+      }
+      .cinema-quadrant-img .img-link,
+      .cinema-quadrant-img img {
+        max-width: 100px;
+        max-height: 100px;
+      }
+      .cinema-quadrant-grid {
+        gap: 18px;
+        margin: 120px auto 8px auto;
+      }
+      .cinema-typewriter {
+        font-size: 2.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cinema-bg-blur"></div>
+  <div class="cinema-content-wrapper">
+    <nav>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="arcade.html">Arcade</a>
+        <a href="picasa.html">Picasa</a>
+        <a href="cinema.html" class="active">Cinema</a>
+        <a href="melody.html">Melody</a>
+      </div>
+    </nav>
+    <main>
+      <div class="text-area">
+        <h1>
+          <span
+            class="cinema-typewriter"
+            id="cinemaTypewriter"
+            tabindex="0"
+            aria-label="Cinema, click or hover to reveal Favorite Movies and Shows"
+          >
+            <span id="typewriterText"></span>
+            <span class="typewriter-cursor" id="typewriterCursor"></span>
+          </span>
+        </h1>
+      </div>
+    </main>
+    <section class="bottom-section" style="background:transparent; box-shadow:none;">
+      <div class="cinema-quadrant-grid" id="cinemaQuadrantGrid">
+        <!-- Letterboxd Profile Quadrant -->
+        <div class="cinema-quadrant">
+          <img class="cinema-quadrant-bg" src="https://play-lh.googleusercontent.com/PFcm5Ne2otuXxkCNgql_XtpHjYrlhIGGQRFaz9XLFg2wikmMP5YCv_OsvFe1PLDAvGg=w600-h300-pc0xffffff-pd" alt="Letterboxd Background"/>
+          <div class="cinema-quadrant-inner">
+            <div class="cinema-quadrant-img">
+              <a href="https://letterboxd.com/Ronogamy/" class="img-link" title="Go to Letterboxd Profile" target="_blank" rel="noopener">
+                <img src="https://play-lh.googleusercontent.com/PFcm5Ne2otuXxkCNgql_XtpHjYrlhIGGQRFaz9XLFg2wikmMP5YCv_OsvFe1PLDAvGg=w600-h300-pc0xffffff-pd" alt="Letterboxd Profile">
+              </a>
+            </div>
+            <div class="cinema-quadrant-content">
+              <h3>Letterboxd Profile</h3>
+              <p>View my movie diary, ratings, and reviews on Letterboxd.</p>
+            </div>
+          </div>
+        </div>
+        <!-- Trakt Profile Quadrant -->
+        <div class="cinema-quadrant">
+          <img class="cinema-quadrant-bg" src="https://play-lh.googleusercontent.com/M63_Kd-QKXNAHALDSdwr2Ha01SOud0lWMoNcEJctAxA6Z6NxgroOnIYnT87NCu7dcg" alt="Trakt Background"/>
+          <div class="cinema-quadrant-inner">
+            <div class="cinema-quadrant-img">
+              <a href="https://trakt.tv/users/ronogamy" class="img-link" title="Go to Trakt Profile" target="_blank" rel="noopener">
+                <img src="https://play-lh.googleusercontent.com/M63_Kd-QKXNAHALDSdwr2Ha01SOud0lWMoNcEJctAxA6Z6NxgroOnIYnT87NCu7dcg" alt="Trakt Profile">
+              </a>
+            </div>
+            <div class="cinema-quadrant-content">
+              <h3>Trakt Profile</h3>
+              <p>Explore my TV and movie watch history on Trakt.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <button id="toTopBtn" title="Go to top" style="display:none;">
+      <svg width="48" height="48" viewBox="0 0 48 48">
+        <circle cx="24" cy="24" r="21" fill="none" stroke="#fff" stroke-width="3"/>
+        <polyline points="16,28 24,20 32,28" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+  <script>
+    // Typewriter effect for Cinema headline
+    const cinemaTypewriter = document.getElementById('cinemaTypewriter');
+    const typewriterText = document.getElementById('typewriterText');
+    const typewriterCursor = document.getElementById('typewriterCursor');
+
+    // Texts for animation
+    const mainText = "Cinema";
+    const altText = "Favorite Movies and Shows";
+    let isAlt = false;
+    let animating = false;
+    let animationTimeout = null;
+
+    function typeText(text, callback, reverse = false) {
+      animating = true;
+      typewriterText.textContent = "";
+      typewriterCursor.style.display = "inline-block";
+      let i = reverse ? text.length : 0;
+      function step() {
+        if (reverse) {
+          if (i >= 0) {
+            typewriterText.textContent = text.slice(0, i);
+            i--;
+            animationTimeout = setTimeout(step, 43);
+          } else {
+            animating = false;
+            typewriterCursor.style.display = "inline-block";
+            if (callback) callback();
+          }
+        } else {
+          if (i <= text.length) {
+            typewriterText.textContent = text.slice(0, i);
+            i++;
+            animationTimeout = setTimeout(step, 43);
+          } else {
+            animating = false;
+            typewriterCursor.style.display = "inline-block";
+            if (callback) callback();
+          }
+        }
+      }
+      step();
+    }
+
+    function toAltText() {
+      if (animating || isAlt) return;
+      isAlt = true;
+      clearTimeout(animationTimeout);
+      typeText(mainText, () => {
+        typeText("", () => {
+          typeText(altText);
+        }, true);
+      }, true);
+    }
+    function toMainText() {
+      if (animating || !isAlt) return;
+      isAlt = false;
+      clearTimeout(animationTimeout);
+      typeText(altText, () => {
+        typeText("", () => {
+          typeText(mainText);
+        }, true);
+      }, true);
+    }
+    function showMainText() {
+      typewriterText.textContent = "";
+      typeText(mainText);
+    }
+    cinemaTypewriter.addEventListener('mouseenter', toAltText);
+    cinemaTypewriter.addEventListener('mouseleave', toMainText);
+    cinemaTypewriter.addEventListener('click', () => {
+      if (isAlt) {
+        toMainText();
+      } else {
+        toAltText();
+      }
+    });
+    cinemaTypewriter.addEventListener('focus', toAltText);
+    cinemaTypewriter.addEventListener('blur', toMainText);
+    window.addEventListener('DOMContentLoaded', showMainText);
+
+    // Arrow button for scroll-to-top
+    const toTopBtn = document.getElementById('toTopBtn');
+    const bgRect = document.querySelector('.cinema-content-wrapper');
+    window.onscroll = function() {
+      const rectBottom = bgRect.getBoundingClientRect().bottom;
+      if (rectBottom <= 0) {
+        toTopBtn.style.display = "flex";
+      } else {
+        toTopBtn.style.display = "none";
+      }
+    };
+    window.onload = function() {
+      window.onscroll();
+    };
+    toTopBtn.onclick = function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // Quadrant reveal on scroll
+    const cinemaQuadrantGrid = document.getElementById('cinemaQuadrantGrid');
+    function revealQuadrantsOnScroll() {
+      const gridRect = cinemaQuadrantGrid.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      if (gridRect.top < windowHeight - 60) {
+        cinemaQuadrantGrid.classList.add('visible');
+      } else {
+        cinemaQuadrantGrid.classList.remove('visible');
+      }
+    }
+    window.addEventListener('scroll', revealQuadrantsOnScroll);
+    window.addEventListener('DOMContentLoaded', revealQuadrantsOnScroll);
+  </script>
+</body>
+</html>

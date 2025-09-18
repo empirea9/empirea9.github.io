@@ -1,0 +1,383 @@
+body {
+  background: #0c0c0d;
+  color: #ededed;
+  font-family: 'SF Pro Display', 'Segoe UI', 'Helvetica Neue', 'Arial', sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Add font-face for SF Pro Display */
+@font-face {
+  font-family: 'SF Pro Display';
+  src: url('SF-Pro-Display-Regular.woff2') format('woff2'),
+       url('SF-Pro-Display-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'SF Pro Display';
+  src: url('SF-Pro-Display-Bold.woff2') format('woff2'),
+       url('SF-Pro-Display-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+}
+
+.bg-full {
+  width: 100vw;
+  min-height: 100vh;
+  background-image: url("background.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: 0 0 38px 0 #000a, 0 0 38px 6px #fff3;
+  border-radius: 0;
+  position: relative;
+  z-index: 0;
+}
+nav {
+  width: 100%;
+  background: rgba(24, 25, 27, 0.18);
+  box-shadow: 0 2px 8px #1118;
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+}
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+.nav-links a {
+  color: #ededed;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.08rem;
+  letter-spacing: 1px;
+  transition: color 0.2s, border-bottom 0.2s, text-shadow 0.2s;
+  border-bottom: 2px solid transparent;
+  text-shadow: 0 0 10px #fff6, 0 0 2px #fff4;
+  display: flex;
+  align-items: center;
+  height: 42px;
+  padding-top: 4px;
+}
+.nav-links a.active {
+  color: #fff;
+  text-shadow: 0 0 12px #fff8, 0 0 2px #fff4;
+  border-bottom: 2px solid #fff;
+}
+.nav-links a:hover {
+  color: #fff;
+  border-bottom: 2px solid #fff;
+  text-shadow: 0 0 14px #fff, 0 0 2px #fff4;
+}
+main {
+  width: 100vw;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.text-area {
+  margin-top: 110px;
+  margin-bottom: 120px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Increase Ronogamy text size and keep typing indicator aligned */
+h1 {
+  color: #fff;
+  font-size: 8rem; /* Increased from 6.5rem */
+  font-family: 'SF Pro Display', 'Segoe UI', 'Helvetica Neue', 'Arial', sans-serif;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 2px;
+  display: inline-flex; /* Change to flex for cursor alignment */
+  align-items: center;  /* Vertically align cursor with text */
+  text-shadow:
+    0 0 16px #fff7,
+    0 2px 8px #000c,
+    0 0 2px #000a;
+}
+
+/* Ensure .cursor is vertically aligned with Ronogamy text */
+.cursor {
+  display: inline-block;
+  width: 0.09em;
+  height: 1.08em;
+  background: #fff;
+  margin-left: 8px;
+  vertical-align: middle;
+  border-radius: 2px;
+  box-shadow: 0 0 8px #fff;
+  animation: blink 1s steps(1) infinite;
+  /* Reduce the vertical offset for better bottom alignment */
+  transform: translateY(-5px); /* Previously 0 or -2px, now slightly lower */
+}
+@keyframes blink {
+  0%, 50% { opacity: 0.85; }
+  51%, 100% { opacity: 0; }
+}
+/* Bottom section: quadrants grid */
+.bottom-section {
+  width: 100vw;
+  min-height: 100vh;
+  height: 100vh;
+  background: #111214;
+  box-shadow: 0 -4px 40px #000b, 0 -8px 30px #fff2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 0;
+  margin: 0;
+}
+.quadrant-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 48px;
+  width: 94vw;
+  max-width: 1400px;
+  height: 86vh;
+  min-height: 600px;
+  align-items: stretch;
+}
+.quadrant {
+  position: relative;
+  background: linear-gradient(90deg, #23242a 0%, #222328 100%);
+  border-radius: 18px;
+  box-shadow: 0 0 20px #2226;
+  overflow: hidden;
+  transition: transform 0.28s cubic-bezier(.5,1.55,.41,1.01), box-shadow 0.23s;
+  will-change: transform, box-shadow;
+  display: flex;
+  align-items: stretch;
+}
+.quadrant::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: var(--quad-bg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(24px) brightness(0.7);
+  opacity: 0.7;
+}
+.quadrant:hover {
+  transform: scale(1.035) translateY(-10px);
+  box-shadow: 0 16px 44px #2229, 0 0 50px #fff2;
+}
+/* Image is always a perfect square, lined up top, left, bottom */
+.quadrant-inner {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  position: relative;
+  z-index: 1;
+}
+.quadrant-img {
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  width: auto;
+  min-width: 0;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+}
+.img-link {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+}
+.quadrant-img img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px #1116;
+  background: #222;
+  transition: transform 0.28s cubic-bezier(.5,1.55,.41,1.01), box-shadow 0.23s;
+  margin: 0;
+  display: block;
+}
+.quadrant:hover .img-link img,
+.img-link:hover img {
+  transform: scale(1.08);
+  box-shadow: 0 8px 32px #222a;
+}
+/* Content sits to the right, with padding */
+.quadrant-content {
+  flex: 1 1 0;
+  padding: 48px 38px 48px 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #ededed;
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+/* Bigger headings */
+.quadrant-content h3 {
+  margin: 0 0 22px 0;
+  font-size: 3.2rem;
+  color: #fff;
+  text-shadow: 0 0 10px #fff4;
+  font-weight: 700;
+}
+.quadrant-content p {
+  margin: 0 0 18px 0;
+  font-size: 1.25rem;
+  color: #ededed;
+  text-shadow: 0 0 8px #fff3;
+}
+
+/* Banner reveal swipe animation */
+/* Banner Reveal: Arrow and swipe-connected banner */
+.banner-reveal {
+  position: relative;
+  display: inline-block;
+  margin-top: 18px;
+  height: 38px;
+  min-width: 38px;
+  vertical-align: middle;
+  overflow: visible;
+  z-index: 2;
+}
+.banner-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 38px;
+}
+.banner-arrow {
+  width: 38px;
+  height: 38px;
+  background: #222;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 8px #0005;
+  border: none;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  transition:
+    left 0.5s cubic-bezier(.59,.03,.27,1.41),
+    background 0.18s;
+}
+.arrow-icon {
+  display: block;
+  margin: auto;
+}
+.banner-arrow:focus {
+  outline: 2px solid #fff;
+}
+/* Button is attached, starts collapsed, expands right */
+.banner-content {
+  background: #21242a;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 22px;
+  padding: 0 28px 0 16px; /* Increased right padding for extra space at right */
+  height: 38px;
+  font-size: 1.05rem;
+  box-shadow: 0 2px 8px #0005;
+  margin-left: 0;
+  opacity: 0;
+  width: 0;
+  max-width: 140px;
+  min-width: 0;
+  transition:
+    width 0.5s cubic-bezier(.59,.03,.27,1.41),
+    opacity 0.18s cubic-bezier(.59,.03,.27,1.41);
+  white-space: nowrap;
+  position: relative;
+  z-index: 2;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+
+.banner-group .move-arrow {
+  left: 146px;
+  background: #444;
+}
+.banner-group .open-banner {
+  opacity: 1;
+  width: 150px;
+  pointer-events: auto;
+  max-width: 140px;
+}
+
+@media (max-width: 700px) {
+  .banner-content {
+    font-size: 1rem;
+    width: 100px;
+    max-width: 100px;
+    padding: 0 18px 0 8px; /* extra right space for small screens */
+  }
+  .banner-group .move-arrow {
+    left: 100px;
+  }
+  .banner-group .open-banner {
+    width: 100px;
+    max-width: 100px;
+  }
+}
+/* Top button: rounded chevron SVG in a circle, glow, bottom right */
+#toTopBtn {
+  display: none;
+  position: fixed;
+  bottom: 36px;
+  right: 36px;
+  z-index: 200;
+  width: 56px;
+  height: 56px;
+  background: rgba(24,24,24,0.98);
+  border: none;
+  outline: none;
+  border-radius: 50%;
+  box-shadow: 0 0 16px 0 #fff2, 0 0 10px 0 #0007;
+  transition: background 0.2s, box-shadow 0.2s;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+#toTopBtn svg {
+  display: block;
+  margin: 0 auto;
+  filter: drop-shadow(0 0 2px #fff);
+}
+#toTopBtn:hover {
+  background: #181818;
+  box-shadow: 0 0 24px 0 #fff3, 0 0 16px 0 #000c;
+}
