@@ -80,6 +80,261 @@
       51%, 100% { border-right: 4px solid transparent; }
     }
 
+    /* Movie Reel Section Styles */
+    .movie-reel-section {
+      width: 100vw;
+      margin: 80px 0 120px 0;
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+    }
+    
+    .movie-reel-container {
+      position: relative;
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    .movie-reel-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      border-radius: 20px;
+      background: linear-gradient(90deg, #111, #1a1a1a, #111);
+      padding: 30px 10px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      border: 1px solid #333;
+    }
+    
+    .movie-reel {
+      display: flex;
+      gap: 20px;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+      padding: 0 40px;
+      position: relative;
+      transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      width: 100%;
+    }
+    
+    .poster-item {
+      flex: 0 0 auto;
+      width: 200px;
+      height: 300px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      filter: blur(2px) brightness(0.6);
+      transform: scale(0.9);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+    }
+    
+    .poster-item.centered {
+      filter: none;
+      transform: scale(1.1);
+      box-shadow: 0 10px 40px rgba(255,255,255,0.1);
+      z-index: 2;
+    }
+    
+    .poster-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+      transition: transform 0.3s ease;
+      background: #333;
+      display: block;
+    }
+    
+    .poster-item img:not([src]),
+    .poster-item img[src=""] {
+      background: linear-gradient(45deg, #333, #555);
+      position: relative;
+    }
+    
+    .poster-item img:not([src])::after,
+    .poster-item img[src=""]::after {
+      content: "🎬";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2rem;
+      color: #888;
+    }
+    
+    .poster-item:hover img {
+      transform: scale(1.05);
+    }
+    
+    .nav-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.7);
+      border: 2px solid #fff;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 3;
+      backdrop-filter: blur(10px);
+    }
+    
+    .nav-arrow:hover {
+      background: rgba(255,255,255,0.1);
+      transform: translateY(-50%) scale(1.1);
+    }
+    
+    .nav-arrow-left {
+      left: 20px;
+    }
+    
+    .nav-arrow-right {
+      right: 20px;
+    }
+    
+    .movie-reel-wrapper:hover .nav-arrow {
+      opacity: 1;
+    }
+    
+    .poster-preview {
+      position: absolute;
+      top: -140px;
+      left: 50%;
+      transform: translateX(-50%) scale(0);
+      background: rgba(0,0,0,0.95);
+      border: 2px solid #fff;
+      border-radius: 15px;
+      padding: 20px;
+      min-width: 280px;
+      text-align: center;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 10;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+      pointer-events: none;
+    }
+    
+    .poster-preview.visible {
+      transform: translateX(-50%) scale(1);
+      opacity: 1;
+    }
+    
+    .poster-preview img {
+      width: 80px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    
+    .preview-info h3 {
+      margin: 0 0 5px 0;
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+    
+    .preview-info p {
+      margin: 0;
+      color: #ccc;
+      font-size: 0.9rem;
+    }
+    
+    /* Film reel holes effect */
+    .movie-reel::before,
+    .movie-reel::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 20px;
+      height: 20px;
+      background: radial-gradient(circle, transparent 40%, #333 41%);
+      background-size: 20px 20px;
+      z-index: 1;
+      pointer-events: none;
+    }
+    
+    .movie-reel::before {
+      left: 10px;
+      transform: translateY(-50%);
+      height: 100%;
+      background-repeat: repeat-y;
+    }
+    
+    .movie-reel::after {
+      right: 10px;
+      transform: translateY(-50%);
+      height: 100%;
+      background-repeat: repeat-y;
+    }
+
+    /* Responsive adjustments for movie reel */
+    @media (max-width: 900px) {
+      .movie-reel-section {
+        margin: 60px 0 80px 0;
+      }
+      
+      .poster-item {
+        width: 150px;
+        height: 225px;
+      }
+      
+      .movie-reel {
+        gap: 15px;
+        padding: 0 30px;
+      }
+      
+      .poster-preview {
+        min-width: 250px;
+        top: -100px;
+      }
+    }
+    
+    @media (max-width: 600px) {
+      .movie-reel-section {
+        margin: 40px 0 60px 0;
+      }
+      
+      .poster-item {
+        width: 120px;
+        height: 180px;
+      }
+      
+      .movie-reel {
+        gap: 10px;
+        padding: 0 20px;
+      }
+      
+      .nav-arrow {
+        width: 40px;
+        height: 40px;
+      }
+      
+      .poster-preview {
+        min-width: 200px;
+        top: -80px;
+        padding: 15px;
+      }
+      
+      .poster-preview img {
+        width: 60px;
+        height: 90px;
+      }
+    }
+
     /* Quadrant Styles - hidden by default, fade in on scroll */
     .cinema-quadrant-grid {
       display: grid;
@@ -283,6 +538,58 @@
         </h1>
       </div>
     </main>
+
+    <!-- Movie Poster Reel Section -->
+    <section class="movie-reel-section">
+      <div class="movie-reel-container">
+        <div class="movie-reel-wrapper">
+          <button class="nav-arrow nav-arrow-left" id="navLeft" aria-label="Previous posters">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+              <polyline points="15,18 9,12 15,6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="movie-reel" id="movieReel">
+            <div class="poster-item" data-title="The Matrix" data-year="1999">
+              <img src="https://image.tmdb.org/t/p/w500/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg" alt="The Matrix">
+            </div>
+            <div class="poster-item" data-title="Inception" data-year="2010">
+              <img src="https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg" alt="Inception">
+            </div>
+            <div class="poster-item" data-title="Interstellar" data-year="2014">
+              <img src="https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg" alt="Interstellar">
+            </div>
+            <div class="poster-item" data-title="Blade Runner 2049" data-year="2017">
+              <img src="https://image.tmdb.org/t/p/w500/gajva2L0rPYkEWjzgFlBXCAVBE5.jpg" alt="Blade Runner 2049">
+            </div>
+            <div class="poster-item" data-title="Dune" data-year="2021">
+              <img src="https://image.tmdb.org/t/p/w500/d5NXSklXo0qyIYkgV94XAgMIckC.jpg" alt="Dune">
+            </div>
+            <div class="poster-item" data-title="Mad Max: Fury Road" data-year="2015">
+              <img src="https://image.tmdb.org/t/p/w500/hA2ple9q4qnwxp3hKVNhroipsir.jpg" alt="Mad Max: Fury Road">
+            </div>
+            <div class="poster-item" data-title="The Dark Knight" data-year="2008">
+              <img src="https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg" alt="The Dark Knight">
+            </div>
+            <div class="poster-item" data-title="Avatar" data-year="2009">
+              <img src="https://image.tmdb.org/t/p/w500/jRXYjXNq0Cs2TcJjLkki24MLp7u.jpg" alt="Avatar">
+            </div>
+          </div>
+          <button class="nav-arrow nav-arrow-right" id="navRight" aria-label="Next posters">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+              <polyline points="9,18 15,12 9,6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="poster-preview" id="posterPreview">
+          <img src="" alt="" id="previewImage">
+          <div class="preview-info">
+            <h3 id="previewTitle"></h3>
+            <p id="previewYear"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="bottom-section" style="background:transparent; box-shadow:none;">
       <div class="cinema-quadrant-grid" id="cinemaQuadrantGrid">
         <!-- Letterboxd Profile Quadrant -->
@@ -436,6 +743,150 @@
     }
     window.addEventListener('scroll', revealQuadrantsOnScroll);
     window.addEventListener('DOMContentLoaded', revealQuadrantsOnScroll);
+
+    // Movie Reel Functionality
+    const movieReel = document.getElementById('movieReel');
+    const navLeft = document.getElementById('navLeft');
+    const navRight = document.getElementById('navRight');
+    const posterPreview = document.getElementById('posterPreview');
+    const previewImage = document.getElementById('previewImage');
+    const previewTitle = document.getElementById('previewTitle');
+    const previewYear = document.getElementById('previewYear');
+    const posterItems = document.querySelectorAll('.poster-item');
+    
+    let currentIndex = 0;
+    let isTransitioning = false;
+    
+    // Initialize centered poster
+    function updateCenteredPoster() {
+      posterItems.forEach((item, index) => {
+        item.classList.toggle('centered', index === currentIndex);
+      });
+    }
+    
+    // Navigate left
+    function navigateLeft() {
+      if (isTransitioning) return;
+      isTransitioning = true;
+      
+      currentIndex = currentIndex > 0 ? currentIndex - 1 : posterItems.length - 1;
+      updateDisplay();
+      
+      setTimeout(() => {
+        isTransitioning = false;
+      }, 500);
+    }
+    
+    // Navigate right
+    function navigateRight() {
+      if (isTransitioning) return;
+      isTransitioning = true;
+      
+      currentIndex = currentIndex < posterItems.length - 1 ? currentIndex + 1 : 0;
+      updateDisplay();
+      
+      setTimeout(() => {
+        isTransitioning = false;
+      }, 500);
+    }
+    
+    // Update display position and centered poster
+    function updateDisplay() {
+      const posterWidth = 220; // width + gap
+      const offset = currentIndex * posterWidth;
+      const containerWidth = movieReel.offsetWidth;
+      const totalWidth = posterItems.length * posterWidth;
+      
+      // Center the current poster in the viewport
+      const centeredOffset = (containerWidth / 2) - (posterWidth / 2) - offset;
+      movieReel.style.transform = `translateX(${centeredOffset}px)`;
+      
+      updateCenteredPoster();
+    }
+    
+    // Show poster preview
+    function showPreview(posterItem) {
+      clearTimeout(window.previewTimeout);
+      const title = posterItem.dataset.title;
+      const year = posterItem.dataset.year;
+      const imgSrc = posterItem.querySelector('img').src;
+      
+      previewImage.src = imgSrc;
+      previewImage.alt = title;
+      previewTitle.textContent = title;
+      previewYear.textContent = year;
+      
+      posterPreview.classList.add('visible');
+    }
+    
+    // Hide poster preview
+    function hidePreview() {
+      window.previewTimeout = setTimeout(() => {
+        posterPreview.classList.remove('visible');
+      }, 150);
+    }
+    
+    // Keep preview visible when hovering over it
+    posterPreview.addEventListener('mouseenter', () => {
+      clearTimeout(window.previewTimeout);
+    });
+    
+    posterPreview.addEventListener('mouseleave', hidePreview);
+    
+    // Event listeners
+    navLeft.addEventListener('click', navigateLeft);
+    navRight.addEventListener('click', navigateRight);
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') {
+        navigateLeft();
+      } else if (e.key === 'ArrowRight') {
+        navigateRight();
+      }
+    });
+    
+    // Poster hover events
+    posterItems.forEach((item, index) => {
+      // Create a larger hover area for better detection
+      const hoverArea = document.createElement('div');
+      hoverArea.style.position = 'absolute';
+      hoverArea.style.inset = '-10px';
+      hoverArea.style.zIndex = '1';
+      hoverArea.style.cursor = 'pointer';
+      item.style.position = 'relative';
+      item.appendChild(hoverArea);
+      
+      hoverArea.addEventListener('mouseenter', () => {
+        showPreview(item);
+      });
+      
+      hoverArea.addEventListener('mouseleave', () => {
+        setTimeout(hidePreview, 100);
+      });
+      
+      hoverArea.addEventListener('click', () => {
+        currentIndex = index;
+        updateDisplay();
+      });
+      
+      // Also keep the original poster item events as backup
+      item.addEventListener('mouseenter', () => {
+        showPreview(item);
+      });
+      
+      item.addEventListener('mouseleave', () => {
+        setTimeout(hidePreview, 100);
+      });
+      
+      item.addEventListener('click', () => {
+        currentIndex = index;
+        updateDisplay();
+      });
+    });
+    
+    // Initialize display
+    updateDisplay();
   </script>
 </body>
 </html>
