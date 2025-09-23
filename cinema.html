@@ -257,26 +257,27 @@
 
     /* Movie Carousel Styles */
     .movie-carousel-container {
-      margin: 200px auto 300px auto;
+      margin: 350px auto 350px auto;
       width: 100%;
       position: relative;
-      overflow: visible;
+      overflow: hidden;
+      padding: 0 60px;
     }
 
     .movie-carousel {
       position: relative;
       width: 100%;
-      height: 400px;
+      height: 450px;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: visible;
+      overflow: hidden;
     }
 
     .movie-cards-wrapper {
       width: 100%;
       height: 100%;
-      overflow: visible;
+      overflow: hidden;
       position: relative;
     }
 
@@ -285,7 +286,7 @@
       align-items: flex-start;
       height: 100%;
       transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      gap: 30px;
+      gap: 50px;
       justify-content: center;
       position: relative;
       padding-top: 20px;
@@ -313,18 +314,19 @@
 
     .movie-title {
       position: absolute;
-      bottom: -35px;
+      bottom: -45px;
       left: 50%;
       transform: translateX(-50%);
       color: white;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 600;
       text-align: center;
       white-space: nowrap;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
-      opacity: 0;
-      transition: opacity 0.4s ease;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+      opacity: 1;
+      transition: all 0.4s ease;
       pointer-events: none;
+      z-index: 10;
     }
 
     .movie-card.center {
@@ -337,14 +339,27 @@
 
     .movie-card.center .movie-title {
       opacity: 1;
-      bottom: -40px;
-      font-size: 15px;
+      bottom: -50px;
+      font-size: 16px;
+      font-weight: 700;
     }
 
     .movie-card.dimmed {
       opacity: 0.4;
       filter: brightness(0.5);
+      transform: scale(0.75);
+    }
+
+    .movie-card.scaling-in {
       transform: scale(0.85);
+      opacity: 0.6;
+      filter: brightness(0.7);
+    }
+
+    .movie-card.scaling-out {
+      transform: scale(0.65);
+      opacity: 0.3;
+      filter: brightness(0.4);
     }
 
     .movie-card:hover {
@@ -369,48 +384,48 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      width: 60px;
-      height: 80px;
-      background: rgba(0, 0, 0, 0.3);
+      width: 120px;
+      height: 300px;
+      background: rgba(0, 0, 0, 0.7);
       border: none;
-      border-radius: 8px;
+      border-radius: 0;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       opacity: 0;
       transition: all 0.3s ease;
-      z-index: 20;
-      backdrop-filter: blur(8px);
+      z-index: 30;
+      backdrop-filter: blur(12px);
     }
 
     .carousel-arrow svg {
-      width: 32px;
-      height: 32px;
+      width: 60px;
+      height: 60px;
       fill: none;
       stroke: #fff;
-      stroke-width: 3;
+      stroke-width: 4;
       stroke-linecap: round;
       stroke-linejoin: round;
-      filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.6));
+      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
     }
 
     .carousel-arrow:hover {
-      background: rgba(0, 0, 0, 0.5);
-      transform: translateY(-50%) scale(1.05);
+      background: rgba(0, 0, 0, 0.8);
+      transform: translateY(-50%) scale(1.02);
     }
 
     .carousel-arrow:hover svg {
-      stroke-width: 4;
-      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+      stroke-width: 5;
+      filter: drop-shadow(0 0 12px rgba(255, 255, 255, 1));
     }
 
     .carousel-arrow-left {
-      left: 20px;
+      left: 0;
     }
 
     .carousel-arrow-right {
-      right: 20px;
+      right: 0;
     }
 
     .movie-carousel:hover .carousel-arrow {
@@ -420,11 +435,12 @@
     /* Mobile Responsive */
     @media (max-width: 768px) {
       .movie-carousel-container {
-        margin: 150px auto 250px auto;
+        margin: 250px auto 300px auto;
+        padding: 0 40px;
       }
 
       .movie-carousel {
-        height: 350px;
+        height: 400px;
       }
 
       .movie-card {
@@ -437,38 +453,39 @@
         height: 250px;
       }
 
+      .movie-cards {
+        gap: 35px;
+      }
+
       .carousel-arrow {
-        width: 50px;
-        height: 70px;
+        width: 80px;
+        height: 250px;
       }
 
       .carousel-arrow svg {
-        width: 28px;
-        height: 28px;
-      }
-
-      .carousel-arrow-left {
-        left: 10px;
-      }
-
-      .carousel-arrow-right {
-        right: 10px;
+        width: 40px;
+        height: 40px;
       }
 
       .movie-title {
-        font-size: 11px;
-        bottom: -30px;
+        font-size: 12px;
+        bottom: -40px;
       }
 
       .movie-card.center .movie-title {
-        font-size: 13px;
-        bottom: -35px;
+        font-size: 14px;
+        bottom: -45px;
       }
     }
 
     @media (max-width: 480px) {
+      .movie-carousel-container {
+        margin: 200px auto 250px auto;
+        padding: 0 30px;
+      }
+
       .movie-carousel {
-        height: 320px;
+        height: 350px;
       }
 
       .movie-card {
@@ -482,7 +499,17 @@
       }
 
       .movie-cards {
-        gap: 20px;
+        gap: 25px;
+      }
+
+      .carousel-arrow {
+        width: 60px;
+        height: 200px;
+      }
+
+      .carousel-arrow svg {
+        width: 30px;
+        height: 30px;
       }
     }
   </style>
@@ -800,7 +827,7 @@
       
       // Reset all cards
       cards.forEach((card, index) => {
-        card.classList.remove('center', 'dimmed');
+        card.classList.remove('center', 'dimmed', 'scaling-in', 'scaling-out');
         card.style.order = '';
         card.style.transform = '';
         card.style.opacity = '';
@@ -822,8 +849,19 @@
             // This is the center card
             card.classList.add('center');
           } else {
-            // These are side cards
-            card.classList.add('dimmed');
+            // Calculate distance from center for progressive scaling
+            const distanceFromCenter = Math.abs(i - centerIndex);
+            
+            if (distanceFromCenter === 1) {
+              // Cards next to center
+              card.classList.add('scaling-in');
+            } else if (distanceFromCenter === 2) {
+              // Cards further from center
+              card.classList.add('scaling-out');
+            } else {
+              // Cards at the edges
+              card.classList.add('dimmed');
+            }
           }
         }
       }
