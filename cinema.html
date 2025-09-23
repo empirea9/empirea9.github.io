@@ -257,35 +257,38 @@
 
     /* Movie Carousel Styles */
     .movie-carousel-container {
-      margin: 200px auto 250px auto;
+      margin: 200px auto 300px auto;
       width: 100%;
       position: relative;
-      overflow: hidden;
+      overflow: visible;
     }
 
     .movie-carousel {
       position: relative;
       width: 100%;
-      height: 320px;
+      height: 400px;
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: visible;
     }
 
     .movie-cards-wrapper {
       width: 100%;
       height: 100%;
-      overflow: hidden;
+      overflow: visible;
       position: relative;
     }
 
     .movie-cards {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       height: 100%;
-      transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      gap: 20px;
+      transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      gap: 30px;
       justify-content: center;
+      position: relative;
+      padding-top: 20px;
     }
 
     .movie-card {
@@ -296,48 +299,56 @@
       overflow: hidden;
       position: relative;
       cursor: pointer;
-      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      transform-origin: center bottom;
     }
 
     .movie-card img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
     .movie-title {
       position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+      bottom: -35px;
+      left: 50%;
+      transform: translateX(-50%);
       color: white;
-      padding: 20px 10px 10px;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 600;
       text-align: center;
+      white-space: nowrap;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
       opacity: 0;
-      transition: opacity 0.3s ease;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
     }
 
     .movie-card.center {
-      width: 220px;
-      height: 300px;
-      transform: scale(1.1);
-      box-shadow: 0 8px 40px rgba(255, 255, 255, 0.1);
+      width: 240px;
+      height: 320px;
+      transform: scale(1.2);
+      box-shadow: 0 12px 50px rgba(255, 255, 255, 0.15);
       z-index: 10;
     }
 
+    .movie-card.center .movie-title {
+      opacity: 1;
+      bottom: -40px;
+      font-size: 15px;
+    }
+
     .movie-card.dimmed {
-      opacity: 0.6;
-      transform: scale(0.9);
+      opacity: 0.4;
+      transform: scale(0.85);
     }
 
     .movie-card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 30px rgba(255, 255, 255, 0.15);
+      transform: scale(1.1);
+      box-shadow: 0 8px 35px rgba(255, 255, 255, 0.2);
     }
 
     .movie-card:hover .movie-title {
@@ -345,18 +356,23 @@
     }
 
     .movie-card.center:hover {
-      transform: scale(1.15);
+      transform: scale(1.25);
+    }
+
+    .movie-card.dimmed:hover {
+      opacity: 0.7;
+      transform: scale(0.95);
     }
 
     .carousel-arrow {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      width: 50px;
-      height: 50px;
-      background: rgba(0, 0, 0, 0.5);
+      width: 60px;
+      height: 80px;
+      background: rgba(0, 0, 0, 0.3);
       border: none;
-      border-radius: 50%;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -364,12 +380,26 @@
       opacity: 0;
       transition: all 0.3s ease;
       z-index: 20;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(8px);
+    }
+
+    .carousel-arrow svg {
+      width: 32px;
+      height: 32px;
+      fill: none;
+      stroke: #fff;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     .carousel-arrow:hover {
-      background: rgba(0, 0, 0, 0.7);
-      transform: translateY(-50%) scale(1.1);
+      background: rgba(0, 0, 0, 0.5);
+      transform: translateY(-50%) scale(1.05);
+    }
+
+    .carousel-arrow:hover svg {
+      stroke-width: 4;
     }
 
     .carousel-arrow-left {
@@ -387,26 +417,31 @@
     /* Mobile Responsive */
     @media (max-width: 768px) {
       .movie-carousel-container {
-        margin: 150px auto 200px auto;
+        margin: 150px auto 250px auto;
       }
 
       .movie-carousel {
-        height: 280px;
+        height: 350px;
       }
 
       .movie-card {
-        width: 160px;
-        height: 240px;
+        width: 140px;
+        height: 210px;
       }
 
       .movie-card.center {
-        width: 190px;
-        height: 260px;
+        width: 180px;
+        height: 250px;
       }
 
       .carousel-arrow {
-        width: 40px;
-        height: 40px;
+        width: 50px;
+        height: 70px;
+      }
+
+      .carousel-arrow svg {
+        width: 28px;
+        height: 28px;
       }
 
       .carousel-arrow-left {
@@ -416,21 +451,35 @@
       .carousel-arrow-right {
         right: 10px;
       }
+
+      .movie-title {
+        font-size: 11px;
+        bottom: -30px;
+      }
+
+      .movie-card.center .movie-title {
+        font-size: 13px;
+        bottom: -35px;
+      }
     }
 
     @media (max-width: 480px) {
       .movie-carousel {
-        height: 250px;
+        height: 320px;
       }
 
       .movie-card {
-        width: 140px;
-        height: 210px;
+        width: 120px;
+        height: 180px;
       }
 
       .movie-card.center {
-        width: 160px;
-        height: 230px;
+        width: 150px;
+        height: 210px;
+      }
+
+      .movie-cards {
+        gap: 20px;
       }
     }
   </style>
@@ -694,6 +743,7 @@
 
     let currentIndex = 0;
     let autoPlayInterval;
+    let isHoveringCard = false;
     const movieCards = document.getElementById('movieCards');
     const carouselArrowLeft = document.getElementById('carouselArrowLeft');
     const carouselArrowRight = document.getElementById('carouselArrowRight');
@@ -709,77 +759,143 @@
     function createMovieCards() {
       movieCards.innerHTML = '';
       
-      // Create cards for all movies
-      movieData.forEach((movie, index) => {
-        const card = document.createElement('div');
-        card.className = 'movie-card';
-        card.innerHTML = `
-          <img src="${movie.poster}" alt="${movie.title}" loading="lazy">
-          <div class="movie-title">${movie.title}</div>
-        `;
-        movieCards.appendChild(card);
-      });
+      // Create multiple sets of cards for infinite scrolling
+      const totalSets = 3;
+      for (let set = 0; set < totalSets; set++) {
+        movieData.forEach((movie, index) => {
+          const card = document.createElement('div');
+          card.className = 'movie-card';
+          card.dataset.movieIndex = index;
+          card.innerHTML = `
+            <img src="${movie.poster}" alt="${movie.title}" loading="lazy">
+            <div class="movie-title">${movie.title}</div>
+          `;
+          
+          // Add click event listener
+          card.addEventListener('click', () => {
+            const targetIndex = index;
+            goToSlide(targetIndex);
+          });
+
+          // Add hover event listeners to stop autoplay
+          card.addEventListener('mouseenter', () => {
+            if (card.classList.contains('center') || card.matches(':hover')) {
+              isHoveringCard = true;
+              stopAutoPlay();
+            }
+          });
+
+          card.addEventListener('mouseleave', () => {
+            isHoveringCard = false;
+            setTimeout(() => {
+              if (!isHoveringCard) {
+                startAutoPlay();
+              }
+            }, 100);
+          });
+
+          movieCards.appendChild(card);
+        });
+      }
     }
 
     function updateCarousel() {
       const cards = movieCards.querySelectorAll('.movie-card');
       const visibleCards = getVisibleCards();
       const centerIndex = Math.floor(visibleCards / 2);
+      const totalMovies = movieData.length;
+      
+      // Calculate the offset to center the current movie
+      const cardWidth = isMobile() ? 170 : 240; // width + gap
+      const startIndex = totalMovies; // Start from the middle set
+      const centerCardIndex = startIndex + currentIndex;
+      const offset = -(centerCardIndex * cardWidth) + (window.innerWidth / 2) - (cardWidth / 2);
+      
+      // Apply transform
+      movieCards.style.transform = `translateX(${offset}px)`;
       
       // Reset all cards
       cards.forEach((card, index) => {
         card.classList.remove('center', 'dimmed');
-        card.style.display = 'block';
-      });
-
-      // Calculate which cards should be visible
-      const startIndex = currentIndex;
-      
-      // Hide all cards first
-      cards.forEach(card => {
-        card.style.display = 'none';
-      });
-      
-      // Show only the visible cards and apply styles
-      for (let i = 0; i < visibleCards; i++) {
-        const cardIndex = (startIndex + i) % movieData.length;
-        const actualCardIndex = startIndex + i;
         
-        if (actualCardIndex < cards.length) {
-          const card = cards[actualCardIndex];
-          card.style.display = 'block';
-          
-          if (i === centerIndex) {
+        // Calculate which cards are visible
+        const relativeIndex = index - centerCardIndex;
+        const absRelativeIndex = Math.abs(relativeIndex);
+        
+        if (absRelativeIndex <= centerIndex) {
+          // Card is visible
+          if (relativeIndex === 0) {
             card.classList.add('center');
           } else {
             card.classList.add('dimmed');
+            // Add scaling effect based on distance from center
+            const scale = Math.max(0.85, 1 - (absRelativeIndex * 0.1));
+            const opacity = Math.max(0.3, 1 - (absRelativeIndex * 0.15));
+            card.style.transform = `scale(${scale})`;
+            card.style.opacity = opacity;
           }
+        } else {
+          // Card is outside visible range
+          card.classList.add('dimmed');
+          card.style.opacity = '0.1';
         }
-      }
-
-      // Center the visible cards
-      const cardWidth = isMobile() ? 160 : 200; // card width + gap
-      const containerWidth = window.innerWidth;
-      const totalVisibleWidth = visibleCards * cardWidth;
-      const offset = (containerWidth - totalVisibleWidth) / 2;
-      
-      movieCards.style.transform = `translateX(${offset}px)`;
+      });
     }
 
     function nextSlide() {
-      const totalCards = movieCards.querySelectorAll('.movie-card').length;
       currentIndex = (currentIndex + 1) % movieData.length;
       updateCarousel();
+      
+      // Check if we need to reset position for infinite scroll
+      if (currentIndex === 0) {
+        setTimeout(() => {
+          const cards = movieCards.querySelectorAll('.movie-card');
+          const cardWidth = isMobile() ? 170 : 240;
+          const resetOffset = -(movieData.length * cardWidth) + (window.innerWidth / 2) - (cardWidth / 2);
+          movieCards.style.transition = 'none';
+          movieCards.style.transform = `translateX(${resetOffset}px)`;
+          setTimeout(() => {
+            movieCards.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+          }, 50);
+        }, 800);
+      }
     }
 
     function prevSlide() {
       currentIndex = (currentIndex - 1 + movieData.length) % movieData.length;
       updateCarousel();
+      
+      // Check if we need to reset position for infinite scroll
+      if (currentIndex === movieData.length - 1) {
+        setTimeout(() => {
+          const cards = movieCards.querySelectorAll('.movie-card');
+          const cardWidth = isMobile() ? 170 : 240;
+          const resetOffset = -(movieData.length * cardWidth) + (window.innerWidth / 2) - (cardWidth / 2);
+          movieCards.style.transition = 'none';
+          movieCards.style.transform = `translateX(${resetOffset}px)`;
+          setTimeout(() => {
+            movieCards.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+          }, 50);
+        }, 800);
+      }
+    }
+
+    function goToSlide(targetIndex) {
+      stopAutoPlay();
+      currentIndex = targetIndex;
+      updateCarousel();
+      setTimeout(() => {
+        if (!isHoveringCard) {
+          startAutoPlay();
+        }
+      }, 2000);
     }
 
     function startAutoPlay() {
       stopAutoPlay();
-      autoPlayInterval = setInterval(nextSlide, 3000);
+      if (!isHoveringCard) {
+        autoPlayInterval = setInterval(nextSlide, 2000); // Increased speed as requested
+      }
     }
 
     function stopAutoPlay() {
@@ -794,27 +910,47 @@
       updateCarousel();
       startAutoPlay();
       
-      // Event listeners
+      // Event listeners for arrows
       carouselArrowLeft.addEventListener('click', () => {
         stopAutoPlay();
         prevSlide();
-        setTimeout(startAutoPlay, 5000); // Restart autoplay after 5 seconds
+        setTimeout(() => {
+          if (!isHoveringCard) {
+            startAutoPlay();
+          }
+        }, 3000);
       });
 
       carouselArrowRight.addEventListener('click', () => {
         stopAutoPlay();
         nextSlide();
-        setTimeout(startAutoPlay, 5000); // Restart autoplay after 5 seconds
+        setTimeout(() => {
+          if (!isHoveringCard) {
+            startAutoPlay();
+          }
+        }, 3000);
       });
 
-      // Pause autoplay on hover
+      // Pause autoplay on carousel hover (but not on individual cards)
       const carousel = document.querySelector('.movie-carousel');
-      carousel.addEventListener('mouseenter', stopAutoPlay);
-      carousel.addEventListener('mouseleave', startAutoPlay);
+      carousel.addEventListener('mouseenter', (e) => {
+        if (!e.target.closest('.movie-card')) {
+          stopAutoPlay();
+        }
+      });
+      
+      carousel.addEventListener('mouseleave', (e) => {
+        if (!e.relatedTarget || !e.relatedTarget.closest('.movie-card')) {
+          setTimeout(() => {
+            if (!isHoveringCard) {
+              startAutoPlay();
+            }
+          }, 500);
+        }
+      });
 
       // Handle window resize
       window.addEventListener('resize', () => {
-        createMovieCards();
         updateCarousel();
       });
     }
