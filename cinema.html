@@ -39,17 +39,23 @@
       font-family: inherit;
     }
     main {
-      margin-top: 110px;
-      margin-bottom: 90px;
+      margin-top: 80px;
+      margin-bottom: 60px;
       display: flex;
       align-items: center;
       justify-content: center;
+      width: 100%;
+      height: 60vh;
     }
     .text-area {
-      width: 100vw;
+      width: 100%;
       text-align: center;
       margin: 0 auto;
       position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
     }
     .cinema-typewriter {
       font-size: 6.6rem;
@@ -87,7 +93,7 @@
       gap: 48px;
       width: 94vw;
       max-width: 1400px;
-      margin: 450px auto 70px auto; /* Pushed WAY down */
+      margin: 250px auto 70px auto; /* Reduced distance from carousel */
       padding: 0;
       justify-content: center;
       align-items: stretch;
@@ -257,17 +263,17 @@
 
     /* Movie Carousel Styles */
     .movie-carousel-container {
-      margin: 350px auto 350px auto;
+      margin: 100px auto 150px auto;
       width: 100%;
       position: relative;
       overflow: hidden;
-      padding: 0 60px;
+      padding: 0;
     }
 
     .movie-carousel {
       position: relative;
       width: 100%;
-      height: 450px;
+      height: 500px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -286,7 +292,7 @@
       align-items: flex-start;
       height: 100%;
       transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      gap: 50px;
+      gap: 40px;
       justify-content: center;
       position: relative;
       padding-top: 20px;
@@ -347,7 +353,7 @@
     .movie-card.dimmed {
       opacity: 0.4;
       filter: brightness(0.5);
-      transform: scale(0.75);
+      transform: scale(0.85);
     }
 
     .movie-card.scaling-in {
@@ -357,9 +363,9 @@
     }
 
     .movie-card.scaling-out {
-      transform: scale(0.65);
-      opacity: 0.3;
-      filter: brightness(0.4);
+      transform: scale(0.85);
+      opacity: 0.4;
+      filter: brightness(0.5);
     }
 
     .movie-card:hover {
@@ -384,9 +390,9 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      width: 120px;
-      height: 300px;
-      background: rgba(0, 0, 0, 0.7);
+      width: 80px;
+      height: 80px;
+      background: transparent;
       border: none;
       border-radius: 0;
       display: flex;
@@ -396,7 +402,6 @@
       opacity: 0;
       transition: all 0.3s ease;
       z-index: 30;
-      backdrop-filter: blur(12px);
     }
 
     .carousel-arrow svg {
@@ -411,8 +416,7 @@
     }
 
     .carousel-arrow:hover {
-      background: rgba(0, 0, 0, 0.8);
-      transform: translateY(-50%) scale(1.02);
+      transform: translateY(-50%) scale(1.1);
     }
 
     .carousel-arrow:hover svg {
@@ -421,11 +425,11 @@
     }
 
     .carousel-arrow-left {
-      left: 0;
+      left: 40px;
     }
 
     .carousel-arrow-right {
-      right: 0;
+      right: 40px;
     }
 
     .movie-carousel:hover .carousel-arrow {
@@ -434,9 +438,15 @@
 
     /* Mobile Responsive */
     @media (max-width: 768px) {
+      main {
+        margin-top: 60px;
+        margin-bottom: 40px;
+        height: 50vh;
+      }
+
       .movie-carousel-container {
-        margin: 250px auto 300px auto;
-        padding: 0 40px;
+        margin: 80px auto 120px auto;
+        padding: 0;
       }
 
       .movie-carousel {
@@ -454,17 +464,25 @@
       }
 
       .movie-cards {
-        gap: 35px;
+        gap: 25px;
       }
 
       .carousel-arrow {
-        width: 80px;
-        height: 250px;
+        width: 60px;
+        height: 60px;
       }
 
       .carousel-arrow svg {
         width: 40px;
         height: 40px;
+      }
+
+      .carousel-arrow-left {
+        left: 20px;
+      }
+
+      .carousel-arrow-right {
+        right: 20px;
       }
 
       .movie-title {
@@ -476,12 +494,16 @@
         font-size: 14px;
         bottom: -45px;
       }
+
+      .cinema-quadrant-grid {
+        margin: 180px auto 32px auto;
+      }
     }
 
     @media (max-width: 480px) {
       .movie-carousel-container {
-        margin: 200px auto 250px auto;
-        padding: 0 30px;
+        margin: 60px auto 100px auto;
+        padding: 0;
       }
 
       .movie-carousel {
@@ -499,17 +521,21 @@
       }
 
       .movie-cards {
-        gap: 25px;
+        gap: 20px;
       }
 
       .carousel-arrow {
-        width: 60px;
-        height: 200px;
+        width: 50px;
+        height: 50px;
       }
 
       .carousel-arrow svg {
         width: 30px;
         height: 30px;
+      }
+
+      .cinema-quadrant-grid {
+        margin: 140px auto 8px auto;
       }
     }
   </style>
