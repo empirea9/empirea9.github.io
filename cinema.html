@@ -21,7 +21,7 @@
       width: 100vw;
       height: 100vh;
       z-index: 0;
-      background-image: url('https://media.discordapp.net/attachments/1353715599762522173/1418139959654617128/image.png?ex=68cd0942&is=68cbb7c2&hm=f89f360d15ae2ddf463d27366aaab2f937b897f18e3ac04fda8bdeeae4a02a62&=&format=webp&quality=lossless&width=620&height=438');
+      background-image: url('./assets/image4.png');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -254,6 +254,185 @@
         font-size: 2.1rem;
       }
     }
+
+    /* Movie Carousel Styles */
+    .movie-carousel-container {
+      margin: 200px auto 250px auto;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .movie-carousel {
+      position: relative;
+      width: 100%;
+      height: 320px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .movie-cards-wrapper {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .movie-cards {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .movie-card {
+      flex-shrink: 0;
+      width: 180px;
+      height: 270px;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .movie-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .movie-title {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+      color: white;
+      padding: 20px 10px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .movie-card.center {
+      width: 220px;
+      height: 300px;
+      transform: scale(1.1);
+      box-shadow: 0 8px 40px rgba(255, 255, 255, 0.1);
+      z-index: 10;
+    }
+
+    .movie-card.dimmed {
+      opacity: 0.6;
+      transform: scale(0.9);
+    }
+
+    .movie-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 30px rgba(255, 255, 255, 0.15);
+    }
+
+    .movie-card:hover .movie-title {
+      opacity: 1;
+    }
+
+    .movie-card.center:hover {
+      transform: scale(1.15);
+    }
+
+    .carousel-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 50px;
+      height: 50px;
+      background: rgba(0, 0, 0, 0.5);
+      border: none;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 20;
+      backdrop-filter: blur(10px);
+    }
+
+    .carousel-arrow:hover {
+      background: rgba(0, 0, 0, 0.7);
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .carousel-arrow-left {
+      left: 20px;
+    }
+
+    .carousel-arrow-right {
+      right: 20px;
+    }
+
+    .movie-carousel:hover .carousel-arrow {
+      opacity: 1;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .movie-carousel-container {
+        margin: 150px auto 200px auto;
+      }
+
+      .movie-carousel {
+        height: 280px;
+      }
+
+      .movie-card {
+        width: 160px;
+        height: 240px;
+      }
+
+      .movie-card.center {
+        width: 190px;
+        height: 260px;
+      }
+
+      .carousel-arrow {
+        width: 40px;
+        height: 40px;
+      }
+
+      .carousel-arrow-left {
+        left: 10px;
+      }
+
+      .carousel-arrow-right {
+        right: 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .movie-carousel {
+        height: 250px;
+      }
+
+      .movie-card {
+        width: 140px;
+        height: 210px;
+      }
+
+      .movie-card.center {
+        width: 160px;
+        height: 230px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -283,6 +462,28 @@
         </h1>
       </div>
     </main>
+    
+    <!-- Movie Carousel -->
+    <div class="movie-carousel-container">
+      <div class="movie-carousel" id="movieCarousel">
+        <div class="carousel-arrow carousel-arrow-left" id="carouselArrowLeft">
+          <svg width="24" height="24" viewBox="0 0 24 24">
+            <polyline points="15,18 9,12 15,6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="movie-cards-wrapper">
+          <div class="movie-cards" id="movieCards">
+            <!-- Movie cards will be dynamically generated -->
+          </div>
+        </div>
+        <div class="carousel-arrow carousel-arrow-right" id="carouselArrowRight">
+          <svg width="24" height="24" viewBox="0 0 24 24">
+            <polyline points="9,6 15,12 9,18" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
     <section class="bottom-section" style="background:transparent; box-shadow:none;">
       <div class="cinema-quadrant-grid" id="cinemaQuadrantGrid">
         <!-- Letterboxd Profile Quadrant -->
@@ -436,6 +637,194 @@
     }
     window.addEventListener('scroll', revealQuadrantsOnScroll);
     window.addEventListener('DOMContentLoaded', revealQuadrantsOnScroll);
+
+    // Movie Carousel Functionality
+    const movieData = [
+      {
+        title: "The Dark Knight",
+        poster: "./assets/image1.png",
+        color: "#1a1a1a"
+      },
+      {
+        title: "Inception",
+        poster: "./assets/image2.png",
+        color: "#2a2a3a"
+      },
+      {
+        title: "Interstellar",
+        poster: "./assets/image3.png",
+        color: "#3a3a2a"
+      },
+      {
+        title: "Pulp Fiction",
+        poster: "./assets/image4.png",
+        color: "#4a2a2a"
+      },
+      {
+        title: "The Matrix",
+        poster: "./assets/image1.png",
+        color: "#2a4a2a"
+      },
+      {
+        title: "Fight Club",
+        poster: "./assets/image2.png",
+        color: "#2a2a4a"
+      },
+      {
+        title: "Goodfellas",
+        poster: "./assets/image3.png",
+        color: "#4a4a2a"
+      },
+      {
+        title: "The Shawshank Redemption",
+        poster: "./assets/image4.png",
+        color: "#4a2a4a"
+      },
+      {
+        title: "Forrest Gump",
+        poster: "./assets/image1.png",
+        color: "#2a4a4a"
+      },
+      {
+        title: "The Godfather",
+        poster: "./assets/image2.png",
+        color: "#3a3a3a"
+      }
+    ];
+
+    let currentIndex = 0;
+    let autoPlayInterval;
+    const movieCards = document.getElementById('movieCards');
+    const carouselArrowLeft = document.getElementById('carouselArrowLeft');
+    const carouselArrowRight = document.getElementById('carouselArrowRight');
+
+    function isMobile() {
+      return window.innerWidth <= 768;
+    }
+
+    function getVisibleCards() {
+      return isMobile() ? 3 : 7;
+    }
+
+    function createMovieCards() {
+      movieCards.innerHTML = '';
+      
+      // Create cards for all movies
+      movieData.forEach((movie, index) => {
+        const card = document.createElement('div');
+        card.className = 'movie-card';
+        card.innerHTML = `
+          <img src="${movie.poster}" alt="${movie.title}" loading="lazy">
+          <div class="movie-title">${movie.title}</div>
+        `;
+        movieCards.appendChild(card);
+      });
+    }
+
+    function updateCarousel() {
+      const cards = movieCards.querySelectorAll('.movie-card');
+      const visibleCards = getVisibleCards();
+      const centerIndex = Math.floor(visibleCards / 2);
+      
+      // Reset all cards
+      cards.forEach((card, index) => {
+        card.classList.remove('center', 'dimmed');
+        card.style.display = 'block';
+      });
+
+      // Calculate which cards should be visible
+      const startIndex = currentIndex;
+      
+      // Hide all cards first
+      cards.forEach(card => {
+        card.style.display = 'none';
+      });
+      
+      // Show only the visible cards and apply styles
+      for (let i = 0; i < visibleCards; i++) {
+        const cardIndex = (startIndex + i) % movieData.length;
+        const actualCardIndex = startIndex + i;
+        
+        if (actualCardIndex < cards.length) {
+          const card = cards[actualCardIndex];
+          card.style.display = 'block';
+          
+          if (i === centerIndex) {
+            card.classList.add('center');
+          } else {
+            card.classList.add('dimmed');
+          }
+        }
+      }
+
+      // Center the visible cards
+      const cardWidth = isMobile() ? 160 : 200; // card width + gap
+      const containerWidth = window.innerWidth;
+      const totalVisibleWidth = visibleCards * cardWidth;
+      const offset = (containerWidth - totalVisibleWidth) / 2;
+      
+      movieCards.style.transform = `translateX(${offset}px)`;
+    }
+
+    function nextSlide() {
+      const totalCards = movieCards.querySelectorAll('.movie-card').length;
+      currentIndex = (currentIndex + 1) % movieData.length;
+      updateCarousel();
+    }
+
+    function prevSlide() {
+      currentIndex = (currentIndex - 1 + movieData.length) % movieData.length;
+      updateCarousel();
+    }
+
+    function startAutoPlay() {
+      stopAutoPlay();
+      autoPlayInterval = setInterval(nextSlide, 3000);
+    }
+
+    function stopAutoPlay() {
+      if (autoPlayInterval) {
+        clearInterval(autoPlayInterval);
+        autoPlayInterval = null;
+      }
+    }
+
+    function initCarousel() {
+      createMovieCards();
+      updateCarousel();
+      startAutoPlay();
+      
+      // Event listeners
+      carouselArrowLeft.addEventListener('click', () => {
+        stopAutoPlay();
+        prevSlide();
+        setTimeout(startAutoPlay, 5000); // Restart autoplay after 5 seconds
+      });
+
+      carouselArrowRight.addEventListener('click', () => {
+        stopAutoPlay();
+        nextSlide();
+        setTimeout(startAutoPlay, 5000); // Restart autoplay after 5 seconds
+      });
+
+      // Pause autoplay on hover
+      const carousel = document.querySelector('.movie-carousel');
+      carousel.addEventListener('mouseenter', stopAutoPlay);
+      carousel.addEventListener('mouseleave', startAutoPlay);
+
+      // Handle window resize
+      window.addEventListener('resize', () => {
+        createMovieCards();
+        updateCarousel();
+      });
+    }
+
+    // Initialize carousel when DOM is loaded
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCarousel);
+    } else {
+      initCarousel();
+    }
   </script>
 </body>
 </html>
