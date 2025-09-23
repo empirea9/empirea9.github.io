@@ -263,17 +263,17 @@
 
     /* Movie Carousel Styles */
     .movie-carousel-container {
-      margin: 100px auto 150px auto;
+      margin: 200px auto 100px auto;
       width: 100%;
       position: relative;
       overflow: hidden;
-      padding: 0;
+      padding: 0 90px;
     }
 
     .movie-carousel {
       position: relative;
       width: 100%;
-      height: 500px;
+      height: 550px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -292,7 +292,7 @@
       align-items: flex-start;
       height: 100%;
       transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      gap: 40px;
+      gap: 30px;
       justify-content: center;
       position: relative;
       padding-top: 20px;
@@ -320,7 +320,7 @@
 
     .movie-title {
       position: absolute;
-      bottom: -45px;
+      bottom: -50px;
       left: 50%;
       transform: translateX(-50%);
       color: white;
@@ -328,11 +328,15 @@
       font-weight: 600;
       text-align: center;
       white-space: nowrap;
-      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+      text-shadow: 0 3px 8px rgba(0, 0, 0, 1);
       opacity: 1;
       transition: all 0.4s ease;
       pointer-events: none;
       z-index: 10;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 4px 8px;
+      border-radius: 4px;
+      backdrop-filter: blur(4px);
     }
 
     .movie-card.center {
@@ -345,7 +349,7 @@
 
     .movie-card.center .movie-title {
       opacity: 1;
-      bottom: -50px;
+      bottom: -55px;
       font-size: 16px;
       font-weight: 700;
     }
@@ -353,17 +357,17 @@
     .movie-card.dimmed {
       opacity: 0.4;
       filter: brightness(0.5);
-      transform: scale(0.85);
+      transform: scale(1.0);
     }
 
     .movie-card.scaling-in {
-      transform: scale(0.85);
-      opacity: 0.6;
-      filter: brightness(0.7);
+      transform: scale(1.05);
+      opacity: 0.7;
+      filter: brightness(0.8);
     }
 
     .movie-card.scaling-out {
-      transform: scale(0.85);
+      transform: scale(1.0);
       opacity: 0.4;
       filter: brightness(0.5);
     }
@@ -425,11 +429,11 @@
     }
 
     .carousel-arrow-left {
-      left: 40px;
+      left: 0;
     }
 
     .carousel-arrow-right {
-      right: 40px;
+      right: 0;
     }
 
     .movie-carousel:hover .carousel-arrow {
@@ -445,12 +449,12 @@
       }
 
       .movie-carousel-container {
-        margin: 80px auto 120px auto;
-        padding: 0;
+        margin: 150px auto 80px auto;
+        padding: 0 60px;
       }
 
       .movie-carousel {
-        height: 400px;
+        height: 450px;
       }
 
       .movie-card {
@@ -464,7 +468,7 @@
       }
 
       .movie-cards {
-        gap: 25px;
+        gap: 20px;
       }
 
       .carousel-arrow {
@@ -478,36 +482,36 @@
       }
 
       .carousel-arrow-left {
-        left: 20px;
+        left: 10px;
       }
 
       .carousel-arrow-right {
-        right: 20px;
+        right: 10px;
       }
 
       .movie-title {
         font-size: 12px;
-        bottom: -40px;
+        bottom: -45px;
       }
 
       .movie-card.center .movie-title {
         font-size: 14px;
-        bottom: -45px;
+        bottom: -50px;
       }
 
       .cinema-quadrant-grid {
-        margin: 180px auto 32px auto;
+        margin: 150px auto 32px auto;
       }
     }
 
     @media (max-width: 480px) {
       .movie-carousel-container {
-        margin: 60px auto 100px auto;
-        padding: 0;
+        margin: 120px auto 60px auto;
+        padding: 0 40px;
       }
 
       .movie-carousel {
-        height: 350px;
+        height: 400px;
       }
 
       .movie-card {
@@ -521,7 +525,7 @@
       }
 
       .movie-cards {
-        gap: 20px;
+        gap: 15px;
       }
 
       .carousel-arrow {
@@ -535,7 +539,7 @@
       }
 
       .cinema-quadrant-grid {
-        margin: 140px auto 8px auto;
+        margin: 120px auto 8px auto;
       }
     }
   </style>
