@@ -443,7 +443,6 @@
       opacity: 0;
       transition: all 0.3s ease;
       z-index: 30;
-      pointer-events: none;
     }
 
     .carousel-arrow svg {
@@ -475,12 +474,11 @@
     }
 
     .movie-carousel:hover .carousel-arrow {
-      opacity: 0; /* Hidden by default, will be shown via JS on edge hover */
+      opacity: 1;
     }
 
     .carousel-arrow.show {
       opacity: 1;
-      pointer-events: auto;
     }
 
     /* Mobile Responsive */
@@ -667,8 +665,8 @@
     
     <!-- Favorite Movies Carousel -->
     <div class="carousel-section">
-      <h2 class="carousel-title" id="carouselTitle">
-        <span id="carouselTitleText"></span>
+      <h2 class="carousel-title" id="moviesCarouselTitle">
+        <span id="moviesCarouselTitleText"></span>
       </h2>
       <div class="movie-carousel-container">
         <div class="movie-carousel" id="movieCarousel">
@@ -683,6 +681,32 @@
             </div>
           </div>
           <div class="carousel-arrow carousel-arrow-right" id="carouselArrowRight">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+              <polyline points="9,6 15,12 9,18" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Favorite Series Carousel -->
+    <div class="carousel-section">
+      <h2 class="carousel-title" id="seriesCarouselTitle">
+        <span id="seriesCarouselTitleText"></span>
+      </h2>
+      <div class="movie-carousel-container">
+        <div class="movie-carousel" id="seriesCarousel">
+          <div class="carousel-arrow carousel-arrow-left" id="seriesCarouselArrowLeft">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+              <polyline points="15,18 9,12 15,6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="movie-cards-wrapper">
+            <div class="movie-cards" id="seriesCards">
+              <!-- Series cards will be dynamically generated -->
+            </div>
+          </div>
+          <div class="carousel-arrow carousel-arrow-right" id="seriesCarouselArrowRight">
             <svg width="24" height="24" viewBox="0 0 24 24">
               <polyline points="9,6 15,12 9,18" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
@@ -845,49 +869,8 @@
     window.addEventListener('scroll', revealQuadrantsOnScroll);
     window.addEventListener('DOMContentLoaded', revealQuadrantsOnScroll);
 
-    // Movie Carousel Functionality - Combined Movies and Series
+    // Movie Carousel Functionality - Only the 9 poster files
     const movieData = [
-      {
-        title: "The Dark Knight (2008)",
-        poster: "./assets/image1.png"
-      },
-      {
-        title: "Inception (2010)", 
-        poster: "./assets/image2.png"
-      },
-      {
-        title: "Interstellar (2014)",
-        poster: "./assets/image3.png"
-      },
-      {
-        title: "Pulp Fiction (1994)",
-        poster: "./assets/image4.png"
-      },
-      {
-        title: "The Matrix (1999)",
-        poster: "./assets/image1.png"
-      },
-      {
-        title: "Fight Club (1999)",
-        poster: "./assets/image2.png"
-      },
-      {
-        title: "Goodfellas (1990)",
-        poster: "./assets/image3.png"
-      },
-      {
-        title: "The Shawshank Redemption (1994)",
-        poster: "./assets/image4.png"
-      },
-      {
-        title: "Forrest Gump (1994)",
-        poster: "./assets/image1.png"
-      },
-      {
-        title: "The Godfather (1972)",
-        poster: "./assets/image2.png"
-      },
-      // Adding the poster files as requested
       {
         title: "Cars 3",
         poster: "./posters/cars 3.jpg"
@@ -926,19 +909,38 @@
       }
     ];
 
+    // Series Carousel Data - Using the provided themed images
+    const seriesData = [
+      {
+        title: "Living Room Vibes",
+        poster: "./assets/image4.png"
+      },
+      {
+        title: "Rooftop Sessions",
+        poster: "./assets/image3.png"
+      },
+      {
+        title: "Retro Arcade",
+        poster: "./assets/image1.png"
+      },
+      {
+        title: "Night City",
+        poster: "./assets/image2.png"
+      }
+    ];
+
     // Carousel Title Typewriter Animation
-    const carouselTitle = document.getElementById('carouselTitle');
-    const carouselTitleText = document.getElementById('carouselTitleText');
-    const titleText = "Favorite Movies";
-    
-    function typeCarouselTitle() {
-      carouselTitleText.textContent = "";
+    function typeText(elementId, text, callback) {
+      const element = document.getElementById(elementId);
+      element.textContent = "";
       let i = 0;
       function step() {
-        if (i <= titleText.length) {
-          carouselTitleText.textContent = titleText.slice(0, i);
+        if (i <= text.length) {
+          element.textContent = text.slice(0, i);
           i++;
           setTimeout(step, 80);
+        } else if (callback) {
+          callback();
         }
       }
       step();
@@ -996,9 +998,6 @@
               this.isHoveringCenter = true;
               this.stopAutoPlay();
             }
-            
-            // Check if this is an edge card and show appropriate arrow
-            this.handleEdgeHover(card, true);
           });
 
           card.addEventListener('mouseleave', () => {
@@ -1010,39 +1009,10 @@
                 }
               }, 500);
             }
-            
-            // Hide arrows when not hovering edge cards
-            this.handleEdgeHover(card, false);
           });
 
           this.cardsContainer.appendChild(card);
         });
-      }
-
-      handleEdgeHover(card, isHovering) {
-        const cards = this.cardsContainer.querySelectorAll('.movie-card');
-        const visibleCards = this.getVisibleCards();
-        const cardIndex = parseInt(card.dataset.index);
-        const centerIndex = Math.floor(visibleCards / 2);
-        const startIndex = this.currentIndex - centerIndex;
-        
-        // Find the position of this card in the visible set
-        let cardPosition = -1;
-        for (let i = 0; i < visibleCards; i++) {
-          let visibleCardIndex = (startIndex + i + this.data.length) % this.data.length;
-          if (visibleCardIndex === cardIndex) {
-            cardPosition = i;
-            break;
-          }
-        }
-        
-        if (cardPosition === 0) {
-          // Left edge card
-          this.leftArrow.classList.toggle('show', isHovering);
-        } else if (cardPosition === visibleCards - 1) {
-          // Right edge card
-          this.rightArrow.classList.toggle('show', isHovering);
-        }
       }
 
       updateCarousel() {
@@ -1058,10 +1028,6 @@
           card.style.opacity = '';
           card.style.display = 'none';
         });
-
-        // Hide arrows by default
-        this.leftArrow.classList.remove('show');
-        this.rightArrow.classList.remove('show');
 
         // Show visible cards around current index
         const startIndex = this.currentIndex - centerIndex;
@@ -1147,19 +1113,25 @@
       }
     }
 
-    // Initialize single carousel
-    let movieCarousel;
+    // Initialize both carousels
+    let movieCarousel, seriesCarousel;
 
-    function initCarousel() {
-      typeCarouselTitle(); // Start the typewriter animation
+    function initCarousels() {
+      // Start typewriter animations for both titles
+      typeText('moviesCarouselTitleText', 'Favorite Movies');
+      setTimeout(() => {
+        typeText('seriesCarouselTitleText', 'Favorite Series');
+      }, 1000);
+      
       movieCarousel = new Carousel('movieCarousel', movieData);
+      seriesCarousel = new Carousel('seriesCarousel', seriesData);
     }
 
-    // Initialize carousel when DOM is loaded
+    // Initialize carousels when DOM is loaded
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initCarousel);
+      document.addEventListener('DOMContentLoaded', initCarousels);
     } else {
-      initCarousel();
+      initCarousels();
     }
   </script>
 </body>
