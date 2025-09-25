@@ -93,7 +93,7 @@
       gap: 48px;
       width: 94vw;
       max-width: 1400px;
-      margin: 250px auto 70px auto; /* Reduced distance from carousel */
+      margin: 150px auto 70px auto; /* Adjusted for two carousels */
       padding: 0;
       justify-content: center;
       align-items: stretch;
@@ -229,7 +229,7 @@
         grid-template-columns: 1fr;
         gap: 38px;
         justify-items: center;
-        margin: 320px auto 32px auto;
+        margin: 200px auto 32px auto;
       }
       .cinema-quadrant-img .img-link,
       .cinema-quadrant-img img {
@@ -261,9 +261,25 @@
       }
     }
 
+    /* Carousel Section Styles */
+    .carousel-section {
+      margin: 100px auto;
+      width: 100%;
+    }
+
+    .carousel-title {
+      text-align: center;
+      font-size: 3rem;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      margin-bottom: 60px;
+      font-family: 'SF Pro Display', 'SF Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Arial, sans-serif;
+    }
+
     /* Movie Carousel Styles */
     .movie-carousel-container {
-      margin: 200px auto 100px auto;
+      margin: 0 auto;
       width: 100%;
       position: relative;
       overflow: hidden;
@@ -465,8 +481,17 @@
         height: 50vh;
       }
 
+      .carousel-section {
+        margin: 80px auto;
+      }
+
+      .carousel-title {
+        font-size: 2.2rem;
+        margin-bottom: 40px;
+      }
+
       .movie-carousel-container {
-        margin: 150px auto 80px auto;
+        margin: 0 auto;
         padding: 0;
       }
 
@@ -536,8 +561,17 @@
     }
 
     @media (max-width: 480px) {
+      .carousel-section {
+        margin: 60px auto;
+      }
+
+      .carousel-title {
+        font-size: 1.8rem;
+        margin-bottom: 30px;
+      }
+
       .movie-carousel-container {
-        margin: 120px auto 60px auto;
+        margin: 0 auto;
         padding: 0;
       }
 
@@ -588,7 +622,7 @@
       }
 
       .cinema-quadrant-grid {
-        margin: 120px auto 8px auto;
+        margin: 100px auto 8px auto;
       }
     }
   </style>
@@ -621,23 +655,50 @@
       </div>
     </main>
     
-    <!-- Movie Carousel -->
-    <div class="movie-carousel-container">
-      <div class="movie-carousel" id="movieCarousel">
-        <div class="carousel-arrow carousel-arrow-left" id="carouselArrowLeft">
-          <svg width="24" height="24" viewBox="0 0 24 24">
-            <polyline points="15,18 9,12 15,6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <div class="movie-cards-wrapper">
-          <div class="movie-cards" id="movieCards">
-            <!-- Movie cards will be dynamically generated -->
+    <!-- Favorite Movies Carousel -->
+    <div class="carousel-section">
+      <h2 class="carousel-title">Favorite Movies</h2>
+      <div class="movie-carousel-container">
+        <div class="movie-carousel" id="movieCarousel">
+          <div class="carousel-arrow carousel-arrow-left" id="carouselArrowLeft">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+              <polyline points="15,18 9,12 15,6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="movie-cards-wrapper">
+            <div class="movie-cards" id="movieCards">
+              <!-- Movie cards will be dynamically generated -->
+            </div>
+          </div>
+          <div class="carousel-arrow carousel-arrow-right" id="carouselArrowRight">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+              <polyline points="9,6 15,12 9,18" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </div>
         </div>
-        <div class="carousel-arrow carousel-arrow-right" id="carouselArrowRight">
-          <svg width="24" height="24" viewBox="0 0 24 24">
-            <polyline points="9,6 15,12 9,18" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+      </div>
+    </div>
+
+    <!-- Favorite Series Carousel -->
+    <div class="carousel-section">
+      <h2 class="carousel-title">Favorite Series</h2>
+      <div class="movie-carousel-container">
+        <div class="movie-carousel" id="seriesCarousel">
+          <div class="carousel-arrow carousel-arrow-left" id="seriesCarouselArrowLeft">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+              <polyline points="15,18 9,12 15,6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="movie-cards-wrapper">
+            <div class="movie-cards" id="seriesCards">
+              <!-- Series cards will be dynamically generated -->
+            </div>
+          </div>
+          <div class="carousel-arrow carousel-arrow-right" id="seriesCarouselArrowRight">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+              <polyline points="9,6 15,12 9,18" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
         </div>
       </div>
     </div>
@@ -840,167 +901,226 @@
       }
     ];
 
-    let currentIndex = 0;
-    let autoPlayInterval;
-    let isHoveringCenter = false;
-    const movieCards = document.getElementById('movieCards');
-    const carouselArrowLeft = document.getElementById('carouselArrowLeft');
-    const carouselArrowRight = document.getElementById('carouselArrowRight');
+    // Series Carousel Data
+    const seriesData = [
+      {
+        title: "Cars 3",
+        poster: "./posters/cars 3.jpg"
+      },
+      {
+        title: "Incantation",
+        poster: "./posters/Incantation.png"
+      },
+      {
+        title: "Iron Man",
+        poster: "./posters/Iron Man.png"
+      },
+      {
+        title: "IT",
+        poster: "./posters/IT.png"
+      },
+      {
+        title: "Taare Zameen Par",
+        poster: "./posters/Taare Zameen Par.png"
+      },
+      {
+        title: "The Others",
+        poster: "./posters/The Others.png"
+      },
+      {
+        title: "The Wailing",
+        poster: "./posters/The Wailing.png"
+      },
+      {
+        title: "Tokyo Drift",
+        poster: "./posters/Tokyo Drift.png"
+      },
+      {
+        title: "Tumbbad",
+        poster: "./posters/tumbbad.png"
+      }
+    ];
 
-    function isMobile() {
-      return window.innerWidth <= 768;
-    }
-
-    function getVisibleCards() {
-      return isMobile() ? 3 : 7;
-    }
-
-    function createMovieCards() {
-      movieCards.innerHTML = '';
-      
-      // Create cards for each movie
-      movieData.forEach((movie, index) => {
-        const card = document.createElement('div');
-        card.className = 'movie-card';
-        card.dataset.index = index;
-        card.innerHTML = `
-          <img src="${movie.poster}" alt="${movie.title}" loading="lazy">
-          <div class="movie-title">${movie.title}</div>
-        `;
+    // Carousel Class for reusable functionality
+    class Carousel {
+      constructor(containerId, data) {
+        this.data = data;
+        this.currentIndex = 0;
+        this.autoPlayInterval = null;
+        this.isHoveringCenter = false;
         
-        // Add click event
-        card.addEventListener('click', () => {
-          currentIndex = index;
-          updateCarousel();
-          stopAutoPlay();
-          setTimeout(startAutoPlay, 3000);
-        });
-
-        // Add hover events for center card only
-        card.addEventListener('mouseenter', () => {
-          if (card.classList.contains('center')) {
-            isHoveringCenter = true;
-            stopAutoPlay();
-          }
-        });
-
-        card.addEventListener('mouseleave', () => {
-          if (card.classList.contains('center')) {
-            isHoveringCenter = false;
-            setTimeout(() => {
-              if (!isHoveringCenter) {
-                startAutoPlay();
-              }
-            }, 500);
-          }
-        });
-
-        movieCards.appendChild(card);
-      });
-    }
-
-    function updateCarousel() {
-      const cards = movieCards.querySelectorAll('.movie-card');
-      const visibleCards = getVisibleCards();
-      const centerIndex = Math.floor(visibleCards / 2);
-      
-      // Reset all cards
-      cards.forEach((card, index) => {
-        card.classList.remove('center', 'dimmed', 'scaling-in', 'scaling-out');
-        card.style.order = '';
-        card.style.transform = '';
-        card.style.opacity = '';
-        card.style.display = 'none';
-      });
-
-      // Show visible cards around current index
-      const startIndex = currentIndex - centerIndex;
-      
-      for (let i = 0; i < visibleCards; i++) {
-        let cardIndex = (startIndex + i + movieData.length) % movieData.length;
-        const card = cards[cardIndex];
+        // DOM elements
+        this.container = document.getElementById(containerId);
+        this.cardsContainer = this.container.querySelector('.movie-cards');
+        this.leftArrow = this.container.querySelector('.carousel-arrow-left');
+        this.rightArrow = this.container.querySelector('.carousel-arrow-right');
         
-        if (card) {
-          card.style.display = 'block';
-          card.style.order = i;
+        this.init();
+      }
+
+      isMobile() {
+        return window.innerWidth <= 768;
+      }
+
+      getVisibleCards() {
+        return this.isMobile() ? 3 : 7;
+      }
+
+      createCards() {
+        this.cardsContainer.innerHTML = '';
+        
+        // Create cards for each item
+        this.data.forEach((item, index) => {
+          const card = document.createElement('div');
+          card.className = 'movie-card';
+          card.dataset.index = index;
+          card.innerHTML = `
+            <img src="${item.poster}" alt="${item.title}" loading="lazy">
+            <div class="movie-title">${item.title}</div>
+          `;
           
-          if (i === centerIndex) {
-            // This is the center card - delay to trigger animation
-            setTimeout(() => {
-              card.classList.add('center');
-            }, 10);
-          } else {
-            // Calculate distance from center for progressive scaling
-            const distanceFromCenter = Math.abs(i - centerIndex);
+          // Add click event
+          card.addEventListener('click', () => {
+            this.currentIndex = index;
+            this.updateCarousel();
+            this.stopAutoPlay();
+            setTimeout(() => this.startAutoPlay(), 3000);
+          });
+
+          // Add hover events for center card only
+          card.addEventListener('mouseenter', () => {
+            if (card.classList.contains('center')) {
+              this.isHoveringCenter = true;
+              this.stopAutoPlay();
+            }
+          });
+
+          card.addEventListener('mouseleave', () => {
+            if (card.classList.contains('center')) {
+              this.isHoveringCenter = false;
+              setTimeout(() => {
+                if (!this.isHoveringCenter) {
+                  this.startAutoPlay();
+                }
+              }, 500);
+            }
+          });
+
+          this.cardsContainer.appendChild(card);
+        });
+      }
+
+      updateCarousel() {
+        const cards = this.cardsContainer.querySelectorAll('.movie-card');
+        const visibleCards = this.getVisibleCards();
+        const centerIndex = Math.floor(visibleCards / 2);
+        
+        // Reset all cards
+        cards.forEach((card, index) => {
+          card.classList.remove('center', 'dimmed', 'scaling-in', 'scaling-out');
+          card.style.order = '';
+          card.style.transform = '';
+          card.style.opacity = '';
+          card.style.display = 'none';
+        });
+
+        // Show visible cards around current index
+        const startIndex = this.currentIndex - centerIndex;
+        
+        for (let i = 0; i < visibleCards; i++) {
+          let cardIndex = (startIndex + i + this.data.length) % this.data.length;
+          const card = cards[cardIndex];
+          
+          if (card) {
+            card.style.display = 'block';
+            card.style.order = i;
             
-            if (distanceFromCenter === 1) {
-              // Cards next to center
-              card.classList.add('scaling-in');
-            } else if (distanceFromCenter === 2) {
-              // Cards further from center
-              card.classList.add('scaling-out');
+            if (i === centerIndex) {
+              // This is the center card - delay to trigger animation
+              setTimeout(() => {
+                card.classList.add('center');
+              }, 10);
             } else {
-              // Cards at the edges
-              card.classList.add('dimmed');
+              // Calculate distance from center for progressive scaling
+              const distanceFromCenter = Math.abs(i - centerIndex);
+              
+              if (distanceFromCenter === 1) {
+                // Cards next to center
+                card.classList.add('scaling-in');
+              } else if (distanceFromCenter === 2) {
+                // Cards further from center
+                card.classList.add('scaling-out');
+              } else {
+                // Cards at the edges
+                card.classList.add('dimmed');
+              }
             }
           }
         }
       }
-    }
 
-    function nextSlide() {
-      currentIndex = (currentIndex + 1) % movieData.length;
-      updateCarousel();
-    }
+      nextSlide() {
+        this.currentIndex = (this.currentIndex + 1) % this.data.length;
+        this.updateCarousel();
+      }
 
-    function prevSlide() {
-      currentIndex = (currentIndex - 1 + movieData.length) % movieData.length;
-      updateCarousel();
-    }
+      prevSlide() {
+        this.currentIndex = (this.currentIndex - 1 + this.data.length) % this.data.length;
+        this.updateCarousel();
+      }
 
-    function startAutoPlay() {
-      stopAutoPlay();
-      if (!isHoveringCenter) {
-        autoPlayInterval = setInterval(nextSlide, 3000);
+      startAutoPlay() {
+        this.stopAutoPlay();
+        if (!this.isHoveringCenter) {
+          this.autoPlayInterval = setInterval(() => this.nextSlide(), 3000);
+        }
+      }
+
+      stopAutoPlay() {
+        if (this.autoPlayInterval) {
+          clearInterval(this.autoPlayInterval);
+          this.autoPlayInterval = null;
+        }
+      }
+
+      init() {
+        this.createCards();
+        this.updateCarousel();
+        this.startAutoPlay();
+        
+        // Arrow event listeners
+        this.leftArrow.addEventListener('click', () => {
+          this.stopAutoPlay();
+          this.prevSlide();
+          setTimeout(() => this.startAutoPlay(), 3000);
+        });
+
+        this.rightArrow.addEventListener('click', () => {
+          this.stopAutoPlay();
+          this.nextSlide();
+          setTimeout(() => this.startAutoPlay(), 3000);
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+          this.updateCarousel();
+        });
       }
     }
 
-    function stopAutoPlay() {
-      if (autoPlayInterval) {
-        clearInterval(autoPlayInterval);
-        autoPlayInterval = null;
-      }
+    // Initialize both carousels
+    let movieCarousel, seriesCarousel;
+
+    function initCarousels() {
+      movieCarousel = new Carousel('movieCarousel', movieData);
+      seriesCarousel = new Carousel('seriesCarousel', seriesData);
     }
 
-    function initCarousel() {
-      createMovieCards();
-      updateCarousel();
-      startAutoPlay();
-      
-      // Arrow event listeners
-      carouselArrowLeft.addEventListener('click', () => {
-        stopAutoPlay();
-        prevSlide();
-        setTimeout(startAutoPlay, 3000);
-      });
-
-      carouselArrowRight.addEventListener('click', () => {
-        stopAutoPlay();
-        nextSlide();
-        setTimeout(startAutoPlay, 3000);
-      });
-
-      // Handle window resize
-      window.addEventListener('resize', () => {
-        updateCarousel();
-      });
-    }
-
-    // Initialize carousel when DOM is loaded
+    // Initialize carousels when DOM is loaded
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initCarousel);
+      document.addEventListener('DOMContentLoaded', initCarousels);
     } else {
-      initCarousel();
+      initCarousels();
     }
   </script>
 </body>
