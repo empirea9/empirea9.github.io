@@ -329,9 +329,9 @@
     .movie-card {
       flex-shrink: 0;
       width: 180px;
-      height: 320px;
+      height: 270px;
       border-radius: 12px;
-      overflow: visible;
+      overflow: hidden;
       position: relative;
       cursor: pointer;
       transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -341,15 +341,14 @@
 
     .movie-card img {
       width: 100%;
-      height: 270px;
+      height: 100%;
       object-fit: cover;
       transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      border-radius: 12px;
     }
 
     .movie-title {
       position: absolute;
-      bottom: -50px;
+      bottom: -60px;
       left: 50%;
       transform: translateX(-50%);
       color: white;
@@ -358,7 +357,7 @@
       text-align: center;
       white-space: nowrap;
       text-shadow: 0 3px 12px rgba(0, 0, 0, 1);
-      opacity: 1;
+      opacity: 0;
       transition: all 0.4s ease;
       pointer-events: none;
       z-index: 10;
@@ -369,7 +368,7 @@
 
     .movie-card.center {
       width: 260px;
-      height: 410px;
+      height: 360px;
       transform: scale(1.3);
       box-shadow: 0 15px 60px rgba(255, 255, 255, 0.2);
       z-index: 10;
@@ -393,14 +392,10 @@
       }
     }
 
-    .movie-card.center img {
-      height: 350px;
-    }
-
     .movie-card.center .movie-title {
       opacity: 1;
-      bottom: -65px;
-      font-size: 16px;
+      bottom: -75px;
+      font-size: 18px;
       font-weight: 700;
     }
 
@@ -487,7 +482,7 @@
     }
 
     .movie-carousel:hover .carousel-arrow {
-      opacity: 0; /* Hidden by default, shown via edge detection */
+      opacity: 1;
     }
 
     .carousel-arrow.show {
@@ -954,7 +949,7 @@
     ];
 
     // Carousel Title Typewriter Animation
-    function typeText(elementId, text, callback) {
+    function typeCarouselText(elementId, text, callback) {
       const element = document.getElementById(elementId);
       element.textContent = "";
       let i = 0;
@@ -1179,9 +1174,9 @@
 
     function initCarousels() {
       // Start typewriter animations for both titles
-      typeText('moviesCarouselTitleText', 'Favorite Movies');
+      typeCarouselText('moviesCarouselTitleText', 'Favorite Movies');
       setTimeout(() => {
-        typeText('seriesCarouselTitleText', 'Favorite Series');
+        typeCarouselText('seriesCarouselTitleText', 'Favorite Series');
       }, 1000);
       
       movieCarousel = new Carousel('movieCarousel', movieData);
