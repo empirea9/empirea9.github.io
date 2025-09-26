@@ -331,7 +331,7 @@
       width: 180px;
       height: 270px;
       border-radius: 12px;
-      overflow: hidden;
+      overflow: visible;
       position: relative;
       cursor: pointer;
       transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -344,13 +344,14 @@
       height: 100%;
       object-fit: cover;
       transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      border-radius: 12px;
     }
 
     .movie-title {
       position: absolute;
-      bottom: 8px;
-      left: 8px;
-      right: 8px;
+      bottom: -35px;
+      left: 50%;
+      transform: translateX(-50%);
       color: white;
       font-size: 12px;
       font-weight: 600;
@@ -361,11 +362,9 @@
       transition: all 0.4s ease;
       pointer-events: none;
       z-index: 10;
+      max-width: 200px;
       overflow: hidden;
       text-overflow: ellipsis;
-      background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
-      padding: 12px 4px 4px 4px;
-      margin: 0;
     }
 
     .movie-card.center {
@@ -396,10 +395,10 @@
 
     .movie-card.center .movie-title {
       opacity: 1;
-      bottom: 10px;
-      font-size: 14px;
+      bottom: -45px;
+      font-size: 16px;
       font-weight: 700;
-      padding: 16px 6px 6px 6px;
+      max-width: 240px;
     }
 
     .movie-card.dimmed {
@@ -633,15 +632,15 @@
       }
 
       .movie-title {
-        bottom: 4px;
+        bottom: -25px;
         font-size: 10px;
-        padding: 8px 2px 2px 2px;
+        max-width: 140px;
       }
 
       .movie-card.center .movie-title {
-        bottom: 6px;
+        bottom: -35px;
         font-size: 12px;
-        padding: 10px 4px 4px 4px;
+        max-width: 160px;
       }
 
       .cinema-quadrant-grid {
