@@ -487,8 +487,16 @@
       opacity: 0;
     }
 
-    .carousel-arrow.show {
+    .movie-carousel:hover .carousel-arrow {
+      opacity: 0.5;
+    }
+
+    .movie-carousel:hover .carousel-arrow.show {
       opacity: 1;
+    }
+
+    .carousel-arrow:hover {
+      opacity: 1 !important;
     }
 
     /* Mobile Responsive */
@@ -1116,13 +1124,26 @@
           }
         }
         
-        // Show arrows only when hovering edge cards
+        // Clear all arrow states first
+        if (!isHovering) {
+          this.leftArrow.classList.remove('show');
+          this.rightArrow.classList.remove('show');
+          return;
+        }
+        
+        // Show arrows based on edge position
         if (cardPosition === 0) {
           // Left edge card - show left arrow
-          this.leftArrow.classList.toggle('show', isHovering);
+          this.leftArrow.classList.add('show');
+          this.rightArrow.classList.remove('show');
         } else if (cardPosition === visibleCards - 1) {
           // Right edge card - show right arrow  
-          this.rightArrow.classList.toggle('show', isHovering);
+          this.rightArrow.classList.add('show');
+          this.leftArrow.classList.remove('show');
+        } else {
+          // Center cards - hide both arrows
+          this.leftArrow.classList.remove('show');
+          this.rightArrow.classList.remove('show');
         }
       }
 
