@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Page Not Found</title>
+  <script>
+    // GitHub Pages 404 redirect handler for clean URLs
+    (function() {
+      const routes = {
+        '/': 'index.html',
+        '/index': 'index.html',
+        '/portfolio': 'portfolio.html',
+        '/blog': 'blog.html',
+        '/contact': 'contact.html',
+        '/cinema': 'cinema.html',
+        '/arcade': 'arcade.html',
+        '/picasa': 'picasa.html',
+        '/melody': 'melody.html'
+      };
+      
+      const path = window.location.pathname;
+      
+      if (routes[path]) {
+        // Redirect to the corresponding HTML file
+        window.location.replace(routes[path]);
+      }
+    })();
+  </script>
+</head>
+<body>
+  <h1>Redirecting...</h1>
+  <p>If you are not redirected automatically, please check the URL.</p>
+</body>
+</html>
