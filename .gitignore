@@ -1,0 +1,7 @@
+# Development files
+/tmp/
+*.log
+.DS_Store
+
+# Browser testing files
+node_modules/
