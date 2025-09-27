@@ -3,32 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <title>Page Not Found</title>
-  <script>
-    // GitHub Pages 404 redirect handler for clean URLs
-    (function() {
-      const routes = {
-        '/': 'index.html',
-        '/index': 'index.html',
-        '/portfolio': 'portfolio.html',
-        '/blog': 'blog.html',
-        '/contact': 'contact.html',
-        '/cinema': 'cinema.html',
-        '/arcade': 'arcade.html',
-        '/picasa': 'picasa.html',
-        '/melody': 'melody.html'
-      };
-      
-      const path = window.location.pathname;
-      
-      if (routes[path]) {
-        // Redirect to the corresponding HTML file
-        window.location.replace(routes[path]);
-      }
-    })();
-  </script>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Redirecting...</h1>
-  <p>If you are not redirected automatically, please check the URL.</p>
+  <nav>
+    <div class="nav-links">
+      <a href="index">Home</a>
+      <a href="portfolio">Portfolio</a>
+      <a href="blog">Blog</a>
+      <a href="contact">Contact</a>
+    </div>
+  </nav>
+  <main>
+    <h1>Page Not Found</h1>
+    <p>Sorry, the page you're looking for doesn't exist.</p>
+    <p><a href="index">Return to Home</a></p>
+  </main>
 </body>
 </html>
