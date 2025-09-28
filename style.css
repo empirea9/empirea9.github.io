@@ -117,10 +117,14 @@ h1 {
   vertical-align: middle;
   border-radius: 2px;
   box-shadow: 0 0 8px #fff;
-  /* Remove blinking animation - cursor should be static */
-  opacity: 0.85;
+  /* Restore blinking animation for main headings */
+  animation: blink 1s steps(1) infinite;
   /* Reduce the vertical offset for better bottom alignment */
   transform: translateY(-5px); /* Previously 0 or -2px, now slightly lower */
+}
+@keyframes blink {
+  0%, 50% { opacity: 0.85; }
+  51%, 100% { opacity: 0; }
 }
 /* Bottom section: quadrants grid */
 .bottom-section {
