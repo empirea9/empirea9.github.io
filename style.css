@@ -1,3 +1,7 @@
+html {
+  scroll-snap-type: y mandatory;
+}
+
 body {
   background: #0c0c0d;
   color: #ededed;
@@ -12,6 +16,8 @@ body {
 .bg-full {
   width: 100vw;
   min-height: 100vh;
+  height: 100vh;
+  scroll-snap-align: start;
   background-image: url("./background.jpg");
   background-size: cover;
   background-position: center;
@@ -122,6 +128,7 @@ h1 {
   width: 100vw;
   min-height: 100vh;
   height: 100vh;
+  scroll-snap-align: start;
   background: #111214;
   box-shadow: 0 -4px 40px #000b, 0 -8px 30px #fff2;
   display: flex;
