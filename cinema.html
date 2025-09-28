@@ -14,6 +14,11 @@
       min-height: 100vh;
       overflow-x: hidden;
       font-family: 'SF Pro Display', 'SF Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Arial, sans-serif;
+      /* Enable scroll snapping */
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+      height: 100vh;
+      overflow-y: scroll;
     }
     .cinema-bg-blur {
       position: fixed;
@@ -37,6 +42,8 @@
       display: flex;
       flex-direction: column;
       font-family: inherit;
+      /* Scroll snap alignment for hero section */
+      scroll-snap-align: start;
     }
     main {
       margin-top: 80px;
@@ -78,6 +85,7 @@
       vertical-align: middle;
       background: none;
       border-right: 4px solid #fff;
+      /* Restore blinking animation for main heading */
       animation: blink-cursor 1.1s steps(1) infinite;
       margin-left: 2px;
       position: absolute;
@@ -273,6 +281,12 @@
     .carousel-section {
       margin: 100px auto;
       width: 100%;
+      /* Scroll snap alignment for carousel sections */
+      scroll-snap-align: start;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     .carousel-title {
@@ -659,6 +673,7 @@
 </head>
 <body>
   <script src="url-handler.js"></script>
+  <script src="enhanced-typewriter.js"></script>
   <div class="cinema-bg-blur"></div>
   <div class="cinema-content-wrapper">
     <nav>
