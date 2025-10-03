@@ -300,24 +300,12 @@
       max-width: 800px;
       min-height: 400px;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      align-items: stretch;
       transition: transform 0.28s cubic-bezier(.5,1.55,.41,1.01), box-shadow 0.23s;
       will-change: transform, box-shadow;
     }
 
-    .backloggd-quadrant::before {
-      content: "> ";
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: #aaa;
-      z-index: 2;
-      text-shadow: 1px 1px 2px #000;
-    }
+
 
     .backloggd-quadrant::after {
       content: "";
@@ -341,20 +329,51 @@
       position: relative;
       z-index: 2;
       width: 100%;
+      height: 100%;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
+      align-items: stretch;
+    }
+
+    .backloggd-quadrant-img {
+      height: 100%;
+      aspect-ratio: 1 / 1;
+      width: auto;
+      min-width: 0;
+      flex: 0 0 auto;
+      display: flex;
       align-items: center;
-      padding: 60px 40px;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .backloggd-quadrant-img img {
+      width: 100%;
+      height: 100%;
+      aspect-ratio: 1/1;
+      object-fit: contain;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px #1118;
+      background: #1a1a2e;
+      padding: 40px;
+      transition: transform 0.28s cubic-bezier(.5,1.55,.41,1.01), box-shadow 0.23s;
+    }
+
+    .backloggd-quadrant:hover .backloggd-quadrant-img img {
+      transform: scale(1.08);
+      box-shadow: 0 8px 32px #222a;
     }
 
     .backloggd-quadrant-content {
-      width: 100%;
+      flex: 1 1 0;
+      padding: 48px 38px 48px 40px;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       color: #ededed;
-      text-align: center;
+      text-align: left;
+      min-width: 0;
     }
 
     .backloggd-quadrant-content h3 {
@@ -405,6 +424,21 @@
       }
       .carousel-title {
         font-size: 2.5rem;
+      }
+      .backloggd-quadrant-inner {
+        flex-direction: column;
+      }
+      .backloggd-quadrant-img {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1/1;
+        max-width: 300px;
+        margin: 0 auto;
+      }
+      .backloggd-quadrant-content {
+        padding: 30px;
+        text-align: center;
+        align-items: center;
       }
       .backloggd-quadrant-content h3 {
         font-size: 2rem;
@@ -553,6 +587,9 @@
     <section class="backloggd-section">
       <div class="backloggd-quadrant">
         <div class="backloggd-quadrant-inner">
+          <div class="backloggd-quadrant-img">
+            <img src="data:image/svg+xml,%3Csvg width='400' height='400' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='400' height='400' fill='%231a1a2e'/%3E%3Ctext x='200' y='240' font-family='Arial, sans-serif' font-size='100' font-weight='bold' fill='%23fff' text-anchor='middle'%3EBL%3C/text%3E%3C/svg%3E" alt="Backloggd Logo"/>
+          </div>
           <div class="backloggd-quadrant-content">
             <h3>Backloggd</h3>
             <p>Track my gaming journey and backlog</p>
@@ -585,43 +622,51 @@
       setTimeout(typeWriter, 500);
     });
 
-    // Game Carousel Functionality - Placeholder games
+    // Game Carousel Functionality - Using actual game images
     const gameData = [
       {
-        title: "The Last of Us",
-        poster: "./posters/dark.png"
-      },
-      {
-        title: "God of War",
-        poster: "./posters/dexter.png"
-      },
-      {
         title: "Red Dead Redemption 2",
-        poster: "./posters/From.png"
-      },
-      {
-        title: "The Witcher 3",
-        poster: "./posters/monster.png"
-      },
-      {
-        title: "Elden Ring",
-        poster: "./posters/chernobyl.png"
-      },
-      {
-        title: "Horizon Zero Dawn",
-        poster: "./posters/You.png"
+        poster: "./assets/reddeadredemption2.png"
       },
       {
         title: "Ghost of Tsushima",
-        poster: "./posters/tokyo ghoul.png"
+        poster: "./assets/ghostoftsushima.png"
       },
       {
-        title: "Hades",
-        poster: "./posters/IT.png"
+        title: "Resident Evil Village",
+        poster: "./assets/residentevilvillage.png"
       },
       {
-        title: "Hollow Knight",
-        poster: "./posters/tumbbad.png"
+        title: "Battlefield 4",
+        poster: "./assets/battlefield4.png"
+      },
+      {
+        title: "Need for Speed Most Wanted",
+        poster: "./assets/needforspeedmostwanted.png"
+      },
+      {
+        title: "Just Cause 2",
+        poster: "./assets/justcause2.png"
+      },
+      {
+        title: "Blasphemous",
+        poster: "./assets/blasphemous.png"
+      },
+      {
+        title: "Onimusha 3",
+        poster: "./assets/onimusha3.png"
+      },
+      {
+        title: "IGI 2: Covert Strike",
+        poster: "./assets/igi2.png"
+      },
+      {
+        title: "TrackMania",
+        poster: "./assets/trackmania.png"
+      },
+      {
+        title: "Trailmakers",
+        poster: "./assets/trailmakers.png"
       }
     ];
 
