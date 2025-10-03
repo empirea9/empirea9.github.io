@@ -208,9 +208,13 @@ h1 {
   margin: 0;
   display: block;
 }
-/* Better positioning for cinema image */
+/* Better positioning for cinema image - crop out black edges */
 .quadrant:nth-child(3) .quadrant-img img {
-  object-position: center center;
+  object-position: center 45%;
+  transform: scale(1.05);
+}
+.quadrant:nth-child(3):hover .img-link img {
+  transform: scale(1.13);
 }
 .quadrant:hover .img-link img,
 .img-link:hover img {
