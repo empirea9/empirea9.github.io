@@ -208,6 +208,10 @@ h1 {
   margin: 0;
   display: block;
 }
+/* Better positioning for cinema image */
+.quadrant:nth-child(3) .quadrant-img img {
+  object-position: center center;
+}
 .quadrant:hover .img-link img,
 .img-link:hover img {
   transform: scale(1.08);
