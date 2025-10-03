@@ -296,9 +296,9 @@
       border-radius: 28px;
       box-shadow: 0 0 32px #2228;
       overflow: hidden;
-      width: 94vw;
-      max-width: 800px;
-      min-height: 400px;
+      width: 90vw;
+      max-width: 700px;
+      min-height: 350px;
       display: flex;
       align-items: stretch;
       transition: transform 0.28s cubic-bezier(.5,1.55,.41,1.01), box-shadow 0.23s;
@@ -337,25 +337,25 @@
 
     .backloggd-quadrant-img {
       height: 100%;
-      aspect-ratio: 1 / 1;
-      width: auto;
-      min-width: 0;
+      width: 200px;
+      min-width: 200px;
       flex: 0 0 auto;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 40px;
+      padding: 30px;
     }
 
     .backloggd-quadrant-img img {
       width: 100%;
-      height: 100%;
-      aspect-ratio: 1/1;
+      height: auto;
+      max-width: 140px;
+      max-height: 140px;
       object-fit: contain;
-      border-radius: 20px;
-      box-shadow: 0 4px 20px #1118;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px #0008;
       background: #1a1a2e;
-      padding: 40px;
+      padding: 20px;
       transition: transform 0.28s cubic-bezier(.5,1.55,.41,1.01), box-shadow 0.23s;
     }
 
@@ -366,7 +366,7 @@
 
     .backloggd-quadrant-content {
       flex: 1 1 0;
-      padding: 48px 38px 48px 40px;
+      padding: 40px 45px 40px 30px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -377,8 +377,8 @@
     }
 
     .backloggd-quadrant-content h3 {
-      margin: 0 0 22px 0;
-      font-size: 3.2rem;
+      margin: 0 0 16px 0;
+      font-size: 2.8rem;
       color: #fff;
       text-shadow: 0 0 14px #fff4;
       font-weight: 700;
@@ -386,11 +386,12 @@
     }
 
     .backloggd-quadrant-content p {
-      margin: 0 0 30px 0;
-      font-size: 1.25rem;
+      margin: 0 0 24px 0;
+      font-size: 1.15rem;
       color: #ededed;
       text-shadow: 0 0 8px #fff3;
       font-family: inherit;
+      line-height: 1.5;
     }
 
     .backloggd-link {
@@ -431,12 +432,17 @@
       .backloggd-quadrant-img {
         width: 100%;
         height: auto;
-        aspect-ratio: 1/1;
-        max-width: 300px;
+        max-width: 200px;
+        min-width: 0;
         margin: 0 auto;
+        padding: 20px;
+      }
+      .backloggd-quadrant-img img {
+        max-width: 120px;
+        max-height: 120px;
       }
       .backloggd-quadrant-content {
-        padding: 30px;
+        padding: 20px 30px 30px;
         text-align: center;
         align-items: center;
       }
@@ -588,7 +594,7 @@
       <div class="backloggd-quadrant">
         <div class="backloggd-quadrant-inner">
           <div class="backloggd-quadrant-img">
-            <img src="data:image/svg+xml,%3Csvg width='400' height='400' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='400' height='400' fill='%231a1a2e'/%3E%3Ctext x='200' y='240' font-family='Arial, sans-serif' font-size='100' font-weight='bold' fill='%23fff' text-anchor='middle'%3EBL%3C/text%3E%3C/svg%3E" alt="Backloggd Logo"/>
+            <img src="data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='200' height='200' fill='%23181818'/%3E%3Ctext x='100' y='130' font-family='Arial, sans-serif' font-size='110' font-weight='bold' fill='%23ffffff' text-anchor='middle'%3EB%3C/text%3E%3Crect x='40' y='150' width='120' height='8' fill='%235b9bd5'/%3E%3C/svg%3E" alt="Backloggd Logo"/>
           </div>
           <div class="backloggd-quadrant-content">
             <h3>Backloggd</h3>
