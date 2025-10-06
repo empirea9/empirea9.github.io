@@ -2,23 +2,434 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Picasa - Coming Soon</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Picasa</title>
   <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;700&display=swap">
+  <style>
+    body {
+      background: #0c0c0d;
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-family: 'SF Pro Display', 'SF Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Arial, sans-serif;
+    }
+    
+    .picasa-bg-blur {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      background-image: url('../assets/image2.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      filter: blur(24px) brightness(0.7);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+    
+    .picasa-content-wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100vw;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-family: inherit;
+    }
+    
+    main {
+      margin-top: 80px;
+      margin-bottom: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 40vh;
+    }
+    
+    .text-area {
+      width: 100%;
+      text-align: center;
+      margin: 0 auto;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+    
+    .picasa-typewriter {
+      font-size: 6.6rem;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 0 26px rgba(0,0,0,0.8), 0 0 4px rgba(255,255,255,0.6);
+      letter-spacing: .01em;
+      font-family: 'SF Pro Display', 'SF Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Arial, sans-serif;
+      transition: color .2s;
+      cursor: pointer;
+      display: inline-block;
+      position: relative;
+      min-height: 1.1em;
+      z-index: 100;
+    }
+    
+    .typewriter-cursor {
+      display: inline-block;
+      width: 32px;
+      height: 1.07em;
+      vertical-align: middle;
+      background: none;
+      border-right: 4px solid #fff;
+      animation: blink-cursor 1.1s steps(1) infinite;
+      margin-left: 2px;
+      position: absolute;
+    }
+    
+    #typewriterText {
+      color: #fff !important;
+      text-shadow: 0 0 26px rgba(0,0,0,0.8), 0 0 4px rgba(255,255,255,0.6);
+      display: inline-block;
+      min-width: 1em;
+    }
+    
+    @keyframes blink-cursor {
+      0%, 50% { border-right: 4px solid #fff; }
+      51%, 100% { border-right: 4px solid transparent; }
+    }
+    
+    /* Masonry Grid Container */
+    .gallery-container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 1800px;
+      margin: 0 auto;
+      padding: 0 40px 80px 40px;
+    }
+    
+    .masonry-grid {
+      column-count: 4;
+      column-gap: 16px;
+      width: 100%;
+    }
+    
+    .masonry-item {
+      break-inside: avoid;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 8px;
+      background: #1a1a2e;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .masonry-item:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 255, 255, 0.1);
+      z-index: 10;
+    }
+    
+    .masonry-item img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: opacity 0.3s ease;
+    }
+    
+    .masonry-item:hover img {
+      opacity: 0.9;
+    }
+    
+    /* Lightbox */
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+    
+    .lightbox.active {
+      display: flex;
+    }
+    
+    .lightbox img {
+      max-width: 90%;
+      max-height: 90vh;
+      object-fit: contain;
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.8);
+      border-radius: 4px;
+    }
+    
+    .lightbox-close {
+      position: absolute;
+      top: 30px;
+      right: 40px;
+      font-size: 40px;
+      color: #fff;
+      cursor: pointer;
+      z-index: 1001;
+      background: rgba(0, 0, 0, 0.5);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s ease;
+    }
+    
+    .lightbox-close:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 1400px) {
+      .masonry-grid {
+        column-count: 3;
+      }
+    }
+    
+    @media (max-width: 992px) {
+      .masonry-grid {
+        column-count: 2;
+        column-gap: 12px;
+      }
+      
+      .masonry-item {
+        margin-bottom: 12px;
+      }
+      
+      .gallery-container {
+        padding: 0 20px 60px 20px;
+      }
+      
+      .picasa-typewriter {
+        font-size: 4.5rem;
+      }
+      
+      main {
+        margin-top: 60px;
+        margin-bottom: 40px;
+        min-height: 30vh;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .masonry-grid {
+        column-count: 1;
+        column-gap: 0;
+      }
+      
+      .masonry-item {
+        margin-bottom: 12px;
+        border-radius: 6px;
+      }
+      
+      .gallery-container {
+        padding: 0 12px 40px 12px;
+      }
+      
+      .picasa-typewriter {
+        font-size: 3rem;
+      }
+      
+      main {
+        margin-top: 40px;
+        margin-bottom: 30px;
+        min-height: 20vh;
+      }
+      
+      .lightbox img {
+        max-width: 95%;
+        max-height: 85vh;
+      }
+      
+      .lightbox-close {
+        top: 20px;
+        right: 20px;
+        font-size: 30px;
+        width: 40px;
+        height: 40px;
+      }
+    }
+  </style>
 </head>
 <body>
   <script src="../url-handler.js"></script>
-  <nav>
-    <div class="nav-links">
-      <a href="../">Home</a>
-      <a href="../arcade">Arcade</a>
-      <a href="../picasa" class="active">Picasa</a>
-      <a href="../cinema">Cinema</a>
-      <a href="../melody">Melody</a>
+  <div class="picasa-bg-blur"></div>
+  <div class="picasa-content-wrapper">
+    <nav>
+      <div class="nav-links">
+        <a href="../">Home</a>
+        <a href="../arcade">Arcade</a>
+        <a href="../picasa" class="active">Picasa</a>
+        <a href="../cinema">Cinema</a>
+        <a href="../melody">Melody</a>
+      </div>
+    </nav>
+    <main>
+      <div class="text-area">
+        <h1>
+          <span class="picasa-typewriter" id="picasaTypewriter">
+            <span id="typewriterText"></span>
+            <span class="typewriter-cursor" id="typewriterCursor"></span>
+          </span>
+        </h1>
+      </div>
+    </main>
+    
+    <!-- Masonry Gallery -->
+    <div class="gallery-container">
+      <div class="masonry-grid" id="masonryGrid">
+        <!-- Images will be loaded here by JavaScript -->
+      </div>
     </div>
-  </nav>
-  <main>
-    <h1>Picasa</h1>
-    <p>Coming Soon - Photo Album showcase</p>
-  </main>
+  </div>
+  
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <span class="lightbox-close" id="lightboxClose">&times;</span>
+    <img id="lightboxImg" src="" alt="Full size image">
+  </div>
+  
+  <script>
+    // Typewriter Animation
+    const typewriterElement = document.getElementById('typewriterText');
+    const typewriterCursor = document.getElementById('typewriterCursor');
+    const text = "Picasa";
+    let charIndex = 0;
+
+    function typeWriter() {
+      if (charIndex < text.length) {
+        typewriterElement.textContent = text.slice(0, charIndex + 1);
+        charIndex++;
+        setTimeout(typeWriter, 150);
+      } else {
+        typewriterCursor.style.marginLeft = '8px';
+      }
+    }
+
+    // Start typewriter when page loads
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(typeWriter, 500);
+    });
+    
+    // Image Gallery Data - Mix of assets and posters
+    const galleryImages = [
+      // Assets
+      { src: '../assets/image1.png', alt: 'Gaming Scene' },
+      { src: '../assets/image2.png', alt: 'Cinematic Scene' },
+      { src: '../assets/image3.png', alt: 'Musical Scene' },
+      { src: '../assets/image4.png', alt: 'Movie Scene' },
+      
+      // Movie/Series Posters
+      { src: '../posters/cars 3.jpg', alt: 'Cars 3' },
+      { src: '../posters/Incantation.png', alt: 'Incantation' },
+      { src: '../posters/Iron Man.png', alt: 'Iron Man' },
+      { src: '../posters/IT.png', alt: 'IT' },
+      { src: '../posters/Taare Zameen Par.png', alt: 'Taare Zameen Par' },
+      { src: '../posters/The Others.png', alt: 'The Others' },
+      { src: '../posters/The Wailing.png', alt: 'The Wailing' },
+      { src: '../posters/Tokyo Drift.png', alt: 'Tokyo Drift' },
+      { src: '../posters/tumbbad.png', alt: 'Tumbbad' },
+      { src: '../posters/From.png', alt: 'From' },
+      { src: '../posters/You.png', alt: 'You' },
+      { src: '../posters/chernobyl.png', alt: 'Chernobyl' },
+      { src: '../posters/dark.png', alt: 'Dark' },
+      { src: '../posters/dexter.png', alt: 'Dexter' },
+      { src: '../posters/monster.png', alt: 'Monster' },
+      { src: '../posters/tokyo ghoul.png', alt: 'Tokyo Ghoul' }
+    ];
+    
+    // Shuffle array for a more dynamic look
+    function shuffleArray(array) {
+      const shuffled = [...array];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
+    
+    // Load images into masonry grid
+    function loadGallery() {
+      const masonryGrid = document.getElementById('masonryGrid');
+      const shuffledImages = shuffleArray(galleryImages);
+      
+      shuffledImages.forEach((image, index) => {
+        const item = document.createElement('div');
+        item.className = 'masonry-item';
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(20px)';
+        
+        const img = document.createElement('img');
+        img.src = image.src;
+        img.alt = image.alt;
+        img.loading = 'lazy';
+        
+        // Add click event for lightbox
+        item.addEventListener('click', () => openLightbox(image.src));
+        
+        item.appendChild(img);
+        masonryGrid.appendChild(item);
+        
+        // Fade in animation
+        setTimeout(() => {
+          item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+          item.style.opacity = '1';
+          item.style.transform = 'translateY(0)';
+        }, 100 * index);
+      });
+    }
+    
+    // Lightbox functionality
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxClose = document.getElementById('lightboxClose');
+    
+    function openLightbox(src) {
+      lightboxImg.src = src;
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+    
+    lightboxClose.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeLightbox();
+    });
+    
+    lightbox.addEventListener('click', closeLightbox);
+    
+    lightboxImg.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+    
+    // Handle escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+        closeLightbox();
+      }
+    });
+    
+    // Load gallery on page load
+    window.addEventListener('DOMContentLoaded', loadGallery);
+  </script>
 </body>
 </html>
