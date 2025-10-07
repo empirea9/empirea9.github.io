@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Picasa - Coming Soon</title>
+  <title>Picasa</title>
   <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap">
 </head>
 <body>
   <script src="../url-handler.js"></script>
@@ -16,9 +17,198 @@
       <a href="melody">Melody</a>
     </div>
   </nav>
-  <main>
-    <h1>Picasa</h1>
-    <p>Coming Soon - Photo Album showcase</p>
-  </main>
+<head>
+  <style>
+    body {
+      background: #0c0c0d;
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-family: 'Quicksand', 'SF Pro Display', 'SF Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Arial, sans-serif;
+    }
+    .picasa-bg-blur {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      background-image: url('../assets/image2.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      filter: blur(24px) brightness(0.7);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+    .picasa-content-wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100vw;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-family: inherit;
+    }
+
+    /* Masonry Grid Container */
+    .masonry-container {
+      padding: 80px 20px 60px;
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .masonry-grid {
+      column-count: 5;
+      column-gap: 16px;
+      width: 100%;
+    }
+
+    .masonry-item {
+      break-inside: avoid;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .masonry-item:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    }
+
+    .masonry-item img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 8px;
+    }
+
+    /* Responsive columns */
+    @media (max-width: 1400px) {
+      .masonry-grid {
+        column-count: 4;
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .masonry-grid {
+        column-count: 3;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .masonry-grid {
+        column-count: 2;
+        column-gap: 12px;
+      }
+      .masonry-item {
+        margin-bottom: 12px;
+      }
+      .masonry-container {
+        padding: 60px 12px 40px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .masonry-grid {
+        column-count: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <script src="../url-handler.js"></script>
+  <div class="picasa-bg-blur"></div>
+  <div class="picasa-content-wrapper">
+    <nav>
+      <div class="nav-links">
+        <a href="../">Home</a>
+        <a href="../arcade">Arcade</a>
+        <a href="../picasa" class="active">Picasa</a>
+        <a href="../cinema">Cinema</a>
+        <a href="../melody">Melody</a>
+      </div>
+    </nav>
+    
+    <div class="masonry-container">
+      <div class="masonry-grid" id="masonryGrid">
+        <!-- Images will be dynamically loaded here -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Collect all image paths from assets and posters folders
+    const imagePaths = [
+      // Assets folder
+      '../assets/battlefield4.png',
+      '../assets/blasphemous.png',
+      '../assets/ghostoftsushima.png',
+      '../assets/igi2.png',
+      '../assets/image1.png',
+      '../assets/image2.png',
+      '../assets/image3.png',
+      '../assets/image4.png',
+      '../assets/justcause2.png',
+      '../assets/needforspeedmostwanted.png',
+      '../assets/onimusha3.png',
+      '../assets/reddeadredemption2.png',
+      '../assets/residentevilvillage.png',
+      '../assets/trackmania.png',
+      '../assets/trailmakers.png',
+      // Posters folder
+      '../posters/From.png',
+      '../posters/IT.png',
+      '../posters/Incantation.png',
+      '../posters/Iron Man.png',
+      '../posters/Taare Zameen Par.png',
+      '../posters/The Others.png',
+      '../posters/The Wailing.png',
+      '../posters/Tokyo Drift.png',
+      '../posters/You.png',
+      '../posters/cars 3.jpg',
+      '../posters/chernobyl.png',
+      '../posters/dark.png',
+      '../posters/dexter.png',
+      '../posters/monster.png',
+      '../posters/tokyo ghoul.png',
+      '../posters/tumbbad.png'
+    ];
+
+    // Fisher-Yates shuffle algorithm to randomize array
+    function shuffleArray(array) {
+      const shuffled = [...array];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
+
+    // Populate the masonry grid
+    function populateMasonryGrid() {
+      const grid = document.getElementById('masonryGrid');
+      const shuffledImages = shuffleArray(imagePaths);
+      
+      shuffledImages.forEach((imagePath, index) => {
+        const item = document.createElement('div');
+        item.className = 'masonry-item';
+        
+        const img = document.createElement('img');
+        img.src = imagePath;
+        img.alt = `Gallery image ${index + 1}`;
+        img.loading = 'lazy';
+        
+        item.appendChild(img);
+        grid.appendChild(item);
+      });
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', populateMasonryGrid);
+  </script>
 </body>
 </html>
