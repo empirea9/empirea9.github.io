@@ -243,16 +243,15 @@
 
     .carousel-arrow {
       position: absolute;
-      top: calc(50% - 100px);
+      top: calc(50% + 50px);
       transform: translateY(-50%);
-      width: 80px;
-      height: 200px;
+      width: 150px;
+      height: 300px;
       background: transparent;
       border: none;
       border-radius: 0;
       display: flex;
       align-items: center;
-      justify-content: center;
       cursor: pointer;
       opacity: 0;
       transition: all 0.3s ease;
@@ -266,32 +265,37 @@
     }
 
     .carousel-arrow:hover {
-      opacity: 1;
-      transform: translateY(-50%) scale(1.1);
+      opacity: 1 !important;
+      transform: translateY(-50%) scale(1.05);
     }
 
     .carousel-arrow-left {
       left: 0;
+      justify-content: flex-start;
+      padding-left: 20px;
     }
 
     .carousel-arrow-right {
       right: 0;
+      justify-content: flex-end;
+      padding-right: 20px;
     }
 
     .carousel-arrow svg {
-      width: 60px;
-      height: 60px;
+      width: 70px;
+      height: 70px;
       fill: none;
       stroke: #fff;
-      stroke-width: 4;
+      stroke-width: 5;
       stroke-linecap: round;
       stroke-linejoin: round;
-      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+      filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.9));
+      pointer-events: none;
     }
 
     .carousel-arrow:hover svg {
-      stroke-width: 5;
-      filter: drop-shadow(0 0 12px rgba(255, 255, 255, 1));
+      stroke-width: 6;
+      filter: drop-shadow(0 0 16px rgba(255, 255, 255, 1));
     }
 
     /* Backloggd Quadrant Styles */
@@ -496,21 +500,23 @@
       }
 
       .carousel-arrow {
+        width: 100px;
+        height: 250px;
+      }
+
+      .carousel-arrow svg {
         width: 50px;
         height: 50px;
       }
 
-      .carousel-arrow svg {
-        width: 30px;
-        height: 30px;
-      }
-
       .carousel-arrow-left {
         left: 0;
+        padding-left: 10px;
       }
 
       .carousel-arrow-right {
         right: 0;
+        padding-right: 10px;
       }
 
       .game-title {
