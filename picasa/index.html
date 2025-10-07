@@ -65,6 +65,11 @@
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
+    /* Varied sizes for images */
+    .masonry-item.large {
+      grid-row: span 2;
+    }
+
     .masonry-item:hover {
       transform: scale(1.02);
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
@@ -77,7 +82,7 @@
       border-radius: 8px;
     }
 
-    /* Modal/Lightbox for image popup */
+    /* Modal/Lightbox for image popup with carousel */
     .lightbox {
       display: none;
       position: fixed;
@@ -102,6 +107,9 @@
       max-width: 90vw;
       max-height: 90vh;
       position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       animation: zoomIn 0.3s ease;
     }
 
@@ -116,16 +124,25 @@
       }
     }
 
+    .lightbox-image-container {
+      position: relative;
+      max-width: 90vw;
+      max-height: 75vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     .lightbox-content img {
       max-width: 100%;
-      max-height: 90vh;
+      max-height: 75vh;
       border-radius: 8px;
       box-shadow: 0 8px 40px rgba(0, 0, 0, 0.8);
     }
 
     .lightbox-close {
       position: absolute;
-      top: -40px;
+      top: -50px;
       right: 0;
       width: 40px;
       height: 40px;
@@ -136,10 +153,85 @@
       cursor: pointer;
       transition: transform 0.2s ease;
       line-height: 1;
+      z-index: 1001;
     }
 
     .lightbox-close:hover {
       transform: scale(1.2);
+    }
+
+    /* Carousel navigation arrows - cinema style */
+    .lightbox-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 80px;
+      height: 200px;
+      background: transparent;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: all 0.3s ease;
+      z-index: 1001;
+    }
+
+    .lightbox-arrow:hover {
+      opacity: 1;
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .lightbox-arrow svg {
+      width: 60px;
+      height: 60px;
+      fill: none;
+      stroke: #fff;
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+    }
+
+    .lightbox-arrow:hover svg {
+      stroke-width: 5;
+      filter: drop-shadow(0 0 12px rgba(255, 255, 255, 1));
+    }
+
+    .lightbox-arrow-left {
+      left: 20px;
+    }
+
+    .lightbox-arrow-right {
+      right: 20px;
+    }
+
+    /* Image metadata display */
+    .image-metadata {
+      margin-top: 20px;
+      padding: 15px 20px;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 8px;
+      max-width: 600px;
+      color: #ededed;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .metadata-row {
+      margin: 5px 0;
+    }
+
+    .metadata-label {
+      color: #aaa;
+      display: inline-block;
+      width: 120px;
+    }
+
+    .metadata-value {
+      color: #fff;
+      font-weight: 600;
     }
 
     /* Responsive columns */
@@ -172,6 +264,20 @@
         image-rendering: -webkit-optimize-contrast;
         image-rendering: crisp-edges;
       }
+      .lightbox-arrow {
+        width: 50px;
+        height: 150px;
+      }
+      .lightbox-arrow svg {
+        width: 40px;
+        height: 40px;
+      }
+      .lightbox-arrow-left {
+        left: 10px;
+      }
+      .lightbox-arrow-right {
+        right: 10px;
+      }
     }
 
     @media (max-width: 480px) {
@@ -202,11 +308,33 @@
     </div>
   </div>
 
-  <!-- Lightbox for image popup -->
+  <!-- Lightbox for image popup with carousel -->
   <div class="lightbox" id="lightbox">
     <div class="lightbox-content">
       <button class="lightbox-close" id="lightboxClose">&times;</button>
-      <img src="" alt="Enlarged view" id="lightboxImg">
+      
+      <div class="lightbox-image-container">
+        <!-- Previous arrow -->
+        <button class="lightbox-arrow lightbox-arrow-left" id="lightboxPrev">
+          <svg width="60" height="60" viewBox="0 0 60 60">
+            <polyline points="35,15 20,30 35,45" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        
+        <img src="" alt="Enlarged view" id="lightboxImg">
+        
+        <!-- Next arrow -->
+        <button class="lightbox-arrow lightbox-arrow-right" id="lightboxNext">
+          <svg width="60" height="60" viewBox="0 0 60 60">
+            <polyline points="25,15 40,30 25,45" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+      
+      <!-- Image metadata -->
+      <div class="image-metadata" id="imageMetadata" style="display: none;">
+        <!-- Metadata will be populated here -->
+      </div>
     </div>
   </div>
 
@@ -248,6 +376,9 @@
       '../posters/tumbbad.png'
     ];
 
+    let shuffledImages = [];
+    let currentLightboxIndex = 0;
+
     // Fisher-Yates shuffle algorithm to randomize array
     function shuffleArray(array) {
       const shuffled = [...array];
@@ -258,53 +389,188 @@
       return shuffled;
     }
 
+    // Determine which images should be larger (randomly select 20-30% of images)
+    function getLargeImageIndices(totalImages) {
+      const largeCount = Math.floor(totalImages * 0.25); // 25% large images
+      const indices = new Set();
+      while (indices.size < largeCount) {
+        indices.add(Math.floor(Math.random() * totalImages));
+      }
+      return indices;
+    }
+
     // Populate the masonry grid
     function populateMasonryGrid() {
       const grid = document.getElementById('masonryGrid');
-      const shuffledImages = shuffleArray(imagePaths);
+      shuffledImages = shuffleArray(imagePaths);
+      const largeIndices = getLargeImageIndices(shuffledImages.length);
       const isMobile = window.innerWidth <= 768;
       
       shuffledImages.forEach((imagePath, index) => {
         const item = document.createElement('div');
         item.className = 'masonry-item';
         
-        const img = document.createElement('img');
-        // On mobile, load smaller versions by adding width constraint
-        if (isMobile) {
-          img.src = imagePath;
-          img.style.maxWidth = '100%';
-          img.style.width = '100%';
-        } else {
-          img.src = imagePath;
+        // Randomly make some images larger
+        if (largeIndices.has(index) && !isMobile) {
+          item.classList.add('large');
         }
+        
+        const img = document.createElement('img');
+        img.src = imagePath;
         img.alt = `Gallery image ${index + 1}`;
         img.loading = 'lazy';
+        img.dataset.index = index;
         
         // Add click event for lightbox
-        item.addEventListener('click', () => openLightbox(imagePath));
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          openLightbox(index);
+        });
         
         item.appendChild(img);
         grid.appendChild(item);
       });
     }
 
+    // Read EXIF metadata from image
+    function readImageMetadata(imgElement, callback) {
+      // Check if EXIF library is available
+      if (typeof EXIF === 'undefined') {
+        callback({}); // Return empty metadata if library not available
+        return;
+      }
+      
+      EXIF.getData(imgElement, function() {
+        const metadata = {
+          make: EXIF.getTag(this, "Make"),
+          model: EXIF.getTag(this, "Model"),
+          dateTime: EXIF.getTag(this, "DateTime"),
+          focalLength: EXIF.getTag(this, "FocalLength"),
+          aperture: EXIF.getTag(this, "FNumber"),
+          iso: EXIF.getTag(this, "ISOSpeedRatings"),
+          exposureTime: EXIF.getTag(this, "ExposureTime"),
+          lens: EXIF.getTag(this, "LensModel")
+        };
+        callback(metadata);
+      });
+    }
+
+    // Display image metadata
+    function displayMetadata(metadata) {
+      const metadataDiv = document.getElementById('imageMetadata');
+      let hasMetadata = false;
+      let html = '';
+
+      if (metadata.dateTime) {
+        html += `<div class="metadata-row"><span class="metadata-label">Date & Time:</span> <span class="metadata-value">${metadata.dateTime}</span></div>`;
+        hasMetadata = true;
+      }
+
+      if (metadata.make || metadata.model) {
+        const camera = [metadata.make, metadata.model].filter(Boolean).join(' ');
+        html += `<div class="metadata-row"><span class="metadata-label">Camera:</span> <span class="metadata-value">${camera}</span></div>`;
+        hasMetadata = true;
+      }
+
+      if (metadata.lens) {
+        html += `<div class="metadata-row"><span class="metadata-label">Lens:</span> <span class="metadata-value">${metadata.lens}</span></div>`;
+        hasMetadata = true;
+      }
+
+      if (metadata.focalLength) {
+        const focal = metadata.focalLength.numerator ? 
+          `${metadata.focalLength.numerator / metadata.focalLength.denominator}mm` : 
+          `${metadata.focalLength}mm`;
+        html += `<div class="metadata-row"><span class="metadata-label">Focal Length:</span> <span class="metadata-value">${focal}</span></div>`;
+        hasMetadata = true;
+      }
+
+      if (metadata.aperture) {
+        const aperture = metadata.aperture.numerator ? 
+          `f/${(metadata.aperture.numerator / metadata.aperture.denominator).toFixed(1)}` : 
+          `f/${metadata.aperture}`;
+        html += `<div class="metadata-row"><span class="metadata-label">Aperture:</span> <span class="metadata-value">${aperture}</span></div>`;
+        hasMetadata = true;
+      }
+
+      if (metadata.exposureTime) {
+        const exposure = metadata.exposureTime.numerator ? 
+          `${metadata.exposureTime.numerator}/${metadata.exposureTime.denominator}s` : 
+          `${metadata.exposureTime}s`;
+        html += `<div class="metadata-row"><span class="metadata-label">Shutter Speed:</span> <span class="metadata-value">${exposure}</span></div>`;
+        hasMetadata = true;
+      }
+
+      if (metadata.iso) {
+        html += `<div class="metadata-row"><span class="metadata-label">ISO:</span> <span class="metadata-value">${metadata.iso}</span></div>`;
+        hasMetadata = true;
+      }
+
+      if (hasMetadata) {
+        metadataDiv.innerHTML = html;
+        metadataDiv.style.display = 'block';
+      } else {
+        metadataDiv.style.display = 'none';
+      }
+    }
+
     // Lightbox functionality
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightboxImg');
     const lightboxClose = document.getElementById('lightboxClose');
+    const lightboxPrev = document.getElementById('lightboxPrev');
+    const lightboxNext = document.getElementById('lightboxNext');
 
-    function openLightbox(imageSrc) {
-      lightboxImg.src = imageSrc;
+    function openLightbox(index) {
+      currentLightboxIndex = index;
+      showLightboxImage();
       lightbox.classList.add('active');
       document.body.style.overflow = 'hidden';
+    }
+
+    function showLightboxImage() {
+      const imageSrc = shuffledImages[currentLightboxIndex];
+      lightboxImg.src = imageSrc;
+      
+      // Read and display metadata
+      lightboxImg.onload = function() {
+        readImageMetadata(lightboxImg, displayMetadata);
+      };
     }
 
     function closeLightbox() {
       lightbox.classList.remove('active');
       document.body.style.overflow = '';
+      document.getElementById('imageMetadata').style.display = 'none';
     }
 
-    lightboxClose.addEventListener('click', closeLightbox);
+    function showPrevImage() {
+      currentLightboxIndex = (currentLightboxIndex - 1 + shuffledImages.length) % shuffledImages.length;
+      showLightboxImage();
+    }
+
+    function showNextImage() {
+      currentLightboxIndex = (currentLightboxIndex + 1) % shuffledImages.length;
+      showLightboxImage();
+    }
+
+    // Event listeners
+    lightboxClose.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeLightbox();
+    });
+    
+    lightboxPrev.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showPrevImage();
+    });
+    
+    lightboxNext.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showNextImage();
+    });
+
     lightbox.addEventListener('click', (e) => {
       if (e.target === lightbox) {
         closeLightbox();
@@ -313,10 +579,41 @@
 
     // Close lightbox on ESC key
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && lightbox.classList.contains('active')) {
-        closeLightbox();
+      if (lightbox.classList.contains('active')) {
+        if (e.key === 'Escape') {
+          closeLightbox();
+        } else if (e.key === 'ArrowLeft') {
+          showPrevImage();
+        } else if (e.key === 'ArrowRight') {
+          showNextImage();
+        }
       }
     });
+
+    // Touch/swipe support for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    lightbox.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, false);
+
+    lightbox.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    }, false);
+
+    function handleSwipe() {
+      const swipeThreshold = 50;
+      if (touchEndX < touchStartX - swipeThreshold) {
+        // Swiped left - show next
+        showNextImage();
+      }
+      if (touchEndX > touchStartX + swipeThreshold) {
+        // Swiped right - show previous
+        showPrevImage();
+      }
+    }
 
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', populateMasonryGrid);
