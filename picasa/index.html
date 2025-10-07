@@ -111,6 +111,7 @@
       flex-direction: column;
       align-items: center;
       animation: zoomIn 0.3s ease;
+      z-index: 1000;
     }
 
     @keyframes zoomIn {
@@ -141,70 +142,79 @@
     }
 
     .lightbox-close {
-      position: absolute;
-      top: -50px;
-      right: 0;
-      width: 40px;
-      height: 40px;
-      background: transparent;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      background: rgba(0, 0, 0, 0.7);
       border: none;
+      border-radius: 50%;
       color: #fff;
-      font-size: 32px;
+      font-size: 36px;
       cursor: pointer;
-      transition: transform 0.2s ease;
+      transition: transform 0.2s ease, background 0.2s ease;
       line-height: 1;
-      z-index: 1001;
+      z-index: 1002;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .lightbox-close:hover {
-      transform: scale(1.2);
+      transform: scale(1.1);
+      background: rgba(0, 0, 0, 0.9);
     }
 
     /* Carousel navigation arrows - cinema style */
     .lightbox-arrow {
-      position: absolute;
+      position: fixed;
       top: 50%;
       transform: translateY(-50%);
-      width: 80px;
-      height: 200px;
+      width: 100px;
+      height: 250px;
       background: transparent;
       border: none;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      opacity: 0.7;
+      opacity: 0;
       transition: all 0.3s ease;
       z-index: 1001;
     }
 
+    .lightbox:hover .lightbox-arrow {
+      opacity: 0.7;
+    }
+
     .lightbox-arrow:hover {
-      opacity: 1;
+      opacity: 1 !important;
       transform: translateY(-50%) scale(1.1);
     }
 
     .lightbox-arrow svg {
-      width: 60px;
-      height: 60px;
+      width: 70px;
+      height: 70px;
       fill: none;
       stroke: #fff;
-      stroke-width: 4;
+      stroke-width: 5;
       stroke-linecap: round;
       stroke-linejoin: round;
-      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+      filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.9));
     }
 
     .lightbox-arrow:hover svg {
-      stroke-width: 5;
-      filter: drop-shadow(0 0 12px rgba(255, 255, 255, 1));
+      stroke-width: 6;
+      filter: drop-shadow(0 0 16px rgba(255, 255, 255, 1));
     }
 
     .lightbox-arrow-left {
-      left: 20px;
+      left: 30px;
     }
 
     .lightbox-arrow-right {
-      right: 20px;
+      right: 30px;
     }
 
     /* Image metadata display */
@@ -265,18 +275,25 @@
         image-rendering: crisp-edges;
       }
       .lightbox-arrow {
-        width: 50px;
-        height: 150px;
+        width: 60px;
+        height: 180px;
       }
       .lightbox-arrow svg {
-        width: 40px;
-        height: 40px;
+        width: 50px;
+        height: 50px;
       }
       .lightbox-arrow-left {
         left: 10px;
       }
       .lightbox-arrow-right {
         right: 10px;
+      }
+      .lightbox-close {
+        top: 10px;
+        right: 10px;
+        width: 45px;
+        height: 45px;
+        font-size: 32px;
       }
     }
 
@@ -310,25 +327,18 @@
 
   <!-- Lightbox for image popup with carousel -->
   <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightboxClose">&times;</button>
+    
+    <!-- Previous arrow -->
+    <button class="lightbox-arrow lightbox-arrow-left" id="lightboxPrev">
+      <svg width="70" height="70" viewBox="0 0 70 70">
+        <polyline points="40,15 20,35 40,55" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    
     <div class="lightbox-content">
-      <button class="lightbox-close" id="lightboxClose">&times;</button>
-      
       <div class="lightbox-image-container">
-        <!-- Previous arrow -->
-        <button class="lightbox-arrow lightbox-arrow-left" id="lightboxPrev">
-          <svg width="60" height="60" viewBox="0 0 60 60">
-            <polyline points="35,15 20,30 35,45" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-        
         <img src="" alt="Enlarged view" id="lightboxImg">
-        
-        <!-- Next arrow -->
-        <button class="lightbox-arrow lightbox-arrow-right" id="lightboxNext">
-          <svg width="60" height="60" viewBox="0 0 60 60">
-            <polyline points="25,15 40,30 25,45" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
       </div>
       
       <!-- Image metadata -->
@@ -336,6 +346,13 @@
         <!-- Metadata will be populated here -->
       </div>
     </div>
+    
+    <!-- Next arrow -->
+    <button class="lightbox-arrow lightbox-arrow-right" id="lightboxNext">
+      <svg width="70" height="70" viewBox="0 0 70 70">
+        <polyline points="30,15 50,35 30,55" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
   </div>
 
   <script>
