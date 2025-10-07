@@ -23,7 +23,7 @@
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      filter: blur(24px) brightness(0.7);
+      filter: blur(24px) brightness(0.7) hue-rotate(200deg) saturate(1.5);
       opacity: 0.7;
       pointer-events: none;
     }
@@ -31,18 +31,22 @@
       position: relative;
       z-index: 1;
       width: 100vw;
-      min-height: 100vh;
+      height: 100vh;
       display: flex;
       flex-direction: column;
       font-family: inherit;
+      overflow: hidden;
     }
 
     /* Masonry Grid Container */
     .masonry-container {
-      padding: 80px 20px 60px;
+      padding: 80px 20px 0;
       width: 100%;
       max-width: 1400px;
       margin: 0 auto;
+      height: calc(100vh - 80px);
+      overflow-y: auto;
+      overflow-x: hidden;
     }
 
     .masonry-grid {
@@ -73,6 +77,71 @@
       border-radius: 8px;
     }
 
+    /* Modal/Lightbox for image popup */
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .lightbox.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .lightbox-content {
+      max-width: 90vw;
+      max-height: 90vh;
+      position: relative;
+      animation: zoomIn 0.3s ease;
+    }
+
+    @keyframes zoomIn {
+      from {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .lightbox-content img {
+      max-width: 100%;
+      max-height: 90vh;
+      border-radius: 8px;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.8);
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: -40px;
+      right: 0;
+      width: 40px;
+      height: 40px;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 32px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      line-height: 1;
+    }
+
+    .lightbox-close:hover {
+      transform: scale(1.2);
+    }
+
     /* Responsive columns */
     @media (max-width: 1400px) {
       .masonry-grid {
@@ -95,7 +164,13 @@
         margin-bottom: 12px;
       }
       .masonry-container {
-        padding: 60px 12px 40px;
+        padding: 60px 12px 0;
+        height: calc(100vh - 60px);
+      }
+      /* Lower resolution images on mobile */
+      .masonry-item img {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
       }
     }
 
@@ -124,6 +199,14 @@
       <div class="masonry-grid" id="masonryGrid">
         <!-- Images will be dynamically loaded here -->
       </div>
+    </div>
+  </div>
+
+  <!-- Lightbox for image popup -->
+  <div class="lightbox" id="lightbox">
+    <div class="lightbox-content">
+      <button class="lightbox-close" id="lightboxClose">&times;</button>
+      <img src="" alt="Enlarged view" id="lightboxImg">
     </div>
   </div>
 
@@ -179,20 +262,61 @@
     function populateMasonryGrid() {
       const grid = document.getElementById('masonryGrid');
       const shuffledImages = shuffleArray(imagePaths);
+      const isMobile = window.innerWidth <= 768;
       
       shuffledImages.forEach((imagePath, index) => {
         const item = document.createElement('div');
         item.className = 'masonry-item';
         
         const img = document.createElement('img');
-        img.src = imagePath;
+        // On mobile, load smaller versions by adding width constraint
+        if (isMobile) {
+          img.src = imagePath;
+          img.style.maxWidth = '100%';
+          img.style.width = '100%';
+        } else {
+          img.src = imagePath;
+        }
         img.alt = `Gallery image ${index + 1}`;
         img.loading = 'lazy';
+        
+        // Add click event for lightbox
+        item.addEventListener('click', () => openLightbox(imagePath));
         
         item.appendChild(img);
         grid.appendChild(item);
       });
     }
+
+    // Lightbox functionality
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxClose = document.getElementById('lightboxClose');
+
+    function openLightbox(imageSrc) {
+      lightboxImg.src = imageSrc;
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) {
+        closeLightbox();
+      }
+    });
+
+    // Close lightbox on ESC key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+        closeLightbox();
+      }
+    });
 
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', populateMasonryGrid);
