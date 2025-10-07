@@ -65,9 +65,9 @@
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    /* Varied sizes for images */
-    .masonry-item.large {
-      grid-row: span 2;
+    /* Varied sizes for images - scale up some images */
+    .masonry-item.large img {
+      transform: scale(1.15);
     }
 
     .masonry-item:hover {
@@ -80,6 +80,7 @@
       height: auto;
       display: block;
       border-radius: 8px;
+      transition: transform 0.3s ease;
     }
 
     /* Modal/Lightbox for image popup with carousel */
@@ -169,10 +170,10 @@
     /* Carousel navigation arrows - cinema style */
     .lightbox-arrow {
       position: fixed;
-      top: 50%;
+      top: calc(50% + 50px);
       transform: translateY(-50%);
-      width: 100px;
-      height: 250px;
+      width: 150px;
+      height: 300px;
       background: transparent;
       border: none;
       display: flex;
@@ -190,7 +191,7 @@
 
     .lightbox-arrow:hover {
       opacity: 1 !important;
-      transform: translateY(-50%) scale(1.1);
+      transform: translateY(-50%) scale(1.05);
     }
 
     .lightbox-arrow svg {
@@ -202,6 +203,7 @@
       stroke-linecap: round;
       stroke-linejoin: round;
       filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.9));
+      pointer-events: none;
     }
 
     .lightbox-arrow:hover svg {
@@ -210,11 +212,15 @@
     }
 
     .lightbox-arrow-left {
-      left: 30px;
+      left: 0;
+      justify-content: flex-start;
+      padding-left: 20px;
     }
 
     .lightbox-arrow-right {
-      right: 30px;
+      right: 0;
+      justify-content: flex-end;
+      padding-right: 20px;
     }
 
     /* Image metadata display */
@@ -275,18 +281,20 @@
         image-rendering: crisp-edges;
       }
       .lightbox-arrow {
-        width: 60px;
-        height: 180px;
+        width: 100px;
+        height: 250px;
       }
       .lightbox-arrow svg {
         width: 50px;
         height: 50px;
       }
       .lightbox-arrow-left {
-        left: 10px;
+        left: 0;
+        padding-left: 10px;
       }
       .lightbox-arrow-right {
-        right: 10px;
+        right: 0;
+        padding-right: 10px;
       }
       .lightbox-close {
         top: 10px;
