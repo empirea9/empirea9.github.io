@@ -504,7 +504,7 @@
         } else {
           // Scrolling downward (negative direction)
           if (currentPosition >= 0) {
-            currentPosition -= columnHeight;
+            currentPosition = -columnHeight; // Reset to start position
           }
         }
         
