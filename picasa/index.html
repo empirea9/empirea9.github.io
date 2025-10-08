@@ -492,9 +492,9 @@
         
         // Loop seamlessly
         if (direction === 1 && currentPosition >= columnHeight) {
-          currentPosition = 0;
+          currentPosition -= columnHeight;
         } else if (direction === -1 && currentPosition <= -columnHeight) {
-          currentPosition = 0;
+          currentPosition += columnHeight;
         }
         
         column.style.transform = `translateY(${currentPosition}px)`;
