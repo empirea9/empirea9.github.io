@@ -65,9 +65,26 @@
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    /* Varied sizes for images - scale up some images */
+    /* Varied sizes for images - create truly enlarged images that occupy more space */
+    .masonry-item.large {
+      /* Make the container itself larger to simulate occupying 2 grid spaces */
+      margin-bottom: 20px;
+    }
+    
     .masonry-item.large img {
-      transform: scale(1.15);
+      /* Scale up significantly to make image much more prominent */
+      transform: scale(1.4);
+      transform-origin: center;
+    }
+    
+    .masonry-item.extra-large {
+      margin-bottom: 24px;
+    }
+    
+    .masonry-item.extra-large img {
+      /* Even larger for maximum visual impact */
+      transform: scale(1.6);
+      transform-origin: center;
     }
 
     .masonry-item:hover {
@@ -414,30 +431,52 @@
       return shuffled;
     }
 
-    // Determine which images should be larger (randomly select 20-30% of images)
+    // Determine which images should be larger (at least 10% of images)
     function getLargeImageIndices(totalImages) {
-      const largeCount = Math.floor(totalImages * 0.25); // 25% large images
-      const indices = new Set();
-      while (indices.size < largeCount) {
-        indices.add(Math.floor(Math.random() * totalImages));
+      // At least 10% should be enlarged
+      const minLargeCount = Math.ceil(totalImages * 0.1); // Minimum 10%
+      // Up to 20% can be enlarged for variety
+      const maxLargeCount = Math.ceil(totalImages * 0.2);
+      const largeCount = Math.floor(Math.random() * (maxLargeCount - minLargeCount + 1)) + minLargeCount;
+      
+      const largeIndices = new Set();
+      const extraLargeIndices = new Set();
+      
+      // Select random indices for large images
+      while (largeIndices.size < largeCount) {
+        largeIndices.add(Math.floor(Math.random() * totalImages));
       }
-      return indices;
+      
+      // About 1/3 of the large images should be extra-large
+      const extraLargeCount = Math.max(1, Math.floor(largeCount / 3));
+      const largeArray = Array.from(largeIndices);
+      
+      for (let i = 0; i < extraLargeCount && i < largeArray.length; i++) {
+        const randomIndex = largeArray[Math.floor(Math.random() * largeArray.length)];
+        extraLargeIndices.add(randomIndex);
+      }
+      
+      return { large: largeIndices, extraLarge: extraLargeIndices };
     }
 
     // Populate the masonry grid
     function populateMasonryGrid() {
       const grid = document.getElementById('masonryGrid');
       shuffledImages = shuffleArray(imagePaths);
-      const largeIndices = getLargeImageIndices(shuffledImages.length);
+      const { large: largeIndices, extraLarge: extraLargeIndices } = getLargeImageIndices(shuffledImages.length);
       const isMobile = window.innerWidth <= 768;
       
       shuffledImages.forEach((imagePath, index) => {
         const item = document.createElement('div');
         item.className = 'masonry-item';
         
-        // Randomly make some images larger
-        if (largeIndices.has(index) && !isMobile) {
-          item.classList.add('large');
+        // Apply size classes - don't apply on mobile to keep grid clean
+        if (!isMobile) {
+          if (extraLargeIndices.has(index)) {
+            item.classList.add('extra-large');
+          } else if (largeIndices.has(index)) {
+            item.classList.add('large');
+          }
         }
         
         const img = document.createElement('img');
