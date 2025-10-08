@@ -50,14 +50,14 @@
     }
 
     .masonry-grid {
-      column-count: 5;
-      column-gap: 16px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      grid-auto-rows: 10px;
+      gap: 16px;
       width: 100%;
     }
 
     .masonry-item {
-      break-inside: avoid;
-      margin-bottom: 16px;
       position: relative;
       overflow: hidden;
       border-radius: 8px;
@@ -65,26 +65,21 @@
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    /* Varied sizes for images - create truly enlarged images that occupy more space */
-    .masonry-item.large {
-      /* Make the container itself larger to simulate occupying 2 grid spaces */
-      margin-bottom: 20px;
+    /* Varied sizes for images - truly span multiple grid columns */
+    .masonry-item.wide {
+      grid-column: span 2;
     }
     
-    .masonry-item.large img {
-      /* Scale up significantly to make image much more prominent */
-      transform: scale(1.4);
-      transform-origin: center;
+    .masonry-item.tall {
+      /* Will be set dynamically based on image aspect ratio */
+    }
+    
+    .masonry-item.large {
+      grid-column: span 2;
     }
     
     .masonry-item.extra-large {
-      margin-bottom: 24px;
-    }
-    
-    .masonry-item.extra-large img {
-      /* Even larger for maximum visual impact */
-      transform: scale(1.6);
-      transform-origin: center;
+      grid-column: span 2;
     }
 
     .masonry-item:hover {
@@ -270,23 +265,26 @@
     /* Responsive columns */
     @media (max-width: 1400px) {
       .masonry-grid {
-        column-count: 4;
+        grid-template-columns: repeat(4, 1fr);
       }
     }
 
     @media (max-width: 1100px) {
       .masonry-grid {
-        column-count: 3;
+        grid-template-columns: repeat(3, 1fr);
       }
     }
 
     @media (max-width: 768px) {
       .masonry-grid {
-        column-count: 2;
-        column-gap: 12px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
       }
-      .masonry-item {
-        margin-bottom: 12px;
+      /* Disable spanning on mobile for cleaner grid */
+      .masonry-item.wide,
+      .masonry-item.large,
+      .masonry-item.extra-large {
+        grid-column: span 1;
       }
       .masonry-container {
         padding: 60px 12px 0;
@@ -324,7 +322,7 @@
 
     @media (max-width: 480px) {
       .masonry-grid {
-        column-count: 1;
+        grid-template-columns: repeat(1, 1fr);
       }
     }
   </style>
@@ -484,6 +482,14 @@
         img.alt = `Gallery image ${index + 1}`;
         img.loading = 'lazy';
         img.dataset.index = index;
+        
+        // Calculate grid row span based on image aspect ratio after load
+        img.onload = function() {
+          const aspectRatio = this.naturalHeight / this.naturalWidth;
+          // Calculate how many 10px rows the image needs
+          const rowSpan = Math.ceil((item.offsetWidth * aspectRatio) / 10);
+          item.style.gridRowEnd = `span ${rowSpan}`;
+        };
         
         // Add click event for lightbox
         item.addEventListener('click', (e) => {
