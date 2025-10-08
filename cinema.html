@@ -1202,6 +1202,32 @@
           setTimeout(() => this.startAutoPlay(), 3000);
         });
 
+        // Touch/swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        this.container.addEventListener('touchstart', (e) => {
+          touchStartX = e.changedTouches[0].screenX;
+        }, false);
+
+        this.container.addEventListener('touchend', (e) => {
+          touchEndX = e.changedTouches[0].screenX;
+          const swipeThreshold = 50;
+          
+          if (touchEndX < touchStartX - swipeThreshold) {
+            // Swiped left - show next
+            this.stopAutoPlay();
+            this.nextSlide();
+            setTimeout(() => this.startAutoPlay(), 3000);
+          }
+          if (touchEndX > touchStartX + swipeThreshold) {
+            // Swiped right - show previous
+            this.stopAutoPlay();
+            this.prevSlide();
+            setTimeout(() => this.startAutoPlay(), 3000);
+          }
+        }, false);
+
         // Handle window resize
         window.addEventListener('resize', () => {
           this.updateCarousel();
