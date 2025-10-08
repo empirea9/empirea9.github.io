@@ -478,9 +478,9 @@
       const columnHeight = column.scrollHeight / 3; // 1/3 height since we tripled
       let currentPosition = 0;
       
-      // Different speeds for each column (18-28 seconds per full loop) - slower
-      const baseSpeed = 18 + (colIndex * 2);
-      const speedVariation = Math.random() * 4 - 2;
+      // Different speeds for each column (15-20 seconds per full loop)
+      const baseSpeed = 15 + (colIndex * 1);
+      const speedVariation = Math.random() * 2 - 1;
       const duration = baseSpeed + speedVariation;
       const speed = columnHeight / duration; // pixels per second
       
@@ -489,7 +489,7 @@
       
       // Initialize position for downward scrolling columns
       if (direction === -1) {
-        currentPosition = 0; // Start at 0 for downward
+        currentPosition = -columnHeight; // Start at -columnHeight for downward
       }
       
       function animate() {
@@ -503,8 +503,8 @@
           }
         } else {
           // Scrolling downward (negative direction)
-          if (currentPosition <= -columnHeight) {
-            currentPosition += columnHeight;
+          if (currentPosition >= 0) {
+            currentPosition -= columnHeight;
           }
         }
         
