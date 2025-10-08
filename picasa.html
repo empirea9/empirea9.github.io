@@ -3,12 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Picasa</title>
-  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap">
-</head>
-<body>
-  <script src="../url-handler.js"></script>
-<head>
   <style>
     body {
       background: #0c0c0d;
@@ -23,11 +19,11 @@
       width: 100vw;
       height: 100vh;
       z-index: 0;
-      background-image: url('../assets/image2.png');
+      background-image: url('./assets/image2.png');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      filter: blur(24px) brightness(0.7);
+      filter: blur(24px) brightness(0.7) hue-rotate(200deg) saturate(1.5);
       opacity: 0.7;
       pointer-events: none;
     }
@@ -35,92 +31,342 @@
       position: relative;
       z-index: 1;
       width: 100vw;
-      min-height: 100vh;
+      height: 100vh;
       display: flex;
       flex-direction: column;
       font-family: inherit;
+      overflow: hidden;
     }
 
     /* Masonry Grid Container */
     .masonry-container {
-      padding: 80px 20px 60px;
+      padding: 80px 20px 0;
       width: 100%;
       max-width: 1400px;
       margin: 0 auto;
+      height: calc(100vh - 80px);
+      overflow-y: auto;
+      overflow-x: hidden;
     }
 
     .masonry-grid {
-      column-count: 5;
-      column-gap: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
       width: 100%;
+      overflow: hidden;
+    }
+
+    .masonry-row {
+      display: flex;
+      gap: 16px;
+      overflow: visible;
+      position: relative;
+      width: max-content;
+      will-change: transform;
     }
 
     .masonry-item {
-      break-inside: avoid;
-      margin-bottom: 16px;
       position: relative;
       overflow: hidden;
       border-radius: 8px;
       cursor: pointer;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
+      flex-shrink: 0;
+      height: 280px;
+      width: auto;
+    }
+
+    /* Varied sizes for images - support on all screen sizes */
+    .masonry-item.large {
+      height: 350px;
+    }
+    
+    .masonry-item.extra-large {
+      height: 420px;
     }
 
     .masonry-item:hover {
       transform: scale(1.02);
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      z-index: 10;
     }
 
     .masonry-item img {
-      width: 100%;
-      height: auto;
+      height: 100%;
+      width: auto;
       display: block;
       border-radius: 8px;
+      transition: transform 0.3s ease;
     }
 
-    /* Responsive columns */
+    /* Modal/Lightbox for image popup with carousel */
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .lightbox.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .lightbox-content {
+      max-width: 90vw;
+      max-height: 90vh;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: zoomIn 0.3s ease;
+      z-index: 1000;
+    }
+
+    @keyframes zoomIn {
+      from {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .lightbox-image-container {
+      position: relative;
+      max-width: 90vw;
+      max-height: 75vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lightbox-content img {
+      max-width: 100%;
+      max-height: 75vh;
+      border-radius: 8px;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.8);
+    }
+
+    .lightbox-close {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      background: rgba(0, 0, 0, 0.7);
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 36px;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease;
+      line-height: 1;
+      z-index: 1002;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lightbox-close:hover {
+      transform: scale(1.1);
+      background: rgba(0, 0, 0, 0.9);
+    }
+
+    /* Carousel navigation arrows - cinema style */
+    .lightbox-arrow {
+      position: fixed;
+      top: calc(50% + 50px);
+      transform: translateY(-50%);
+      width: 150px;
+      height: 300px;
+      background: transparent;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 1001;
+    }
+
+    .lightbox:hover .lightbox-arrow {
+      opacity: 0.7;
+    }
+
+    .lightbox-arrow:hover {
+      opacity: 1 !important;
+      transform: translateY(-50%) scale(1.05);
+    }
+
+    .lightbox-arrow svg {
+      width: 70px;
+      height: 70px;
+      fill: none;
+      stroke: #fff;
+      stroke-width: 5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.9));
+      pointer-events: none;
+    }
+
+    .lightbox-arrow:hover svg {
+      stroke-width: 6;
+      filter: drop-shadow(0 0 16px rgba(255, 255, 255, 1));
+    }
+
+    .lightbox-arrow-left {
+      left: 0;
+      justify-content: flex-start;
+      padding-left: 20px;
+    }
+
+    .lightbox-arrow-right {
+      right: 0;
+      justify-content: flex-end;
+      padding-right: 20px;
+    }
+
+    /* Image metadata display */
+    .image-metadata {
+      margin-top: 20px;
+      padding: 15px 20px;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 8px;
+      max-width: 600px;
+      color: #ededed;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .metadata-row {
+      margin: 5px 0;
+    }
+
+    .metadata-label {
+      color: #aaa;
+      display: inline-block;
+      width: 120px;
+    }
+
+    .metadata-value {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* Responsive sizing */
     @media (max-width: 1400px) {
-      .masonry-grid {
-        column-count: 4;
+      .masonry-item {
+        height: 240px;
+      }
+      .masonry-item.large {
+        height: 300px;
+      }
+      .masonry-item.extra-large {
+        height: 360px;
       }
     }
 
     @media (max-width: 1100px) {
-      .masonry-grid {
-        column-count: 3;
+      .masonry-item {
+        height: 200px;
+      }
+      .masonry-item.large {
+        height: 260px;
+      }
+      .masonry-item.extra-large {
+        height: 320px;
       }
     }
 
     @media (max-width: 768px) {
       .masonry-grid {
-        column-count: 2;
-        column-gap: 12px;
+        gap: 16px;
+      }
+      .masonry-row {
+        gap: 12px;
       }
       .masonry-item {
-        margin-bottom: 12px;
+        height: 160px;
+      }
+      .masonry-item.large {
+        height: 210px;
+      }
+      .masonry-item.extra-large {
+        height: 260px;
       }
       .masonry-container {
-        padding: 60px 12px 40px;
+        padding: 60px 12px 0;
+        height: calc(100vh - 60px);
+      }
+      /* Lower resolution images on mobile */
+      .masonry-item img {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+      }
+      .lightbox-arrow {
+        width: 100px;
+        height: 250px;
+      }
+      .lightbox-arrow svg {
+        width: 50px;
+        height: 50px;
+      }
+      .lightbox-arrow-left {
+        left: 0;
+        padding-left: 10px;
+      }
+      .lightbox-arrow-right {
+        right: 0;
+        padding-right: 10px;
+      }
+      .lightbox-close {
+        top: 10px;
+        right: 10px;
+        width: 45px;
+        height: 45px;
+        font-size: 32px;
       }
     }
 
     @media (max-width: 480px) {
-      .masonry-grid {
-        column-count: 1;
+      .masonry-item {
+        height: 140px;
+      }
+      .masonry-item.large {
+        height: 180px;
+      }
+      .masonry-item.extra-large {
+        height: 220px;
+      }
       }
     }
   </style>
 </head>
 <body>
-  <script src="../url-handler.js"></script>
+  <script src="./url-handler.js"></script>
   <div class="picasa-bg-blur"></div>
   <div class="picasa-content-wrapper">
     <nav>
       <div class="nav-links">
-        <a href="../">Home</a>
-        <a href="../arcade">Arcade</a>
-        <a href="../picasa" class="active">Picasa</a>
-        <a href="../cinema">Cinema</a>
-        <a href="../melody">Melody</a>
+        <a href="./">Home</a>
+        <a href="./arcade">Arcade</a>
+        <a href="./picasa" class="active">Picasa</a>
+        <a href="./cinema">Cinema</a>
+        <a href="./melody">Melody</a>
       </div>
     </nav>
     
@@ -131,43 +377,76 @@
     </div>
   </div>
 
+  <!-- Lightbox for image popup with carousel -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightboxClose">&times;</button>
+    
+    <!-- Previous arrow -->
+    <button class="lightbox-arrow lightbox-arrow-left" id="lightboxPrev">
+      <svg width="70" height="70" viewBox="0 0 70 70">
+        <polyline points="40,15 20,35 40,55" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    
+    <div class="lightbox-content">
+      <div class="lightbox-image-container">
+        <img src="" alt="Enlarged view" id="lightboxImg">
+      </div>
+      
+      <!-- Image metadata -->
+      <div class="image-metadata" id="imageMetadata" style="display: none;">
+        <!-- Metadata will be populated here -->
+      </div>
+    </div>
+    
+    <!-- Next arrow -->
+    <button class="lightbox-arrow lightbox-arrow-right" id="lightboxNext">
+      <svg width="70" height="70" viewBox="0 0 70 70">
+        <polyline points="30,15 50,35 30,55" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+
   <script>
     // Collect all image paths from assets and posters folders
     const imagePaths = [
       // Assets folder
-      '../assets/battlefield4.png',
-      '../assets/blasphemous.png',
-      '../assets/ghostoftsushima.png',
-      '../assets/igi2.png',
-      '../assets/image1.png',
-      '../assets/image2.png',
-      '../assets/image3.png',
-      '../assets/image4.png',
-      '../assets/justcause2.png',
-      '../assets/needforspeedmostwanted.png',
-      '../assets/onimusha3.png',
-      '../assets/reddeadredemption2.png',
-      '../assets/residentevilvillage.png',
-      '../assets/trackmania.png',
-      '../assets/trailmakers.png',
+      './assets/battlefield4.png',
+      './assets/blasphemous.png',
+      './assets/ghostoftsushima.png',
+      './assets/igi2.png',
+      './assets/image1.png',
+      './assets/image2.png',
+      './assets/image3.png',
+      './assets/image4.png',
+      './assets/justcause2.png',
+      './assets/needforspeedmostwanted.png',
+      './assets/onimusha.png',
+      './assets/reddeadredemption2.png',
+      './assets/residentevilvillage.png',
+      './assets/trackmania.png',
+      './assets/trailmakers.png',
       // Posters folder
-      '../posters/From.png',
-      '../posters/IT.png',
-      '../posters/Incantation.png',
-      '../posters/Iron Man.png',
-      '../posters/Taare Zameen Par.png',
-      '../posters/The Others.png',
-      '../posters/The Wailing.png',
-      '../posters/Tokyo Drift.png',
-      '../posters/You.png',
-      '../posters/cars 3.jpg',
-      '../posters/chernobyl.png',
-      '../posters/dark.png',
-      '../posters/dexter.png',
-      '../posters/monster.png',
-      '../posters/tokyo ghoul.png',
-      '../posters/tumbbad.png'
+      './posters/From.png',
+      './posters/IT.png',
+      './posters/Incantation.png',
+      './posters/Iron Man.png',
+      './posters/Taare Zameen Par.png',
+      './posters/The Others.png',
+      './posters/The Wailing.png',
+      './posters/Tokyo Drift.png',
+      './posters/You.png',
+      './posters/cars 3.jpg',
+      './posters/chernobyl.png',
+      './posters/dark.png',
+      './posters/dexter.png',
+      './posters/monster.png',
+      './posters/tokyo ghoul.png',
+      './posters/tumbbad.png'
     ];
+
+    let shuffledImages = [];
+    let currentLightboxIndex = 0;
 
     // Fisher-Yates shuffle algorithm to randomize array
     function shuffleArray(array) {
@@ -179,23 +458,309 @@
       return shuffled;
     }
 
-    // Populate the masonry grid
+    // Determine which images should be larger (at least 10% of images)
+    function getLargeImageIndices(totalImages) {
+      // At least 10% should be enlarged
+      const minLargeCount = Math.ceil(totalImages * 0.1); // Minimum 10%
+      // Up to 20% can be enlarged for variety
+      const maxLargeCount = Math.ceil(totalImages * 0.2);
+      const largeCount = Math.floor(Math.random() * (maxLargeCount - minLargeCount + 1)) + minLargeCount;
+      
+      const largeIndices = new Set();
+      const extraLargeIndices = new Set();
+      
+      // Select random indices for large images
+      while (largeIndices.size < largeCount) {
+        largeIndices.add(Math.floor(Math.random() * totalImages));
+      }
+      
+      // About 1/3 of the large images should be extra-large
+      const extraLargeCount = Math.max(1, Math.floor(largeCount / 3));
+      const largeArray = Array.from(largeIndices);
+      
+      for (let i = 0; i < extraLargeCount && i < largeArray.length; i++) {
+        const randomIndex = largeArray[Math.floor(Math.random() * largeArray.length)];
+        extraLargeIndices.add(randomIndex);
+      }
+      
+      return { large: largeIndices, extraLarge: extraLargeIndices };
+    }
+
+    // Populate the masonry grid with looping rows
     function populateMasonryGrid() {
       const grid = document.getElementById('masonryGrid');
-      const shuffledImages = shuffleArray(imagePaths);
+      grid.innerHTML = ''; // Clear existing content
       
-      shuffledImages.forEach((imagePath, index) => {
-        const item = document.createElement('div');
-        item.className = 'masonry-item';
+      shuffledImages = shuffleArray(imagePaths);
+      const { large: largeIndices, extraLarge: extraLargeIndices } = getLargeImageIndices(shuffledImages.length);
+      
+      // Create 3-4 rows with different subsets of images
+      const numRows = 4;
+      const imagesPerRow = Math.ceil(shuffledImages.length / numRows);
+      
+      for (let rowIndex = 0; rowIndex < numRows; rowIndex++) {
+        const row = document.createElement('div');
+        row.className = 'masonry-row';
+        row.dataset.rowIndex = rowIndex;
         
-        const img = document.createElement('img');
-        img.src = imagePath;
-        img.alt = `Gallery image ${index + 1}`;
-        img.loading = 'lazy';
+        // Calculate unique speed for this row (between 15-40 seconds per full loop)
+        const baseSpeed = 20 + (rowIndex * 5); // Different base speeds
+        const speedVariation = Math.random() * 10 - 5; // Add some randomness
+        const animationDuration = baseSpeed + speedVariation;
+        row.style.animationDuration = `${animationDuration}s`;
         
-        item.appendChild(img);
-        grid.appendChild(item);
+        // Get images for this row
+        const startIdx = rowIndex * imagesPerRow;
+        const endIdx = Math.min(startIdx + imagesPerRow, shuffledImages.length);
+        const rowImages = shuffledImages.slice(startIdx, endIdx);
+        
+        // Duplicate images for seamless looping (2 full copies)
+        const imagesToRender = [...rowImages, ...rowImages];
+        
+        imagesToRender.forEach((imagePath, localIndex) => {
+          const originalIndex = startIdx + (localIndex % rowImages.length);
+          const item = document.createElement('div');
+          item.className = 'masonry-item';
+          
+          // Apply size classes - now works on all screen sizes
+          if (extraLargeIndices.has(originalIndex)) {
+            item.classList.add('extra-large');
+          } else if (largeIndices.has(originalIndex)) {
+            item.classList.add('large');
+          }
+          
+          const img = document.createElement('img');
+          img.src = imagePath;
+          img.alt = `Gallery image ${originalIndex + 1}`;
+          img.loading = 'lazy';
+          img.dataset.index = originalIndex;
+          
+          // Add click event for lightbox
+          item.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            openLightbox(originalIndex);
+          });
+          
+          item.appendChild(img);
+          row.appendChild(item);
+        });
+        
+        grid.appendChild(row);
+        
+        // Start infinite scroll animation for this row
+        startRowAnimation(row, rowIndex);
+      }
+    }
+
+    // Infinite scroll animation for each row
+    function startRowAnimation(row, rowIndex) {
+      const rowWidth = row.scrollWidth / 2; // Half width since we duplicated
+      let currentPosition = 0;
+      const direction = rowIndex % 2 === 0 ? -1 : 1; // Alternate directions
+      
+      // Get the animation duration set on the row
+      const duration = parseFloat(row.style.animationDuration) * 1000;
+      const speed = rowWidth / (duration / 1000); // pixels per second
+      
+      function animate() {
+        currentPosition += speed / 60 * direction; // 60fps
+        
+        // Loop seamlessly
+        if (direction === -1 && Math.abs(currentPosition) >= rowWidth) {
+          currentPosition = 0;
+        } else if (direction === 1 && currentPosition >= 0) {
+          currentPosition = -rowWidth;
+        }
+        
+        row.style.transform = `translateX(${currentPosition}px)`;
+        requestAnimationFrame(animate);
+      }
+      
+      // Start animation
+      requestAnimationFrame(animate);
+    }
+
+    // Read EXIF metadata from image
+    function readImageMetadata(imgElement, callback) {
+      // Check if EXIF library is available
+      if (typeof EXIF === 'undefined') {
+        callback({}); // Return empty metadata if library not available
+        return;
+      }
+      
+      EXIF.getData(imgElement, function() {
+        const metadata = {
+          make: EXIF.getTag(this, "Make"),
+          model: EXIF.getTag(this, "Model"),
+          dateTime: EXIF.getTag(this, "DateTime"),
+          focalLength: EXIF.getTag(this, "FocalLength"),
+          aperture: EXIF.getTag(this, "FNumber"),
+          iso: EXIF.getTag(this, "ISOSpeedRatings"),
+          exposureTime: EXIF.getTag(this, "ExposureTime"),
+          lens: EXIF.getTag(this, "LensModel")
+        };
+        callback(metadata);
       });
+    }
+
+    // Display image metadata
+    function displayMetadata(metadata) {
+      const metadataDiv = document.getElementById('imageMetadata');
+      let hasMetadata = false;
+      let html = '';
+
+      if (metadata.dateTime) {
+        html += `<div class="metadata-row"><span class="metadata-label">Date & Time:</span> <span class="metadata-value">${metadata.dateTime}</span></div>`;
+        hasMetadata = true;
+      }
+
+      if (metadata.make || metadata.model) {
+        const camera = [metadata.make, metadata.model].filter(Boolean).join(' ');
+        html += `<div class="metadata-row"><span class="metadata-label">Camera:</span> <span class="metadata-value">${camera}</span></div>`;
+        hasMetadata = true;
+      }
+
+      if (metadata.lens) {
+        html += `<div class="metadata-row"><span class="metadata-label">Lens:</span> <span class="metadata-value">${metadata.lens}</span></div>`;
+        hasMetadata = true;
+      }
+
+      if (metadata.focalLength) {
+        const focal = metadata.focalLength.numerator ? 
+          `${metadata.focalLength.numerator / metadata.focalLength.denominator}mm` : 
+          `${metadata.focalLength}mm`;
+        html += `<div class="metadata-row"><span class="metadata-label">Focal Length:</span> <span class="metadata-value">${focal}</span></div>`;
+        hasMetadata = true;
+      }
+
+      if (metadata.aperture) {
+        const aperture = metadata.aperture.numerator ? 
+          `f/${(metadata.aperture.numerator / metadata.aperture.denominator).toFixed(1)}` : 
+          `f/${metadata.aperture}`;
+        html += `<div class="metadata-row"><span class="metadata-label">Aperture:</span> <span class="metadata-value">${aperture}</span></div>`;
+        hasMetadata = true;
+      }
+
+      if (metadata.exposureTime) {
+        const exposure = metadata.exposureTime.numerator ? 
+          `${metadata.exposureTime.numerator}/${metadata.exposureTime.denominator}s` : 
+          `${metadata.exposureTime}s`;
+        html += `<div class="metadata-row"><span class="metadata-label">Shutter Speed:</span> <span class="metadata-value">${exposure}</span></div>`;
+        hasMetadata = true;
+      }
+
+      if (metadata.iso) {
+        html += `<div class="metadata-row"><span class="metadata-label">ISO:</span> <span class="metadata-value">${metadata.iso}</span></div>`;
+        hasMetadata = true;
+      }
+
+      if (hasMetadata) {
+        metadataDiv.innerHTML = html;
+        metadataDiv.style.display = 'block';
+      } else {
+        metadataDiv.style.display = 'none';
+      }
+    }
+
+    // Lightbox functionality
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxClose = document.getElementById('lightboxClose');
+    const lightboxPrev = document.getElementById('lightboxPrev');
+    const lightboxNext = document.getElementById('lightboxNext');
+
+    function openLightbox(index) {
+      currentLightboxIndex = index;
+      showLightboxImage();
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function showLightboxImage() {
+      const imageSrc = shuffledImages[currentLightboxIndex];
+      lightboxImg.src = imageSrc;
+      
+      // Read and display metadata
+      lightboxImg.onload = function() {
+        readImageMetadata(lightboxImg, displayMetadata);
+      };
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+      document.getElementById('imageMetadata').style.display = 'none';
+    }
+
+    function showPrevImage() {
+      currentLightboxIndex = (currentLightboxIndex - 1 + shuffledImages.length) % shuffledImages.length;
+      showLightboxImage();
+    }
+
+    function showNextImage() {
+      currentLightboxIndex = (currentLightboxIndex + 1) % shuffledImages.length;
+      showLightboxImage();
+    }
+
+    // Event listeners
+    lightboxClose.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeLightbox();
+    });
+    
+    lightboxPrev.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showPrevImage();
+    });
+    
+    lightboxNext.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showNextImage();
+    });
+
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) {
+        closeLightbox();
+      }
+    });
+
+    // Close lightbox on ESC key
+    document.addEventListener('keydown', (e) => {
+      if (lightbox.classList.contains('active')) {
+        if (e.key === 'Escape') {
+          closeLightbox();
+        } else if (e.key === 'ArrowLeft') {
+          showPrevImage();
+        } else if (e.key === 'ArrowRight') {
+          showNextImage();
+        }
+      }
+    });
+
+    // Touch/swipe support for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    lightbox.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, false);
+
+    lightbox.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    }, false);
+
+    function handleSwipe() {
+      const swipeThreshold = 50;
+      if (touchEndX < touchStartX - swipeThreshold) {
+        // Swiped left - show next
+        showNextImage();
+      }
+      if (touchEndX > touchStartX + swipeThreshold) {
+        // Swiped right - show previous
+        showPrevImage();
+      }
     }
 
     // Initialize on page load
