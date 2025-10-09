@@ -492,6 +492,8 @@
         currentPosition = -columnHeight; // Start at -columnHeight for downward
       }
       
+      let animationId = null;
+      
       function animate() {
         currentPosition += (speed / 60) * direction; // 60fps
         
@@ -509,11 +511,11 @@
         }
         
         column.style.transform = `translateY(${currentPosition}px)`;
-        requestAnimationFrame(animate);
+        animationId = requestAnimationFrame(animate);
       }
       
       // Start animation
-      requestAnimationFrame(animate);
+      animationId = requestAnimationFrame(animate);
     }
 
     // Read EXIF metadata from image
