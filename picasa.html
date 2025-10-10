@@ -490,24 +490,32 @@
       let currentPosition = -columnHeight * 2;
       
       let animationId = null;
+      let lastFrameTime = performance.now();
       
-      function animate() {
-        currentPosition += (speed / 60) * direction; // 60fps
+      function animate(currentTime) {
+        const deltaTime = (currentTime - lastFrameTime) / 1000; // Convert to seconds
+        lastFrameTime = currentTime;
         
-        // Loop seamlessly with proper boundaries
+        // Smooth continuous movement based on actual time delta
+        currentPosition += (speed * deltaTime) * direction;
+        
+        // Loop seamlessly with proper boundaries - reset happens far off-screen
         if (direction === 1) {
           // Scrolling upward (position increases from -2*height toward -height)
+          // Reset when reaching -height to go back to -2*height
           if (currentPosition >= -columnHeight) {
-            currentPosition -= columnHeight; // Reset back to -2*height
+            currentPosition = currentPosition - columnHeight;
           }
         } else {
           // Scrolling downward (position decreases, becoming more negative)
-          // Trigger reset earlier to avoid delay in image appearance
-          if (currentPosition <= -columnHeight * 2.8) {
-            currentPosition += columnHeight; // Reset back to -1.8*height
+          // Reset when reaching -3*height to go back to -2*height
+          // This happens completely off-screen ensuring no visible snap
+          if (currentPosition <= -columnHeight * 3) {
+            currentPosition = currentPosition + columnHeight;
           }
         }
         
+        // Use transform for smooth GPU-accelerated animation
         column.style.transform = `translateY(${currentPosition}px)`;
         animationId = requestAnimationFrame(animate);
       }
