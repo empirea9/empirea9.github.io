@@ -499,17 +499,16 @@
         // Smooth continuous movement based on actual time delta
         currentPosition += (speed * deltaTime) * direction;
         
-        // Loop seamlessly with proper boundaries - reset happens far off-screen
+        // Loop seamlessly - reset only after full column content has been shown
         if (direction === 1) {
           // Scrolling upward (position increases from -2*height toward -height)
-          // Reset when reaching -height to go back to -2*height
+          // Reset when reaching -height (full column shown) to go back to -2*height
           if (currentPosition >= -columnHeight) {
             currentPosition = currentPosition - columnHeight;
           }
         } else {
-          // Scrolling downward (position decreases, becoming more negative)
-          // Reset when reaching -3*height to go back to -2*height
-          // This happens completely off-screen ensuring no visible snap
+          // Scrolling downward (position decreases from -2*height toward -3*height)
+          // Reset when reaching -3*height (full column shown) to go back to -2*height
           if (currentPosition <= -columnHeight * 3) {
             currentPosition = currentPosition + columnHeight;
           }
