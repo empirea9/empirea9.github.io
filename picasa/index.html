@@ -488,8 +488,9 @@
       const direction = colIndex % 2 === 0 ? 1 : -1;
       
       // Initialize position for downward scrolling columns
+      // Downward scrolling: start at -columnHeight*2 so images above are visible
       if (direction === -1) {
-        currentPosition = 0; // Start at bottom (0) for downward scrolling
+        currentPosition = -columnHeight * 2; // Start at top with buffer for downward scrolling
       }
       
       let animationId = null;
@@ -500,13 +501,15 @@
         // Loop seamlessly
         if (direction === 1) {
           // Scrolling upward (positive direction)
-          if (currentPosition >= columnHeight) {
+          if (currentPosition >= 0) {
             currentPosition -= columnHeight; // Reset seamlessly
           }
         } else {
           // Scrolling downward (negative direction)  
-          if (currentPosition <= -columnHeight) {
-            currentPosition += columnHeight; // Reset seamlessly
+          // When scrolling down, position becomes less negative (increases)
+          // Reset when reaching -columnHeight to loop back to -columnHeight*2
+          if (currentPosition >= -columnHeight) {
+            currentPosition -= columnHeight; // Reset seamlessly
           }
         }
         
