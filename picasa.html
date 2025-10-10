@@ -473,55 +473,206 @@
       });
     }
 
-    // Vertical infinite scroll animation for each column
+    // Vertical infinite scroll animation - smooth continuous flow with pre-loaded off-screen images
     function startColumnAnimation(column, colIndex) {
-      const columnHeight = column.scrollHeight / 3; // 1/3 height since we tripled
+      const imagesPerColumn = Math.ceil(shuffledImages.length / numColumns);
+      const startIdx = colIndex * imagesPerColumn;
+      const endIdx = Math.min(startIdx + imagesPerColumn, shuffledImages.length);
+      const columnImages = shuffledImages.slice(startIdx, endIdx);
       
-      // Different speeds for each column (5 seconds for testing)
-      const baseSpeed = 5;
-      const speedVariation = (colIndex * 0.2) - 0.4; // Slight variation per column
+      // Different speeds for each column (slower for smoother transitions)
+      const baseSpeed = 15;
+      const speedVariation = (colIndex * 0.5) - 1.0;
       const duration = baseSpeed + speedVariation;
-      const speed = columnHeight / duration; // pixels per second
+      const pixelsPerSecond = 100 / duration; // Pixels per second - smooth constant speed
       
-      // Alternate directions for variety
+      // Alternate directions: upward (1) or downward (-1)
       const direction = colIndex % 2 === 0 ? 1 : -1;
-      
-      // All columns start at -columnHeight*2 for full content visibility
-      let currentPosition = -columnHeight * 2;
       
       let animationId = null;
       let lastFrameTime = performance.now();
+      const gap = 16; // Gap between images
+      const offScreenBuffer = 800; // Very large buffer - images recycle far off-screen
       
-      function animate(currentTime) {
-        const deltaTime = (currentTime - lastFrameTime) / 1000; // Convert to seconds
-        lastFrameTime = currentTime;
+      // Track all image elements with their positions
+      let imageElements = [];
+      let imageIndexCounter = 0;
+      
+      // Create a new image element
+      function createImageElement(imageIndex) {
+        const imagePath = columnImages[imageIndex % columnImages.length];
+        const originalIndex = startIdx + (imageIndex % columnImages.length);
         
-        // Smooth continuous movement based on actual time delta
-        currentPosition += (speed * deltaTime) * direction;
+        const item = document.createElement('div');
+        item.className = 'masonry-item';
+        item.style.position = 'absolute';
+        item.style.left = '0';
+        item.style.width = '100%';
         
-        // Loop seamlessly with proper boundaries - reset happens far off-screen
+        const img = document.createElement('img');
+        img.src = imagePath;
+        img.alt = `Gallery image ${originalIndex + 1}`;
+        img.loading = 'eager';
+        img.dataset.index = originalIndex;
+        
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          openLightbox(originalIndex);
+        });
+        
+        item.appendChild(img);
+        return item;
+      }
+      
+      // Initialize the column with images
+      function initialize() {
+        column.style.position = 'relative';
+        column.style.height = '100vh';
+        column.style.overflow = 'hidden'; // Clip off-screen content
+        column.innerHTML = '';
+        
+        let currentY;
         if (direction === 1) {
-          // Scrolling upward (position increases from -2*height toward -height)
-          // Reset when reaching -height to go back to -2*height
-          if (currentPosition >= -columnHeight) {
-            currentPosition = currentPosition - columnHeight;
-          }
+          // Upward scrolling: start well below viewport
+          currentY = -offScreenBuffer - 500;
         } else {
-          // Scrolling downward (position decreases, becoming more negative)
-          // Reset when reaching -3*height to go back to -2*height
-          // This happens completely off-screen ensuring no visible snap
-          if (currentPosition <= -columnHeight * 3) {
-            currentPosition = currentPosition + columnHeight;
-          }
+          // Downward scrolling: start well above viewport  
+          currentY = offScreenBuffer + 500;
         }
         
-        // Use transform for smooth GPU-accelerated animation
-        column.style.transform = `translateY(${currentPosition}px)`;
+        // Fill the viewport plus large buffers above and below
+        const fillDistance = window.innerHeight + (2 * offScreenBuffer);
+        let distanceFilled = 0;
+        
+        while (distanceFilled < fillDistance) {
+          const item = createImageElement(imageIndexCounter);
+          column.appendChild(item);
+          
+          // Wait for image to load to get accurate height
+          const img = item.querySelector('img');
+          const imgIndex = imageIndexCounter; // Capture for closure
+          img.onload = function() {
+            const height = this.naturalHeight ? (this.naturalHeight * 280 / this.naturalWidth) : 250;
+            item.style.height = height + 'px';
+            
+            // Update heights in imageElements array
+            const found = imageElements.find(el => el.index === imgIndex);
+            if (found) {
+              found.height = height;
+            }
+          };
+          
+          // Estimate initial height
+          const estimatedHeight = 300;
+          item.style.height = estimatedHeight + 'px';
+          item.style.top = currentY + 'px';
+          
+          imageElements.push({
+            element: item,
+            position: currentY,
+            height: estimatedHeight,
+            index: imageIndexCounter
+          });
+          
+          currentY += estimatedHeight + gap;
+          distanceFilled += estimatedHeight + gap;
+          imageIndexCounter++;
+        }
+      }
+      
+      function animate(currentTime) {
+        const deltaTime = Math.min((currentTime - lastFrameTime) / 1000, 0.1); // Cap deltaTime to prevent jumps
+        lastFrameTime = currentTime;
+        
+        const movement = pixelsPerSecond * deltaTime * direction;
+        
+        // Move all images smoothly
+        imageElements.forEach(imgData => {
+          imgData.position += movement;
+          imgData.element.style.transform = `translateY(${imgData.position}px)`;
+          imgData.element.style.top = '0px'; // Keep top at 0, use transform for performance
+        });
+        
+        // Check for images that need to be recycled
+        if (direction === 1) {
+          // Upward scrolling - images moving up (positive direction)
+          // Check if any image scrolled completely above the viewport buffer
+          imageElements.forEach(imgData => {
+            if (imgData.position > window.innerHeight + offScreenBuffer) {
+              // Find the image that's furthest down (most negative position)
+              let minPosition = Infinity;
+              imageElements.forEach(el => {
+                if (el.position < minPosition) minPosition = el.position;
+              });
+              
+              // Reposition this image well below the bottom-most image (off-screen)
+              imgData.position = minPosition - imgData.height - gap;
+              imgData.element.style.transform = `translateY(${imgData.position}px)`;
+              
+              // Update with new image content
+              const imagePath = columnImages[imageIndexCounter % columnImages.length];
+              const originalIndex = startIdx + (imageIndexCounter % columnImages.length);
+              const img = imgData.element.querySelector('img');
+              img.src = imagePath;
+              img.dataset.index = originalIndex;
+              
+              imgData.index = imageIndexCounter;
+              imageIndexCounter++;
+              
+              // Update height when new image loads
+              img.onload = function() {
+                const height = this.naturalHeight ? (this.naturalHeight * 280 / this.naturalWidth) : 250;
+                imgData.element.style.height = height + 'px';
+                imgData.height = height;
+              };
+            }
+          });
+        } else {
+          // Downward scrolling - images moving down (negative direction)
+          // Check if any image scrolled completely below the viewport buffer
+          imageElements.forEach(imgData => {
+            if (imgData.position + imgData.height < -offScreenBuffer) {
+              // Find the image that's furthest up (most positive position)
+              let maxPosition = -Infinity;
+              imageElements.forEach(el => {
+                const elBottom = el.position + el.height;
+                if (elBottom > maxPosition) maxPosition = elBottom;
+              });
+              
+              // Reposition this image well above the top-most image (off-screen)
+              imgData.position = maxPosition + gap;
+              imgData.element.style.transform = `translateY(${imgData.position}px)`;
+              
+              // Update with new image content
+              const imagePath = columnImages[imageIndexCounter % columnImages.length];
+              const originalIndex = startIdx + (imageIndexCounter % columnImages.length);
+              const img = imgData.element.querySelector('img');
+              img.src = imagePath;
+              img.dataset.index = originalIndex;
+              
+              imgData.index = imageIndexCounter;
+              imageIndexCounter++;
+              
+              // Update height when new image loads
+              img.onload = function() {
+                const height = this.naturalHeight ? (this.naturalHeight * 280 / this.naturalWidth) : 250;
+                imgData.element.style.height = height + 'px';
+                imgData.height = height;
+              };
+            }
+          });
+        }
+        
         animationId = requestAnimationFrame(animate);
       }
       
-      // Start animation
-      animationId = requestAnimationFrame(animate);
+      // Initialize and start
+      initialize();
+      setTimeout(() => {
+        lastFrameTime = performance.now();
+        animationId = requestAnimationFrame(animate);
+      }, 300);
     }
 
     // Read EXIF metadata from image
