@@ -502,8 +502,9 @@
           }
         } else {
           // Scrolling downward (position decreases, becoming more negative)
-          if (currentPosition <= -columnHeight * 3) {
-            currentPosition += columnHeight; // Reset back to -2*height
+          // Trigger reset earlier to avoid delay in image appearance
+          if (currentPosition <= -columnHeight * 2.8) {
+            currentPosition += columnHeight; // Reset back to -1.8*height
           }
         }
         
