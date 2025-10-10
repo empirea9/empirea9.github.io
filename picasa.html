@@ -501,9 +501,9 @@
             currentPosition -= columnHeight; // Reset back to -2*height
           }
         } else {
-          // Scrolling downward (position increases from -2*height toward -height)  
-          if (currentPosition >= -columnHeight) {
-            currentPosition -= columnHeight; // Reset back to -2*height
+          // Scrolling downward (position decreases, becoming more negative)
+          if (currentPosition <= -columnHeight * 3) {
+            currentPosition += columnHeight; // Reset back to -2*height
           }
         }
         
