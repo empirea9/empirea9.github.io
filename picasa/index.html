@@ -78,6 +78,8 @@
     .masonry-item img {
       width: 100%;
       height: auto;
+      max-height: 400px;
+      object-fit: cover;
       display: block;
       border-radius: 8px;
       transition: transform 0.3s ease;
@@ -473,6 +475,9 @@
       });
     }
 
+    // Track hover state and pause info for each column
+    const columnStates = {};
+    
     // Vertical infinite scroll animation with dynamic image recycling
     function startColumnAnimation(column, colIndex) {
       // Get all images in column (already tripled)
@@ -494,12 +499,87 @@
       let animationId = null;
       let lastFrameTime = performance.now();
       
+      // Initialize column state
+      columnStates[colIndex] = {
+        isPaused: false,
+        hoverStartTime: null,
+        userScrollVelocity: 0,
+        isUserScrolling: false
+      };
+      
+      const state = columnStates[colIndex];
+      
+      // Add hover listeners to each image in column for pause on hover
+      items.forEach(item => {
+        item.addEventListener('mouseenter', () => {
+          state.hoverStartTime = performance.now();
+        });
+        
+        item.addEventListener('mouseleave', () => {
+          state.hoverStartTime = null;
+          state.isPaused = false;
+        });
+      });
+      
+      // Add scroll wheel control for any column
+      column.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // User control overrides auto-scroll temporarily
+        state.isUserScrolling = true;
+        
+        // Add to user scroll velocity (accumulate scroll input)
+        state.userScrollVelocity += e.deltaY * 0.5;
+        
+        // Reset user scrolling flag after a delay
+        clearTimeout(state.scrollTimeout);
+        state.scrollTimeout = setTimeout(() => {
+          state.isUserScrolling = false;
+          // Gradually decay user velocity back to auto-scroll
+          const decayInterval = setInterval(() => {
+            if (Math.abs(state.userScrollVelocity) < 1) {
+              state.userScrollVelocity = 0;
+              clearInterval(decayInterval);
+            } else {
+              state.userScrollVelocity *= 0.95;
+            }
+          }, 16);
+        }, 150);
+      }, { passive: false });
+      
       function animate(currentTime) {
         const deltaTime = (currentTime - lastFrameTime) / 1000; // Convert to seconds
         lastFrameTime = currentTime;
         
-        // Smooth continuous movement
-        currentPosition += (pixelsPerSecond * deltaTime) * direction;
+        // Check if should pause due to hover (1 second delay)
+        if (state.hoverStartTime && !state.isPaused) {
+          const hoverDuration = currentTime - state.hoverStartTime;
+          if (hoverDuration >= 1000) { // 1 second = 1000ms
+            state.isPaused = true;
+          }
+        }
+        
+        // Calculate movement
+        let movement = 0;
+        
+        if (state.isPaused && !state.isUserScrolling) {
+          // Paused - no movement
+          movement = 0;
+        } else if (state.isUserScrolling) {
+          // User is scrolling - use user velocity
+          movement = state.userScrollVelocity * deltaTime * 60; // Scale for frame rate
+        } else {
+          // Auto-scroll mode
+          movement = (pixelsPerSecond * deltaTime) * direction;
+          
+          // Blend in any remaining user velocity
+          if (Math.abs(state.userScrollVelocity) > 0.1) {
+            movement += state.userScrollVelocity * deltaTime * 30;
+          }
+        }
+        
+        currentPosition += movement;
         
         // Dynamic image recycling based on direction
         // Only recycle when images are completely off-screen
