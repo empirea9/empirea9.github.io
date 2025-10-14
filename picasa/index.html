@@ -502,23 +502,32 @@
         currentPosition += (pixelsPerSecond * deltaTime) * direction;
         
         // Dynamic image recycling based on direction
+        // Only recycle when images are completely off-screen
+        const viewportHeight = window.innerHeight;
+        
         if (direction === 1) {
-          // Scrolling upward - remove from bottom, add to top
+          // Scrolling upward - remove from bottom when completely off-screen below
           const lastItem = column.lastElementChild;
-          if (lastItem && currentPosition > lastItem.offsetHeight / 2) {
-            // Remove last item and add to top
-            column.removeChild(lastItem);
-            column.insertBefore(lastItem, column.firstElementChild);
-            currentPosition -= lastItem.offsetHeight + 16; // Adjust for gap
+          if (lastItem) {
+            const itemRect = lastItem.getBoundingClientRect();
+            // Only recycle when image is completely below viewport
+            if (itemRect.top > viewportHeight + 100) {
+              column.removeChild(lastItem);
+              column.insertBefore(lastItem, column.firstElementChild);
+              currentPosition -= lastItem.offsetHeight + 16; // Adjust for gap
+            }
           }
         } else {
-          // Scrolling downward - remove from top, add to bottom
+          // Scrolling downward - remove from top when completely off-screen above
           const firstItem = column.firstElementChild;
-          if (firstItem && currentPosition < -(firstItem.offsetHeight / 2)) {
-            // Remove first item and add to bottom
-            column.removeChild(firstItem);
-            column.appendChild(firstItem);
-            currentPosition += firstItem.offsetHeight + 16; // Adjust for gap
+          if (firstItem) {
+            const itemRect = firstItem.getBoundingClientRect();
+            // Only recycle when image is completely above viewport
+            if (itemRect.bottom < -100) {
+              column.removeChild(firstItem);
+              column.appendChild(firstItem);
+              currentPosition += firstItem.offsetHeight + 16; // Adjust for gap
+            }
           }
         }
         
