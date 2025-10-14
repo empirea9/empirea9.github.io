@@ -526,11 +526,11 @@
         e.preventDefault();
         e.stopPropagation();
         
-        // Only allow scrolling in the column's natural direction
+        // Only allow scrolling opposite to the column's natural direction
         const scrollDirection = e.deltaY > 0 ? -1 : 1; // deltaY > 0 = scroll down
         
-        // Check if user is trying to scroll in the column's auto-scroll direction
-        if (scrollDirection === direction) {
+        // Check if user is trying to scroll opposite to the column's auto-scroll direction
+        if (scrollDirection !== direction) {
           // User control overrides auto-scroll temporarily
           state.isUserScrolling = true;
           
