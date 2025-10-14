@@ -473,21 +473,23 @@
       });
     }
 
-    // Vertical infinite scroll animation for each column
+    // Vertical infinite scroll animation with dynamic image recycling
     function startColumnAnimation(column, colIndex) {
-      const columnHeight = column.scrollHeight / 3; // 1/3 height since we tripled
+      // Get all images in column (already tripled)
+      const items = Array.from(column.children);
+      const baseImageCount = items.length / 3; // Original count before tripling
       
       // Different speeds for each column (5 seconds for testing)
       const baseSpeed = 5;
       const speedVariation = (colIndex * 0.2) - 0.4; // Slight variation per column
       const duration = baseSpeed + speedVariation;
-      const speed = columnHeight / duration; // pixels per second
+      const pixelsPerSecond = 50; // Constant scroll speed in pixels/sec
       
       // Alternate directions for variety
       const direction = colIndex % 2 === 0 ? 1 : -1;
       
-      // All columns start at -columnHeight*2 for full content visibility
-      let currentPosition = -columnHeight * 2;
+      // Start position
+      let currentPosition = 0;
       
       let animationId = null;
       let lastFrameTime = performance.now();
@@ -496,21 +498,27 @@
         const deltaTime = (currentTime - lastFrameTime) / 1000; // Convert to seconds
         lastFrameTime = currentTime;
         
-        // Smooth continuous movement based on actual time delta
-        currentPosition += (speed * deltaTime) * direction;
+        // Smooth continuous movement
+        currentPosition += (pixelsPerSecond * deltaTime) * direction;
         
-        // Loop seamlessly - reset only after full column content has been shown
+        // Dynamic image recycling based on direction
         if (direction === 1) {
-          // Scrolling upward (position increases from -2*height toward -height)
-          // Reset when reaching -height (full column shown) to go back to -2*height
-          if (currentPosition >= -columnHeight) {
-            currentPosition = currentPosition - columnHeight;
+          // Scrolling upward - remove from bottom, add to top
+          const lastItem = column.lastElementChild;
+          if (lastItem && currentPosition > lastItem.offsetHeight / 2) {
+            // Remove last item and add to top
+            column.removeChild(lastItem);
+            column.insertBefore(lastItem, column.firstElementChild);
+            currentPosition -= lastItem.offsetHeight + 16; // Adjust for gap
           }
         } else {
-          // Scrolling downward (position decreases from -2*height toward -3*height)
-          // Reset when reaching -3*height (full column shown) to go back to -2*height
-          if (currentPosition <= -columnHeight * 3) {
-            currentPosition = currentPosition + columnHeight;
+          // Scrolling downward - remove from top, add to bottom
+          const firstItem = column.firstElementChild;
+          if (firstItem && currentPosition < -(firstItem.offsetHeight / 2)) {
+            // Remove first item and add to bottom
+            column.removeChild(firstItem);
+            column.appendChild(firstItem);
+            currentPosition += firstItem.offsetHeight + 16; // Adjust for gap
           }
         }
         
