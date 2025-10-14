@@ -526,36 +526,42 @@
         e.preventDefault();
         e.stopPropagation();
         
-        // User control overrides auto-scroll temporarily
-        state.isUserScrolling = true;
+        // Only allow scrolling in the column's natural direction
+        const scrollDirection = e.deltaY > 0 ? -1 : 1; // deltaY > 0 = scroll down
         
-        // Add to user scroll velocity (accumulate scroll input)
-        state.userScrollVelocity += e.deltaY * 0.5;
-        
-        // Reset user scrolling flag after a delay
-        clearTimeout(state.scrollTimeout);
-        state.scrollTimeout = setTimeout(() => {
-          state.isUserScrolling = false;
-          // Gradually decay user velocity back to auto-scroll
-          const decayInterval = setInterval(() => {
-            if (Math.abs(state.userScrollVelocity) < 1) {
-              state.userScrollVelocity = 0;
-              clearInterval(decayInterval);
-            } else {
-              state.userScrollVelocity *= 0.95;
-            }
-          }, 16);
-        }, 150);
+        // Check if user is trying to scroll in the column's auto-scroll direction
+        if (scrollDirection === direction) {
+          // User control overrides auto-scroll temporarily
+          state.isUserScrolling = true;
+          
+          // Add to user scroll velocity with reduced speed (0.15 instead of 0.5)
+          state.userScrollVelocity += e.deltaY * 0.15;
+          
+          // Reset user scrolling flag after a delay
+          clearTimeout(state.scrollTimeout);
+          state.scrollTimeout = setTimeout(() => {
+            state.isUserScrolling = false;
+            // Gradually decay user velocity back to auto-scroll
+            const decayInterval = setInterval(() => {
+              if (Math.abs(state.userScrollVelocity) < 1) {
+                state.userScrollVelocity = 0;
+                clearInterval(decayInterval);
+              } else {
+                state.userScrollVelocity *= 0.95;
+              }
+            }, 16);
+          }, 150);
+        }
       }, { passive: false });
       
       function animate(currentTime) {
         const deltaTime = (currentTime - lastFrameTime) / 1000; // Convert to seconds
         lastFrameTime = currentTime;
         
-        // Check if should pause due to hover (1 second delay)
+        // Check if should pause due to hover (0.5 second delay)
         if (state.hoverStartTime && !state.isPaused) {
           const hoverDuration = currentTime - state.hoverStartTime;
-          if (hoverDuration >= 1000) { // 1 second = 1000ms
+          if (hoverDuration >= 500) { // 0.5 second = 500ms
             state.isPaused = true;
           }
         }
