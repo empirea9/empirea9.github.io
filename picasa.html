@@ -142,6 +142,18 @@
       max-height: 75vh;
       border-radius: 8px;
       box-shadow: 0 8px 40px rgba(0, 0, 0, 0.8);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .lightbox-content img.zoomed {
+      max-width: 98vw;
+      max-height: 98vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 0;
+      cursor: zoom-out;
     }
 
     .lightbox-close {
@@ -652,60 +664,48 @@
     // Display image metadata
     function displayMetadata(metadata) {
       const metadataDiv = document.getElementById('imageMetadata');
-      let hasMetadata = false;
       let html = '';
 
-      if (metadata.dateTime) {
-        html += `<div class="metadata-row"><span class="metadata-label">Date & Time:</span> <span class="metadata-value">${metadata.dateTime}</span></div>`;
-        hasMetadata = true;
-      }
+      // Always show fields, use N/A if not available
+      const dateTime = metadata.dateTime || 'N/A';
+      html += `<div class="metadata-row"><span class="metadata-label">Date & Time:</span> <span class="metadata-value">${dateTime}</span></div>`;
 
-      if (metadata.make || metadata.model) {
-        const camera = [metadata.make, metadata.model].filter(Boolean).join(' ');
-        html += `<div class="metadata-row"><span class="metadata-label">Camera:</span> <span class="metadata-value">${camera}</span></div>`;
-        hasMetadata = true;
-      }
+      const camera = (metadata.make || metadata.model) ? 
+        [metadata.make, metadata.model].filter(Boolean).join(' ') : 'N/A';
+      html += `<div class="metadata-row"><span class="metadata-label">Camera:</span> <span class="metadata-value">${camera}</span></div>`;
 
-      if (metadata.lens) {
-        html += `<div class="metadata-row"><span class="metadata-label">Lens:</span> <span class="metadata-value">${metadata.lens}</span></div>`;
-        hasMetadata = true;
-      }
+      const lens = metadata.lens || 'N/A';
+      html += `<div class="metadata-row"><span class="metadata-label">Lens:</span> <span class="metadata-value">${lens}</span></div>`;
 
+      let focal = 'N/A';
       if (metadata.focalLength) {
-        const focal = metadata.focalLength.numerator ? 
+        focal = metadata.focalLength.numerator ? 
           `${metadata.focalLength.numerator / metadata.focalLength.denominator}mm` : 
           `${metadata.focalLength}mm`;
-        html += `<div class="metadata-row"><span class="metadata-label">Focal Length:</span> <span class="metadata-value">${focal}</span></div>`;
-        hasMetadata = true;
       }
+      html += `<div class="metadata-row"><span class="metadata-label">Focal Length:</span> <span class="metadata-value">${focal}</span></div>`;
 
+      let aperture = 'N/A';
       if (metadata.aperture) {
-        const aperture = metadata.aperture.numerator ? 
+        aperture = metadata.aperture.numerator ? 
           `f/${(metadata.aperture.numerator / metadata.aperture.denominator).toFixed(1)}` : 
           `f/${metadata.aperture}`;
-        html += `<div class="metadata-row"><span class="metadata-label">Aperture:</span> <span class="metadata-value">${aperture}</span></div>`;
-        hasMetadata = true;
       }
+      html += `<div class="metadata-row"><span class="metadata-label">Aperture:</span> <span class="metadata-value">${aperture}</span></div>`;
 
+      let exposure = 'N/A';
       if (metadata.exposureTime) {
-        const exposure = metadata.exposureTime.numerator ? 
+        exposure = metadata.exposureTime.numerator ? 
           `${metadata.exposureTime.numerator}/${metadata.exposureTime.denominator}s` : 
           `${metadata.exposureTime}s`;
-        html += `<div class="metadata-row"><span class="metadata-label">Shutter Speed:</span> <span class="metadata-value">${exposure}</span></div>`;
-        hasMetadata = true;
       }
+      html += `<div class="metadata-row"><span class="metadata-label">Shutter Speed:</span> <span class="metadata-value">${exposure}</span></div>`;
 
-      if (metadata.iso) {
-        html += `<div class="metadata-row"><span class="metadata-label">ISO:</span> <span class="metadata-value">${metadata.iso}</span></div>`;
-        hasMetadata = true;
-      }
+      const iso = metadata.iso || 'N/A';
+      html += `<div class="metadata-row"><span class="metadata-label">ISO:</span> <span class="metadata-value">${iso}</span></div>`;
 
-      if (hasMetadata) {
-        metadataDiv.innerHTML = html;
-        metadataDiv.style.display = 'block';
-      } else {
-        metadataDiv.style.display = 'none';
-      }
+      metadataDiv.innerHTML = html;
+      metadataDiv.style.display = 'block';
     }
 
     // Lightbox functionality
@@ -726,11 +726,31 @@
       const imageSrc = shuffledImages[currentLightboxIndex];
       lightboxImg.src = imageSrc;
       
+      // Remove zoomed class when changing images
+      lightboxImg.classList.remove('zoomed');
+      
+      // Show metadata
+      document.getElementById('imageMetadata').style.display = 'block';
+      
       // Read and display metadata
       lightboxImg.onload = function() {
         readImageMetadata(lightboxImg, displayMetadata);
       };
     }
+
+    // Toggle zoom on image click/tap
+    lightboxImg.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const isZoomed = this.classList.toggle('zoomed');
+      
+      // Hide/show metadata based on zoom state
+      const metadataDiv = document.getElementById('imageMetadata');
+      if (isZoomed) {
+        metadataDiv.style.display = 'none';
+      } else {
+        metadataDiv.style.display = 'block';
+      }
+    });
 
     function closeLightbox() {
       lightbox.classList.remove('active');
