@@ -19,7 +19,7 @@
       width: 100vw;
       height: 100vh;
       z-index: 0;
-      background-image: url('./assets/image2.png');
+      background-image: url('./assets/IMG_20240708_081641.jpg');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -237,31 +237,11 @@
       padding-right: 20px;
     }
 
-    /* Image metadata display */
-    .image-metadata {
-      margin-top: 20px;
-      padding: 15px 20px;
-      background: rgba(0, 0, 0, 0.7);
-      border-radius: 8px;
-      max-width: 600px;
-      color: #ededed;
-      font-size: 0.9rem;
-      line-height: 1.6;
-    }
-
-    .metadata-row {
-      margin: 5px 0;
-    }
-
-    .metadata-label {
-      color: #aaa;
-      display: inline-block;
-      width: 120px;
-    }
-
-    .metadata-value {
-      color: #fff;
-      font-weight: 600;
+    /* Lazy loading optimization */
+    .masonry-column img {
+      loading: lazy;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
     }
 
     /* Responsive sizing */
@@ -363,12 +343,7 @@
     
     <div class="lightbox-content">
       <div class="lightbox-image-container">
-        <img src="" alt="Enlarged view" id="lightboxImg">
-      </div>
-      
-      <!-- Image metadata -->
-      <div class="image-metadata" id="imageMetadata" style="display: none;">
-        <!-- Metadata will be populated here -->
+        <img src="" alt="Enlarged view" id="lightboxImg" loading="eager">
       </div>
     </div>
     
@@ -405,7 +380,6 @@
       './assets/IMG_20240708_091039-ps.jpg',
       './assets/IMG_20250411_184811.jpg',
       './assets/IMG_20240709_121028.jpg',
-      './assets/image2.png',
       './assets/IMG_20240709_121046.jpg',
       './assets/done1.jpg',
       './assets/post-3.jpg',
@@ -417,7 +391,6 @@
       './assets/IMG_20250607_081810.jpg',
       './assets/post-1.jpg',
       './assets/IMG_20240314_125103.jpg',
-      './assets/image3.png',
       './assets/IMG_20240708_132053.jpg'
     ];
 
@@ -641,75 +614,7 @@
       animationId = requestAnimationFrame(animate);
     }
 
-    // Read EXIF metadata from image
-    function readImageMetadata(imgElement, callback) {
-      // Check if EXIF library is available
-      if (typeof EXIF === 'undefined') {
-        callback({}); // Return empty metadata if library not available
-        return;
-      }
-      
-      EXIF.getData(imgElement, function() {
-        const metadata = {
-          make: EXIF.getTag(this, "Make"),
-          model: EXIF.getTag(this, "Model"),
-          dateTime: EXIF.getTag(this, "DateTime"),
-          focalLength: EXIF.getTag(this, "FocalLength"),
-          aperture: EXIF.getTag(this, "FNumber"),
-          iso: EXIF.getTag(this, "ISOSpeedRatings"),
-          exposureTime: EXIF.getTag(this, "ExposureTime"),
-          lens: EXIF.getTag(this, "LensModel")
-        };
-        callback(metadata);
-      });
-    }
 
-    // Display image metadata
-    function displayMetadata(metadata) {
-      const metadataDiv = document.getElementById('imageMetadata');
-      let html = '';
-
-      // Always show fields, use N/A if not available
-      const dateTime = metadata.dateTime || 'N/A';
-      html += `<div class="metadata-row"><span class="metadata-label">Date & Time:</span> <span class="metadata-value">${dateTime}</span></div>`;
-
-      const camera = (metadata.make || metadata.model) ? 
-        [metadata.make, metadata.model].filter(Boolean).join(' ') : 'N/A';
-      html += `<div class="metadata-row"><span class="metadata-label">Camera:</span> <span class="metadata-value">${camera}</span></div>`;
-
-      const lens = metadata.lens || 'N/A';
-      html += `<div class="metadata-row"><span class="metadata-label">Lens:</span> <span class="metadata-value">${lens}</span></div>`;
-
-      let focal = 'N/A';
-      if (metadata.focalLength) {
-        focal = metadata.focalLength.numerator ? 
-          `${metadata.focalLength.numerator / metadata.focalLength.denominator}mm` : 
-          `${metadata.focalLength}mm`;
-      }
-      html += `<div class="metadata-row"><span class="metadata-label">Focal Length:</span> <span class="metadata-value">${focal}</span></div>`;
-
-      let aperture = 'N/A';
-      if (metadata.aperture) {
-        aperture = metadata.aperture.numerator ? 
-          `f/${(metadata.aperture.numerator / metadata.aperture.denominator).toFixed(1)}` : 
-          `f/${metadata.aperture}`;
-      }
-      html += `<div class="metadata-row"><span class="metadata-label">Aperture:</span> <span class="metadata-value">${aperture}</span></div>`;
-
-      let exposure = 'N/A';
-      if (metadata.exposureTime) {
-        exposure = metadata.exposureTime.numerator ? 
-          `${metadata.exposureTime.numerator}/${metadata.exposureTime.denominator}s` : 
-          `${metadata.exposureTime}s`;
-      }
-      html += `<div class="metadata-row"><span class="metadata-label">Shutter Speed:</span> <span class="metadata-value">${exposure}</span></div>`;
-
-      const iso = metadata.iso || 'N/A';
-      html += `<div class="metadata-row"><span class="metadata-label">ISO:</span> <span class="metadata-value">${iso}</span></div>`;
-
-      metadataDiv.innerHTML = html;
-      metadataDiv.style.display = 'block';
-    }
 
     // Lightbox functionality
     const lightbox = document.getElementById('lightbox');
@@ -731,34 +636,17 @@
       
       // Remove zoomed class when changing images
       lightboxImg.classList.remove('zoomed');
-      
-      // Show metadata
-      document.getElementById('imageMetadata').style.display = 'block';
-      
-      // Read and display metadata
-      lightboxImg.onload = function() {
-        readImageMetadata(lightboxImg, displayMetadata);
-      };
     }
 
     // Toggle zoom on image click/tap
     lightboxImg.addEventListener('click', function(e) {
       e.stopPropagation();
-      const isZoomed = this.classList.toggle('zoomed');
-      
-      // Hide/show metadata based on zoom state
-      const metadataDiv = document.getElementById('imageMetadata');
-      if (isZoomed) {
-        metadataDiv.style.display = 'none';
-      } else {
-        metadataDiv.style.display = 'block';
-      }
+      this.classList.toggle('zoomed');
     });
 
     function closeLightbox() {
       lightbox.classList.remove('active');
       document.body.style.overflow = '';
-      document.getElementById('imageMetadata').style.display = 'none';
     }
 
     function showPrevImage() {
