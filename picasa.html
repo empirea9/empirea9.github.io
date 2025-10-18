@@ -5,6 +5,8 @@
   <title>Picasa</title>
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap">
+  <link rel="preconnect" href="./assets">
+  <link rel="dns-prefetch" href="./assets">
   <style>
     body {
       background: #0c0c0d;
@@ -57,6 +59,8 @@
       width: 280px;
       flex-shrink: 0;
       will-change: transform;
+      contain: layout style paint;
+      backface-visibility: hidden;
     }
 
     .masonry-item {
@@ -83,6 +87,11 @@
       display: block;
       border-radius: 8px;
       transition: transform 0.3s ease;
+      will-change: transform;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
     }
 
     /* Lightbox styles */
@@ -144,6 +153,9 @@
       box-shadow: 0 8px 40px rgba(0, 0, 0, 0.8);
       cursor: pointer;
       transition: all 0.3s ease;
+      will-change: transform;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
     }
 
     .lightbox-content img.zoomed {
@@ -237,11 +249,18 @@
       padding-right: 20px;
     }
 
-    /* Lazy loading optimization */
+    /* Performance optimizations */
     .masonry-column img {
       loading: lazy;
       image-rendering: -webkit-optimize-contrast;
       image-rendering: crisp-edges;
+      will-change: transform;
+      content-visibility: auto;
+      contain-intrinsic-size: 280px 400px;
+    }
+    
+    .masonry-column {
+      contain: layout style paint;
     }
 
     /* Responsive sizing */
@@ -444,8 +463,13 @@
           const img = document.createElement('img');
           img.src = imagePath;
           img.alt = `Gallery image ${originalIndex + 1}`;
-          img.loading = 'lazy';
+          img.loading = 'lazy'; // Native lazy loading
+          img.decoding = 'async'; // Async decoding for smoother rendering
           img.dataset.index = originalIndex;
+          
+          // Optimize image rendering with CSS hints
+          img.style.contentVisibility = 'auto'; // Improve initial rendering performance
+          img.style.containIntrinsicSize = '280px 400px'; // Hint at size for better layout
           
           // Add click event for lightbox
           item.addEventListener('click', (e) => {
@@ -492,7 +516,8 @@
         isPaused: false,
         hoverStartTime: null,
         userScrollVelocity: 0,
-        isUserScrolling: false
+        isUserScrolling: false,
+        lastRecycleTime: 0
       };
       
       const state = columnStates[colIndex];
@@ -546,6 +571,9 @@
         const deltaTime = (currentTime - lastFrameTime) / 1000; // Convert to seconds
         lastFrameTime = currentTime;
         
+        // Throttle expensive operations
+        const shouldRecycle = (currentTime - state.lastRecycleTime > 100); // Max 10 recycles/second
+        
         // Check if should pause due to hover (0.5 second delay)
         if (state.hoverStartTime && !state.isPaused) {
           const hoverDuration = currentTime - state.hoverStartTime;
@@ -575,32 +603,36 @@
         
         currentPosition += movement;
         
-        // Dynamic image recycling based on direction
+        // Dynamic image recycling based on direction (throttled for performance)
         // Only recycle when images are completely off-screen
-        const viewportHeight = window.innerHeight;
-        
-        if (direction === 1) {
-          // Scrolling upward - remove from bottom when completely off-screen below
-          const lastItem = column.lastElementChild;
-          if (lastItem) {
-            const itemRect = lastItem.getBoundingClientRect();
-            // Only recycle when image is completely below viewport
-            if (itemRect.top > viewportHeight + 100) {
-              column.removeChild(lastItem);
-              column.insertBefore(lastItem, column.firstElementChild);
-              currentPosition -= lastItem.offsetHeight + 16; // Adjust for gap
+        if (shouldRecycle) {
+          const viewportHeight = window.innerHeight;
+          
+          if (direction === 1) {
+            // Scrolling upward - remove from bottom when completely off-screen below
+            const lastItem = column.lastElementChild;
+            if (lastItem) {
+              const itemRect = lastItem.getBoundingClientRect();
+              // Only recycle when image is completely below viewport
+              if (itemRect.top > viewportHeight + 100) {
+                column.removeChild(lastItem);
+                column.insertBefore(lastItem, column.firstElementChild);
+                currentPosition -= lastItem.offsetHeight + 16; // Adjust for gap
+                state.lastRecycleTime = currentTime;
+              }
             }
-          }
-        } else {
-          // Scrolling downward - remove from top when completely off-screen above
-          const firstItem = column.firstElementChild;
-          if (firstItem) {
-            const itemRect = firstItem.getBoundingClientRect();
-            // Only recycle when image is completely above viewport
-            if (itemRect.bottom < -100) {
-              column.removeChild(firstItem);
-              column.appendChild(firstItem);
-              currentPosition += firstItem.offsetHeight + 16; // Adjust for gap
+          } else {
+            // Scrolling downward - remove from top when completely off-screen above
+            const firstItem = column.firstElementChild;
+            if (firstItem) {
+              const itemRect = firstItem.getBoundingClientRect();
+              // Only recycle when image is completely above viewport
+              if (itemRect.bottom < -100) {
+                column.removeChild(firstItem);
+                column.appendChild(firstItem);
+                currentPosition += firstItem.offsetHeight + 16; // Adjust for gap
+                state.lastRecycleTime = currentTime;
+              }
             }
           }
         }
