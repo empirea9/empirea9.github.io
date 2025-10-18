@@ -56,9 +56,8 @@
       gap: 16px;
       width: 280px;
       flex-shrink: 0;
-      will-change: transform;
-      contain: layout style paint;
       backface-visibility: hidden;
+      transform: translate3d(0, 0, 0);
     }
 
     .masonry-item {
@@ -80,16 +79,17 @@
     .masonry-item img {
       width: 100%;
       height: auto;
-      max-height: 400px;
+      max-height: 380px;
       object-fit: cover;
       display: block;
       border-radius: 8px;
       transition: transform 0.3s ease;
-      will-change: transform;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
-      transform: translateZ(0);
-      -webkit-transform: translateZ(0);
+      transform: translate3d(0, 0, 0);
+      -webkit-transform: translate3d(0, 0, 0);
     }
 
     /* Lightbox styles */
