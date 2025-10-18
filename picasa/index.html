@@ -57,6 +57,8 @@
       width: 280px;
       flex-shrink: 0;
       will-change: transform;
+      contain: layout style paint;
+      backface-visibility: hidden;
     }
 
     .masonry-item {
@@ -83,6 +85,11 @@
       display: block;
       border-radius: 8px;
       transition: transform 0.3s ease;
+      will-change: transform;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
     }
 
     /* Lightbox styles */
@@ -144,6 +151,9 @@
       box-shadow: 0 8px 40px rgba(0, 0, 0, 0.8);
       cursor: pointer;
       transition: all 0.3s ease;
+      will-change: transform;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
     }
 
     .lightbox-content img.zoomed {
