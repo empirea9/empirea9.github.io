@@ -385,7 +385,7 @@ h1 {
   inset: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 0;
+  z-index: -1;
   background-image: url('./assets/melody.jpg');
   background-size: cover;
   background-position: center;
@@ -397,6 +397,7 @@ h1 {
 .melody-content-wrapper {
   position: relative;
   z-index: 1;
+  background: transparent;
 }
 
 .melody-main {
@@ -537,7 +538,10 @@ h1 {
 /* --- Footer & Profile Quadrants --- */
 .melody-footer {
   padding: 100px 20px 80px;
-  background: #0a0c0b;
+  background: rgba(10, 12, 11, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255,255,255,0.1);
   box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
   margin-top: 50px;
 }
@@ -551,8 +555,10 @@ h1 {
 }
 
 .profile-quadrant {
-  background: linear-gradient(145deg, #1a1e1c, #101211);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(20, 40, 30, 0.3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(47, 255, 127, 0.2);
   border-radius: 24px;
   padding: 40px;
   text-align: center;
@@ -564,7 +570,7 @@ h1 {
 
 .profile-quadrant:hover {
   transform: translateY(-10px);
-  border-color: rgba(47, 255, 127, 0.4);
+  border-color: rgba(47, 255, 127, 0.5);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
 }
 
