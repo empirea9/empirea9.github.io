@@ -2,23 +2,1259 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Melody - Coming Soon</title>
+  <title>Melody</title>
   <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap">
+  <style>
+    body {
+      background: #0c0c0d;
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-family: 'SF Pro Display', 'SF Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Arial, sans-serif;
+    }
+    .melody-bg-blur {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      background-image: url('../assets/image3.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      filter: blur(24px) brightness(0.7);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+    .melody-content-wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100vw;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-family: inherit;
+    }
+    main {
+      margin-top: 80px;
+      margin-bottom: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 60vh;
+    }
+    .text-area {
+      width: 100%;
+      text-align: center;
+      margin: 0 auto;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+    .melody-typewriter {
+      font-size: 6.6rem;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 0 26px rgba(0,0,0,0.8), 0 0 4px rgba(255,255,255,0.6);
+      letter-spacing: .01em;
+      font-family: 'Quicksand', 'SF Pro Display', 'SF Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Arial, sans-serif;
+      transition: color .2s;
+      cursor: pointer;
+      display: inline-block;
+      position: relative;
+      min-height: 1.1em;
+      z-index: 100;
+    }
+    .typewriter-cursor {
+      display: inline-block;
+      width: 32px;
+      height: 1.07em;
+      vertical-align: middle;
+      background: none;
+      border-right: 4px solid #fff;
+      animation: blink-cursor 1.1s steps(1) infinite;
+      margin-left: 2px;
+      position: absolute;
+    }
+    
+    #typewriterText {
+      color: #fff !important;
+      text-shadow: 0 0 26px rgba(0,0,0,0.8), 0 0 4px rgba(255,255,255,0.6);
+      display: inline-block;
+      min-width: 1em;
+    }
+    @keyframes blink-cursor {
+      0%, 50% { border-right: 4px solid #fff; }
+      51%, 100% { border-right: 4px solid transparent; }
+    }
+
+    /* Carousel Section Styles */
+    .carousel-section {
+      margin: 100px auto;
+      width: 100%;
+    }
+
+    .carousel-title {
+      text-align: center;
+      font-size: 4rem;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      margin-bottom: 60px;
+      font-family: 'Quicksand', 'SF Pro Display', 'SF Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Arial, sans-serif;
+      min-height: 1.2em;
+    }
+
+    /* Track Carousel Styles */
+    .track-carousel-container {
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      padding: 0;
+    }
+
+    .track-carousel {
+      position: relative;
+      width: 100%;
+      height: 650px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .track-cards-wrapper {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .track-cards {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      gap: 55px;
+      justify-content: center;
+      position: relative;
+      padding-top: 40px;
+    }
+
+    .track-card {
+      flex-shrink: 0;
+      width: 180px;
+      height: 270px;
+      border-radius: 12px;
+      overflow: visible;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      transform-origin: center center;
+    }
+
+    .track-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      border-radius: 12px;
+    }
+
+    .track-title {
+      position: absolute;
+      bottom: -35px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      white-space: nowrap;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+      opacity: 0;
+      transition: all 0.4s ease;
+      pointer-events: none;
+      z-index: 10;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .track-card.center {
+      width: 260px;
+      height: 360px;
+      transform: scale(1.3);
+      box-shadow: 0 15px 60px rgba(0, 255, 65, 0.2);
+      z-index: 10;
+      animation: zoomIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes zoomIn {
+      0% {
+        transform: scale(0.7);
+        opacity: 0.3;
+        filter: brightness(0.4);
+      }
+      50% {
+        transform: scale(1.4);
+        opacity: 0.8;
+      }
+      100% {
+        transform: scale(1.3);
+        opacity: 1;
+        filter: brightness(1);
+      }
+    }
+
+    .track-card.center .track-title {
+      opacity: 1;
+      bottom: -45px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .track-card.dimmed {
+      transform: scale(0.7);
+      opacity: 0.4;
+      filter: brightness(0.5);
+    }
+
+    .track-card.scaling-in {
+      transform: scale(0.85);
+      opacity: 0.7;
+      filter: brightness(0.8);
+    }
+
+    .track-card.scaling-out {
+      transform: scale(0.7);
+      opacity: 0.5;
+      filter: brightness(0.6);
+    }
+
+    /* Artist Carousel Styles */
+    .artist-carousel-container {
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      padding: 0;
+    }
+
+    .artist-carousel {
+      position: relative;
+      width: 100%;
+      height: 550px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .artist-cards-wrapper {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .artist-cards {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      gap: 55px;
+      justify-content: center;
+      position: relative;
+      padding-top: 40px;
+    }
+
+    .artist-card {
+      flex-shrink: 0;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      overflow: visible;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      transform-origin: center center;
+    }
+
+    .artist-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      border-radius: 50%;
+    }
+
+    .artist-name {
+      position: absolute;
+      bottom: -35px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      white-space: nowrap;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+      opacity: 0;
+      transition: all 0.4s ease;
+      pointer-events: none;
+      z-index: 10;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .artist-card.center {
+      width: 260px;
+      height: 260px;
+      transform: scale(1.3);
+      box-shadow: 0 15px 60px rgba(0, 255, 65, 0.2);
+      z-index: 10;
+    }
+
+    .artist-card.center .artist-name {
+      opacity: 1;
+      bottom: -45px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .artist-card.dimmed {
+      transform: scale(0.7);
+      opacity: 0.4;
+      filter: brightness(0.5);
+    }
+
+    .artist-card.scaling-in {
+      transform: scale(0.85);
+      opacity: 0.7;
+      filter: brightness(0.8);
+    }
+
+    .artist-card.scaling-out {
+      transform: scale(0.7);
+      opacity: 0.5;
+      filter: brightness(0.6);
+    }
+
+    .carousel-arrow {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .carousel-arrow.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .carousel-arrow:hover {
+      background: rgba(0, 255, 65, 0.3);
+      transform: scale(1.1);
+    }
+
+    .carousel-arrow-left {
+      left: 40px;
+    }
+
+    .carousel-arrow-right {
+      right: 40px;
+    }
+
+    .carousel-arrow svg {
+      width: 48px;
+      height: 48px;
+    }
+
+    /* Floating Music Player Widget */
+    .music-player-widget {
+      position: fixed;
+      right: 40px;
+      top: 120px;
+      width: 280px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0, 255, 65, 0.2);
+      z-index: 90;
+      transition: all 0.3s ease;
+    }
+
+    .music-player-widget:hover {
+      box-shadow: 0 8px 40px rgba(0, 255, 65, 0.3), 0 0 0 1px rgba(0, 255, 65, 0.4);
+      transform: translateY(-5px);
+    }
+
+    .music-player-widget h3 {
+      margin: 0 0 15px 0;
+      font-size: 1.2rem;
+      color: #00ff41;
+      font-weight: 600;
+      text-align: center;
+      text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+    }
+
+    .music-player-album {
+      width: 100%;
+      height: 240px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .music-player-album img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .music-player-info {
+      text-align: center;
+    }
+
+    .music-player-track {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 5px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .music-player-artist {
+      font-size: 0.9rem;
+      color: #ededed;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #00ff41;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Profile Quadrants Section */
+    .profiles-section {
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 20px 100px;
+      margin-top: 50px;
+      gap: 48px;
+    }
+
+    .profile-quadrant {
+      position: relative;
+      background: linear-gradient(135deg, rgba(0, 255, 65, 0.05) 0%, rgba(0, 0, 0, 0.3) 100%);
+      border-radius: 28px;
+      box-shadow: 0 0 32px rgba(0, 255, 65, 0.1);
+      overflow: hidden;
+      width: 45vw;
+      max-width: 500px;
+      min-height: 380px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.28s cubic-bezier(.5,1.55,.41,1.01), box-shadow 0.23s;
+      will-change: transform, box-shadow;
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(0, 255, 65, 0.1);
+      padding: 40px;
+    }
+
+    .profile-quadrant::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background-image: url('../assets/image3.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      filter: blur(24px) brightness(0.7);
+      opacity: 0.3;
+    }
+
+    .profile-quadrant:hover {
+      transform: scale(1.025) translateY(-10px);
+      box-shadow: 0 16px 44px rgba(0, 255, 65, 0.2), 0 0 50px rgba(0, 255, 65, 0.1);
+    }
+
+    .profile-quadrant-inner {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .profile-icon {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 30px;
+      filter: drop-shadow(0 4px 20px rgba(0, 255, 65, 0.3));
+    }
+
+    .profile-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .profile-quadrant h3 {
+      margin: 0 0 16px 0;
+      font-size: 2.4rem;
+      color: #fff;
+      text-shadow: 0 0 14px rgba(0, 255, 65, 0.4);
+      font-weight: 700;
+      font-family: inherit;
+    }
+
+    .profile-quadrant p {
+      margin: 0 0 24px 0;
+      font-size: 1.15rem;
+      color: #ededed;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+      font-family: inherit;
+      line-height: 1.5;
+    }
+
+    .profile-link {
+      display: inline-block;
+      padding: 16px 40px;
+      background: linear-gradient(135deg, #00ff41 0%, #00cc33 100%);
+      color: #0c0c0d;
+      text-decoration: none;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 255, 65, 0.4);
+      text-shadow: none;
+    }
+
+    .profile-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 255, 65, 0.6);
+      background: linear-gradient(135deg, #00cc33 0%, #00ff41 100%);
+    }
+
+    /* Responsive styles */
+    @media (max-width: 1400px) {
+      .music-player-widget {
+        right: 20px;
+        top: 100px;
+        width: 240px;
+      }
+
+      .music-player-album {
+        height: 200px;
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .music-player-widget {
+        display: none;
+      }
+    }
+
+    @media (max-width: 900px) {
+      main { 
+        margin-top: 40px; 
+        margin-bottom: 30px; 
+      }
+      .melody-typewriter {
+        font-size: 3.2rem;
+      }
+      .carousel-title {
+        font-size: 2.5rem;
+      }
+      .profiles-section {
+        flex-direction: column;
+        gap: 30px;
+      }
+      .profile-quadrant {
+        width: 90vw;
+        max-width: 500px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .carousel-section {
+        margin: 60px auto;
+      }
+
+      .carousel-title {
+        font-size: 2rem;
+        margin-bottom: 40px;
+      }
+
+      .track-carousel-container,
+      .artist-carousel-container {
+        margin: 0 auto;
+        padding: 0;
+      }
+
+      .track-carousel {
+        height: 480px;
+      }
+
+      .artist-carousel {
+        height: 400px;
+      }
+
+      .track-card,
+      .artist-card {
+        width: 110px;
+        height: 165px;
+      }
+
+      .artist-card {
+        height: 110px;
+      }
+
+      .track-card.center {
+        width: 145px;
+        height: 218px;
+        transform: scale(1.2);
+      }
+
+      .artist-card.center {
+        width: 145px;
+        height: 145px;
+        transform: scale(1.2);
+      }
+
+      .track-cards,
+      .artist-cards {
+        gap: 30px;
+        padding-top: 25px;
+      }
+
+      .carousel-arrow {
+        width: 50px;
+        height: 50px;
+      }
+
+      .carousel-arrow svg {
+        width: 30px;
+        height: 30px;
+      }
+
+      .carousel-arrow-left {
+        left: 0;
+      }
+
+      .carousel-arrow-right {
+        right: 0;
+      }
+
+      .track-title,
+      .artist-name {
+        bottom: -25px;
+        font-size: 10px;
+        max-width: 140px;
+      }
+
+      .track-card.center .track-title,
+      .artist-card.center .artist-name {
+        bottom: -35px;
+        font-size: 12px;
+        max-width: 160px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .melody-typewriter {
+        font-size: 2.1rem;
+      }
+      .profile-quadrant h3 {
+        font-size: 1.5rem;
+      }
+      .profile-quadrant p {
+        font-size: 1rem;
+      }
+      .profile-link {
+        padding: 12px 30px;
+        font-size: 0.95rem;
+      }
+      .profile-icon {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 20px;
+      }
+    }
+  </style>
 </head>
 <body>
   <script src="../url-handler.js"></script>
-  <nav>
-    <div class="nav-links">
-      <a href="../">Home</a>
-      <a href="../arcade">Arcade</a>
-      <a href="../picasa">Picasa</a>
-      <a href="../cinema">Cinema</a>
-      <a href="../melody" class="active">Melody</a>
+  <div class="melody-bg-blur"></div>
+  <div class="melody-content-wrapper">
+    <nav>
+      <div class="nav-links">
+        <a href="../">Home</a>
+        <a href="../arcade">Arcade</a>
+        <a href="../picasa">Picasa</a>
+        <a href="../cinema">Cinema</a>
+        <a href="../melody" class="active">Melody</a>
+      </div>
+    </nav>
+    <main>
+      <div class="text-area">
+        <h1>
+          <span
+            class="melody-typewriter"
+            id="melodyTypewriter"
+            tabindex="0"
+            aria-label="Melody, my music preferences"
+          >
+            <span id="typewriterText"></span>
+            <span class="typewriter-cursor" id="typewriterCursor"></span>
+          </span>
+        </h1>
+      </div>
+    </main>
+
+    <!-- Floating Music Player Widget -->
+    <div class="music-player-widget" id="musicPlayerWidget">
+      <h3>Recently Played</h3>
+      <div class="music-player-album" id="playerAlbum">
+        <div style="display: flex; align-items: center; justify-content: center; height: 100%; background: rgba(0, 0, 0, 0.3);">
+          <div class="loading-spinner"></div>
+        </div>
+      </div>
+      <div class="music-player-info">
+        <div class="music-player-track" id="playerTrack">Loading...</div>
+        <div class="music-player-artist" id="playerArtist">...</div>
+      </div>
     </div>
-  </nav>
-  <main>
-    <h1>Melody</h1>
-    <p>Coming Soon - My Playlists showcase</p>
-  </main>
+    
+    <!-- Top Tracks Carousel -->
+    <div class="carousel-section">
+      <h2 class="carousel-title" id="tracksCarouselTitle">
+        <span id="tracksCarouselTitleText"></span>
+      </h2>
+      <div class="track-carousel-container">
+        <div class="track-carousel" id="trackCarousel">
+          <div class="carousel-arrow carousel-arrow-left" id="trackCarouselArrowLeft">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+              <polyline points="15,18 9,12 15,6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="track-cards-wrapper">
+            <div class="track-cards" id="trackCards">
+              <!-- Track cards will be dynamically generated -->
+            </div>
+          </div>
+          <div class="carousel-arrow carousel-arrow-right" id="trackCarouselArrowRight">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+              <polyline points="9,6 15,12 9,18" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Artists Carousel -->
+    <div class="carousel-section">
+      <h2 class="carousel-title" id="artistsCarouselTitle">
+        <span id="artistsCarouselTitleText"></span>
+      </h2>
+      <div class="artist-carousel-container">
+        <div class="artist-carousel" id="artistCarousel">
+          <div class="carousel-arrow carousel-arrow-left" id="artistCarouselArrowLeft">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+              <polyline points="15,18 9,12 15,6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="artist-cards-wrapper">
+            <div class="artist-cards" id="artistCards">
+              <!-- Artist cards will be dynamically generated -->
+            </div>
+          </div>
+          <div class="carousel-arrow carousel-arrow-right" id="artistCarouselArrowRight">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+              <polyline points="9,6 15,12 9,18" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Quadrants Section -->
+    <section class="profiles-section">
+      <div class="profile-quadrant">
+        <div class="profile-quadrant-inner">
+          <div class="profile-icon">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="100" cy="100" r="95" fill="#00ff41" opacity="0.1"/>
+              <path d="M70 60 L70 140 L130 100 Z" fill="#00ff41"/>
+              <circle cx="100" cy="100" r="85" fill="none" stroke="#00ff41" stroke-width="3"/>
+            </svg>
+          </div>
+          <h3>Last.fm</h3>
+          <p>Check out my music listening history</p>
+          <a href="https://www.last.fm/user/Ronogamy" class="profile-link" target="_blank" rel="noopener">Visit Profile</a>
+        </div>
+      </div>
+      <div class="profile-quadrant">
+        <div class="profile-quadrant-inner">
+          <div class="profile-icon">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="100" cy="100" r="90" fill="#1db954"/>
+              <path d="M140 80 Q140 70 130 70 Q120 70 115 75 Q110 70 100 70 Q90 70 85 75 Q80 70 70 70 Q60 70 60 80 Q60 100 85 120 Q90 125 100 135 Q110 125 115 120 Q140 100 140 80 Z" fill="#0c0c0d"/>
+              <path d="M75 100 L85 95 L85 110 Z M90 95 L100 90 L100 115 Z M105 85 L115 80 L115 115 Z" fill="#1db954"/>
+            </svg>
+          </div>
+          <h3>Spotify</h3>
+          <p>Explore my curated playlists</p>
+          <a href="https://open.spotify.com/user/31qlmxd2l5jtwyslkw3uot23toti" class="profile-link" target="_blank" rel="noopener">Visit Profile</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Last.fm API Configuration
+    const LASTFM_API_KEY = '680d8b864fff0670aafdaa898d10c31a';
+    const LASTFM_USERNAME = 'Ronogamy';
+    const LASTFM_API_BASE = 'https://ws.audioscrobbler.com/2.0/';
+
+    // Placeholder image for missing album art
+    const PLACEHOLDER_IMAGE = 'data:image/svg+xml,%3Csvg width="300" height="300" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="300" height="300" fill="%230c0c0d"/%3E%3Cpath d="M150 80 L150 220 L220 150 Z" fill="%2300ff41" opacity="0.3"/%3E%3Ccircle cx="150" cy="150" r="100" fill="none" stroke="%2300ff41" stroke-width="2" opacity="0.5"/%3E%3C/svg%3E';
+
+    // Typewriter Animation
+    const typewriterElement = document.getElementById('typewriterText');
+    const typewriterCursor = document.getElementById('typewriterCursor');
+    const text = "Melody";
+    let charIndex = 0;
+
+    function typeWriter() {
+      if (charIndex < text.length) {
+        typewriterElement.textContent = text.slice(0, charIndex + 1);
+        charIndex++;
+        setTimeout(typeWriter, 150);
+      } else {
+        typewriterCursor.style.marginLeft = '8px';
+      }
+    }
+
+    // Start typewriter when page loads
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(typeWriter, 500);
+    });
+
+    // Carousel Title Typewriter Animation
+    function typeCarouselText(elementId, text, callback) {
+      const element = document.getElementById(elementId);
+      element.textContent = "";
+      let i = 0;
+      function step() {
+        if (i <= text.length) {
+          element.textContent = text.slice(0, i);
+          i++;
+          setTimeout(step, 80);
+        } else if (callback) {
+          callback();
+        }
+      }
+      step();
+    }
+
+    // Carousel Class for reusable functionality
+    class Carousel {
+      constructor(containerId, data, cardClass, titleClass) {
+        this.data = data;
+        this.currentIndex = 0;
+        this.autoPlayInterval = null;
+        this.isHoveringCenter = false;
+        this.cardClass = cardClass;
+        this.titleClass = titleClass;
+        
+        // DOM elements
+        this.container = document.getElementById(containerId);
+        this.cardsContainer = this.container.querySelector(`.${cardClass}s`);
+        this.leftArrow = this.container.querySelector('.carousel-arrow-left');
+        this.rightArrow = this.container.querySelector('.carousel-arrow-right');
+        
+        this.init();
+      }
+
+      isMobile() {
+        return window.innerWidth <= 768;
+      }
+
+      getVisibleCards() {
+        return this.isMobile() ? 3 : 7;
+      }
+
+      createCards() {
+        this.cardsContainer.innerHTML = '';
+        
+        // Create cards for each item
+        this.data.forEach((item, index) => {
+          const card = document.createElement('div');
+          card.className = this.cardClass;
+          card.dataset.index = index;
+          card.innerHTML = `
+            <img src="${item.image}" alt="${item.name}" loading="lazy" onerror="this.src='${PLACEHOLDER_IMAGE}'">
+            <div class="${this.titleClass}">${item.name}</div>
+          `;
+          
+          // Add click event
+          card.addEventListener('click', () => {
+            this.currentIndex = index;
+            this.updateCarousel();
+            this.stopAutoPlay();
+            setTimeout(() => this.startAutoPlay(), 3000);
+          });
+
+          // Add hover events for center card and edge detection
+          card.addEventListener('mouseenter', () => {
+            if (card.classList.contains('center')) {
+              this.isHoveringCenter = true;
+              this.stopAutoPlay();
+            }
+            
+            // Edge detection for arrows
+            this.handleEdgeHover(card, true);
+          });
+
+          card.addEventListener('mouseleave', () => {
+            if (card.classList.contains('center')) {
+              this.isHoveringCenter = false;
+              setTimeout(() => {
+                if (!this.isHoveringCenter) {
+                  this.startAutoPlay();
+                }
+              }, 500);
+            }
+            
+            // Hide arrows when leaving edge cards
+            this.handleEdgeHover(card, false);
+          });
+
+          this.cardsContainer.appendChild(card);
+        });
+      }
+
+      updateCarousel() {
+        const cards = this.cardsContainer.querySelectorAll(`.${this.cardClass}`);
+        const visibleCards = this.getVisibleCards();
+        const centerIndex = Math.floor(visibleCards / 2);
+        
+        // Reset all cards and arrows
+        cards.forEach((card, index) => {
+          card.classList.remove('center', 'dimmed', 'scaling-in', 'scaling-out');
+          card.style.order = '';
+          card.style.transform = '';
+          card.style.opacity = '';
+          card.style.display = 'none';
+        });
+
+        // Hide arrows by default
+        this.leftArrow.classList.remove('show');
+        this.rightArrow.classList.remove('show');
+
+        // Show visible cards around current index
+        const startIndex = this.currentIndex - centerIndex;
+        
+        for (let i = 0; i < visibleCards; i++) {
+          let cardIndex = (startIndex + i + this.data.length) % this.data.length;
+          const card = cards[cardIndex];
+          
+          if (card) {
+            card.style.display = 'block';
+            card.style.order = i;
+            
+            if (i === centerIndex) {
+              // This is the center card - delay to trigger animation
+              setTimeout(() => {
+                card.classList.add('center');
+              }, 10);
+            } else {
+              // Calculate distance from center for progressive scaling
+              const distanceFromCenter = Math.abs(i - centerIndex);
+              
+              if (distanceFromCenter === 1) {
+                // Cards next to center
+                card.classList.add('scaling-in');
+              } else if (distanceFromCenter === 2) {
+                // Cards further from center
+                card.classList.add('scaling-out');
+              } else {
+                // Cards at the edges
+                card.classList.add('dimmed');
+              }
+            }
+          }
+        }
+      }
+
+      handleEdgeHover(card, isHovering) {
+        const cards = this.cardsContainer.querySelectorAll(`.${this.cardClass}`);
+        const visibleCards = this.getVisibleCards();
+        const cardIndex = parseInt(card.dataset.index);
+        const centerIndex = Math.floor(visibleCards / 2);
+        const startIndex = this.currentIndex - centerIndex;
+        
+        // Find the position of this card in the visible set
+        let cardPosition = -1;
+        for (let i = 0; i < visibleCards; i++) {
+          let visibleCardIndex = (startIndex + i + this.data.length) % this.data.length;
+          if (visibleCardIndex === cardIndex) {
+            cardPosition = i;
+            break;
+          }
+        }
+        
+        // Clear all arrow states first
+        if (!isHovering) {
+          this.leftArrow.classList.remove('show');
+          this.rightArrow.classList.remove('show');
+          return;
+        }
+        
+        // Show arrows based on edge position
+        if (cardPosition === 0) {
+          // Left edge card - show left arrow
+          this.leftArrow.classList.add('show');
+          this.rightArrow.classList.remove('show');
+        } else if (cardPosition === visibleCards - 1) {
+          // Right edge card - show right arrow  
+          this.rightArrow.classList.add('show');
+          this.leftArrow.classList.remove('show');
+        } else {
+          // Center cards - hide both arrows
+          this.leftArrow.classList.remove('show');
+          this.rightArrow.classList.remove('show');
+        }
+      }
+
+      nextSlide() {
+        this.currentIndex = (this.currentIndex + 1) % this.data.length;
+        this.updateCarousel();
+      }
+
+      prevSlide() {
+        this.currentIndex = (this.currentIndex - 1 + this.data.length) % this.data.length;
+        this.updateCarousel();
+      }
+
+      startAutoPlay() {
+        this.stopAutoPlay();
+        if (!this.isHoveringCenter) {
+          this.autoPlayInterval = setInterval(() => this.nextSlide(), 3000);
+        }
+      }
+
+      stopAutoPlay() {
+        if (this.autoPlayInterval) {
+          clearInterval(this.autoPlayInterval);
+          this.autoPlayInterval = null;
+        }
+      }
+
+      init() {
+        this.createCards();
+        this.updateCarousel();
+        this.startAutoPlay();
+        
+        // Arrow event listeners
+        this.leftArrow.addEventListener('click', () => {
+          this.stopAutoPlay();
+          this.prevSlide();
+          setTimeout(() => this.startAutoPlay(), 3000);
+        });
+
+        this.rightArrow.addEventListener('click', () => {
+          this.stopAutoPlay();
+          this.nextSlide();
+          setTimeout(() => this.startAutoPlay(), 3000);
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+          this.updateCarousel();
+        });
+      }
+    }
+
+    // Last.fm API Functions
+    async function fetchLastFmData(method, additionalParams = {}) {
+      const params = new URLSearchParams({
+        method,
+        user: LASTFM_USERNAME,
+        api_key: LASTFM_API_KEY,
+        format: 'json',
+        ...additionalParams
+      });
+
+      try {
+        const response = await fetch(`${LASTFM_API_BASE}?${params}`);
+        if (!response.ok) throw new Error('API request failed');
+        return await response.json();
+      } catch (error) {
+        console.error('Last.fm API error:', error);
+        return null;
+      }
+    }
+
+    function getImageUrl(images, preferredSize = 'extralarge') {
+      if (!images || !Array.isArray(images)) return PLACEHOLDER_IMAGE;
+      
+      // Try to get the preferred size
+      const preferred = images.find(img => img.size === preferredSize);
+      if (preferred && preferred['#text']) return preferred['#text'];
+      
+      // Fallback to largest available
+      const large = images.find(img => img.size === 'large');
+      if (large && large['#text']) return large['#text'];
+      
+      // Last resort: any non-empty image
+      const anyImage = images.find(img => img['#text']);
+      return anyImage ? anyImage['#text'] : PLACEHOLDER_IMAGE;
+    }
+
+    // Load Top Tracks
+    async function loadTopTracks() {
+      const data = await fetchLastFmData('user.getTopTracks', { limit: 15 });
+      
+      if (data && data.toptracks && data.toptracks.track) {
+        return data.toptracks.track.map(track => ({
+          name: track.name,
+          artist: track.artist.name,
+          image: getImageUrl(track.image)
+        }));
+      }
+      
+      // Fallback data
+      return [
+        { name: 'Track 1', artist: 'Artist', image: PLACEHOLDER_IMAGE },
+        { name: 'Track 2', artist: 'Artist', image: PLACEHOLDER_IMAGE },
+        { name: 'Track 3', artist: 'Artist', image: PLACEHOLDER_IMAGE }
+      ];
+    }
+
+    // Load Top Artists
+    async function loadTopArtists() {
+      const data = await fetchLastFmData('user.getTopArtists', { limit: 12 });
+      
+      if (data && data.topartists && data.topartists.artist) {
+        return data.topartists.artist.map(artist => ({
+          name: artist.name,
+          image: getImageUrl(artist.image)
+        }));
+      }
+      
+      // Fallback data
+      return [
+        { name: 'Artist 1', image: PLACEHOLDER_IMAGE },
+        { name: 'Artist 2', image: PLACEHOLDER_IMAGE },
+        { name: 'Artist 3', image: PLACEHOLDER_IMAGE }
+      ];
+    }
+
+    // Load Recent Track for Music Player
+    async function loadRecentTrack() {
+      const data = await fetchLastFmData('user.getRecentTracks', { limit: 1 });
+      
+      const playerAlbum = document.getElementById('playerAlbum');
+      const playerTrack = document.getElementById('playerTrack');
+      const playerArtist = document.getElementById('playerArtist');
+      
+      if (data && data.recenttracks && data.recenttracks.track && data.recenttracks.track[0]) {
+        const track = data.recenttracks.track[0];
+        const imageUrl = getImageUrl(track.image, 'large');
+        
+        playerAlbum.innerHTML = `<img src="${imageUrl}" alt="${track.name}" onerror="this.src='${PLACEHOLDER_IMAGE}'">`;
+        playerTrack.textContent = track.name;
+        playerArtist.textContent = track.artist['#text'] || track.artist.name;
+      } else {
+        playerAlbum.innerHTML = `<img src="${PLACEHOLDER_IMAGE}" alt="No recent tracks">`;
+        playerTrack.textContent = 'No recent tracks';
+        playerArtist.textContent = 'Last.fm user';
+      }
+    }
+
+    // Initialize carousels
+    let trackCarousel, artistCarousel;
+
+    async function initCarousels() {
+      // Start typewriter animations for titles
+      typeCarouselText('tracksCarouselTitleText', 'Top Tracks');
+      setTimeout(() => {
+        typeCarouselText('artistsCarouselTitleText', 'Top Artists');
+      }, 1000);
+      
+      // Load data and initialize carousels
+      const [tracksData, artistsData] = await Promise.all([
+        loadTopTracks(),
+        loadTopArtists()
+      ]);
+      
+      trackCarousel = new Carousel('trackCarousel', tracksData, 'track-card', 'track-title');
+      artistCarousel = new Carousel('artistCarousel', artistsData, 'artist-card', 'artist-name');
+      
+      // Load recent track for music player
+      loadRecentTrack();
+    }
+
+    // Initialize everything when DOM is loaded
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCarousels);
+    } else {
+      initCarousels();
+    }
+  </script>
 </body>
 </html>
