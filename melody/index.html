@@ -19,6 +19,20 @@
         <a href="melody.html" class="active">Melody</a>
       </div>
     </nav>
+
+    <!-- Floating Music Player Widget -->
+    <div class="music-player-widget" id="musicPlayerWidget">
+      <h3>Recently Played</h3>
+      <div class="music-player-album" id="playerAlbum">
+        <div style="display: flex; align-items: center; justify-content: center; height: 100%; background: rgba(0, 0, 0, 0.3);">
+          <div class="loading-spinner"></div>
+        </div>
+      </div>
+      <div class="music-player-info">
+        <div class="music-player-track" id="playerTrack">Loading...</div>
+        <div class="music-player-artist" id="playerArtist">...</div>
+      </div>
+    </div>
     
     <main class="melody-main">
       <!-- Recently Played Carousel -->
@@ -170,6 +184,37 @@
         if (data && data.recenttracks) {
             const items = data.recenttracks.track;
             document.getElementById('recent-track').innerHTML = createCarouselItems(items, 'recent');
+            
+            // Update floating music player with most recent track
+            if (items && items.length > 0) {
+                updateMusicPlayer(items[0]);
+            }
+        }
+    }
+
+    async function updateMusicPlayer(track) {
+        const playerAlbum = document.getElementById('playerAlbum');
+        const playerTrack = document.getElementById('playerTrack');
+        const playerArtist = document.getElementById('playerArtist');
+        
+        try {
+            const imageUrl = track.image.find(img => img.size === 'extralarge' || img.size === 'large')?.['#text'];
+            const trackName = track.name;
+            const artistName = track.artist['#text'] || track.artist.name;
+            
+            if (imageUrl) {
+                playerAlbum.innerHTML = `<img src="${imageUrl}" alt="${trackName}" onerror="this.src='./assets/melody.jpg'">`;
+            } else {
+                playerAlbum.innerHTML = `<img src="./assets/melody.jpg" alt="${trackName}">`;
+            }
+            
+            playerTrack.textContent = trackName;
+            playerArtist.textContent = artistName;
+        } catch (e) {
+            console.error('Error updating music player:', e);
+            playerAlbum.innerHTML = `<img src="./assets/melody.jpg" alt="No track">`;
+            playerTrack.textContent = 'No recent tracks';
+            playerArtist.textContent = 'Last.fm user';
         }
     }
 
