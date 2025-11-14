@@ -374,4 +374,248 @@ h1 {
 #toTopBtn:hover {
   background: #181818;
   box-shadow: 0 0 24px 0 #fff3, 0 0 16px 0 #000c;
+
+}
+/* ========================================= */
+/* =========== MELODY PAGE STYLES ========== */
+/* ========================================= */
+
+.melody-bg-blur {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  background-image: url('./assets/melody.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: blur(24px) brightness(0.5);
+  opacity: 0.7;
+  transform: scale(1.1);
+}
+
+.melody-content-wrapper {
+  position: relative;
+  z-index: 1;
+}
+
+.melody-main {
+  padding-top: 60px;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* --- Carousel General Styling --- */
+.carousel-section {
+  margin-bottom: 80px;
+}
+
+.carousel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 5vw;
+  margin-bottom: 30px;
+}
+
+.carousel-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 0 15px rgba(47, 255, 127, 0.5);
+  font-family: 'Quicksand', sans-serif;
+}
+
+.carousel-container {
+  width: 100%;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+}
+
+.carousel-track {
+  display: flex;
+  width: max-content;
+  animation: scroll-left 60s linear infinite;
+}
+
+@keyframes scroll-left {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.carousel-container:hover .carousel-track {
+  animation-play-state: paused;
+}
+
+.carousel-item {
+  width: 280px;
+  flex-shrink: 0;
+  margin: 0 20px;
+  background: rgba(20, 40, 30, 0.3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  border: 1px solid rgba(47, 255, 127, 0.2);
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.carousel-item:hover {
+  transform: translateY(-10px) scale(1.05);
+  border-color: rgba(47, 255, 127, 0.5);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+}
+
+.item-image img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  display: block;
+}
+
+.item-info {
+  padding: 20px;
+  text-align: center;
+}
+
+.item-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 5px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-subtext {
+  font-size: 0.9rem;
+  color: #b0f2c2;
+  margin: 0;
+  opacity: 0.9;
+}
+
+/* Artist-specific styles (circular images) */
+#top-artists-track .carousel-item {
+  background: transparent;
+  backdrop-filter: none;
+  border: none;
+}
+#top-artists-track .item-image {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto 20px;
+}
+#top-artists-track .item-image img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 4px solid rgba(47, 255, 127, 0.4);
+  box-shadow: 0 0 25px rgba(47, 255, 127, 0.3);
+}
+#top-artists-track .carousel-item:hover .item-image img {
+  border-color: rgba(47, 255, 127, 0.8);
+}
+
+/* Time Filter Dropdown */
+.time-filter-dropdown select {
+  background: rgba(20, 40, 30, 0.5);
+  color: #b0f2c2;
+  border: 1px solid rgba(47, 255, 127, 0.3);
+  border-radius: 8px;
+  padding: 10px 15px;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+}
+.time-filter-dropdown select:focus {
+  border-color: rgba(47, 255, 127, 0.7);
+}
+
+/* --- Footer & Profile Quadrants --- */
+.melody-footer {
+  padding: 100px 20px 80px;
+  background: #0a0c0b;
+  box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
+  margin-top: 50px;
+}
+
+.profile-quadrant-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.profile-quadrant {
+  background: linear-gradient(145deg, #1a1e1c, #101211);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 24px;
+  padding: 40px;
+  text-align: center;
+  color: #fff;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.profile-quadrant:hover {
+  transform: translateY(-10px);
+  border-color: rgba(47, 255, 127, 0.4);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+}
+
+.quadrant-logo-wrapper {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 25px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.quadrant-logo {
+    width: 50%;
+    height: 50%;
+    opacity: 0.7;
+}
+
+.profile-quadrant h3 {
+  margin: 0 0 10px;
+  font-size: 2.2rem;
+  font-weight: 700;
+}
+
+.profile-quadrant p {
+  margin: 0 0 25px;
+  color: #ccc;
+  font-size: 1rem;
+}
+
+.profile-quadrant a {
+  display: inline-block;
+  padding: 14px 35px;
+  background: linear-gradient(135deg, #1fa149, #2fff7f);
+  color: #000;
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(47, 255, 127, 0.2);
+}
+
+.profile-quadrant a:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(47, 255, 127, 0.4);
+}
+
+/* Specific colors for spotify button */
+.profile-quadrant:last-child a {
+  background: linear-gradient(135deg, #1DB954, #1ED760);
 }
