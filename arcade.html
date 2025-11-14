@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Arcade</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap">
   <style>
     body {
       background: #0c0c0d;
@@ -61,7 +61,7 @@
       color: #fff;
       text-shadow: 0 0 26px rgba(0,0,0,0.8), 0 0 4px rgba(255,255,255,0.6);
       letter-spacing: .01em;
-      font-family: 'SF Pro Display', 'SF Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-family: 'Quicksand', 'SF Pro Display', 'SF Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Arial, sans-serif;
       transition: color .2s;
       cursor: pointer;
       display: inline-block;
@@ -105,7 +105,7 @@
       color: #fff;
       text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
       margin-bottom: 60px;
-      font-family: 'SF Pro Display', 'SF Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-family: 'Quicksand', 'SF Pro Display', 'SF Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Arial, sans-serif;
       min-height: 1.2em;
     }
 
@@ -243,41 +243,59 @@
 
     .carousel-arrow {
       position: absolute;
-      width: 80px;
-      height: 80px;
-      background: rgba(0, 0, 0, 0.5);
-      border-radius: 50%;
+      top: calc(50% + 27px);
+      transform: translateY(-50%);
+      width: 150px;
+      height: 300px;
+      background: transparent;
+      border: none;
+      border-radius: 0;
       display: flex;
       align-items: center;
-      justify-content: center;
       cursor: pointer;
+      opacity: 0;
       transition: all 0.3s ease;
       z-index: 100;
-      opacity: 0;
       pointer-events: none;
     }
 
     .carousel-arrow.show {
-      opacity: 1;
+      opacity: 0.7;
       pointer-events: auto;
     }
 
     .carousel-arrow:hover {
-      background: rgba(0, 0, 0, 0.7);
-      transform: scale(1.1);
+      opacity: 1 !important;
+      transform: translateY(-50%) scale(1.05);
     }
 
     .carousel-arrow-left {
-      left: 40px;
+      left: 0;
+      justify-content: flex-start;
+      padding-left: 20px;
     }
 
     .carousel-arrow-right {
-      right: 40px;
+      right: 0;
+      justify-content: flex-end;
+      padding-right: 20px;
     }
 
     .carousel-arrow svg {
-      width: 48px;
-      height: 48px;
+      width: 70px;
+      height: 70px;
+      fill: none;
+      stroke: #fff;
+      stroke-width: 5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.9));
+      pointer-events: none;
+    }
+
+    .carousel-arrow:hover svg {
+      stroke-width: 6;
+      filter: drop-shadow(0 0 16px rgba(255, 255, 255, 1));
     }
 
     /* Backloggd Quadrant Styles */
@@ -482,21 +500,23 @@
       }
 
       .carousel-arrow {
+        width: 100px;
+        height: 250px;
+      }
+
+      .carousel-arrow svg {
         width: 50px;
         height: 50px;
       }
 
-      .carousel-arrow svg {
-        width: 30px;
-        height: 30px;
-      }
-
       .carousel-arrow-left {
         left: 0;
+        padding-left: 10px;
       }
 
       .carousel-arrow-right {
         right: 0;
+        padding-right: 10px;
       }
 
       .game-title {
@@ -566,8 +586,8 @@
       <div class="game-carousel-container">
         <div class="game-carousel" id="gameCarousel">
           <div class="carousel-arrow carousel-arrow-left" id="carouselArrowLeft">
-            <svg width="24" height="24" viewBox="0 0 24 24">
-              <polyline points="15,18 9,12 15,6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <svg width="60" height="60" viewBox="0 0 60 60">
+              <polyline points="35,15 20,30 35,45" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
           <div class="game-cards-wrapper">
@@ -576,8 +596,8 @@
             </div>
           </div>
           <div class="carousel-arrow carousel-arrow-right" id="carouselArrowRight">
-            <svg width="24" height="24" viewBox="0 0 24 24">
-              <polyline points="9,6 15,12 9,18" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <svg width="60" height="60" viewBox="0 0 60 60">
+              <polyline points="25,15 40,30 25,45" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
         </div>
@@ -897,6 +917,32 @@
           this.nextSlide();
           setTimeout(() => this.startAutoPlay(), 3000);
         });
+
+        // Touch/swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        this.container.addEventListener('touchstart', (e) => {
+          touchStartX = e.changedTouches[0].screenX;
+        }, false);
+
+        this.container.addEventListener('touchend', (e) => {
+          touchEndX = e.changedTouches[0].screenX;
+          const swipeThreshold = 50;
+          
+          if (touchEndX < touchStartX - swipeThreshold) {
+            // Swiped left - show next
+            this.stopAutoPlay();
+            this.nextSlide();
+            setTimeout(() => this.startAutoPlay(), 3000);
+          }
+          if (touchEndX > touchStartX + swipeThreshold) {
+            // Swiped right - show previous
+            this.stopAutoPlay();
+            this.prevSlide();
+            setTimeout(() => this.startAutoPlay(), 3000);
+          }
+        }, false);
 
         // Handle window resize
         window.addEventListener('resize', () => {
