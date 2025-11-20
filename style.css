@@ -5,6 +5,12 @@ body {
   margin: 0;
   min-height: 100vh;
   overflow-x: hidden;
+  /* Enable scroll snapping with better configuration */
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  /* Ensure proper scroll container */
+  height: 100vh;
+  overflow-y: scroll;
 }
 
 /* Font fallback - using system fonts since SF Pro Display files are not available */
@@ -20,6 +26,8 @@ body {
   border-radius: 0;
   position: relative;
   z-index: 0;
+  /* Scroll snap alignment for hero section */
+  scroll-snap-align: start;
 }
 nav {
   width: 100%;
@@ -109,6 +117,7 @@ h1 {
   vertical-align: middle;
   border-radius: 2px;
   box-shadow: 0 0 8px #fff;
+  /* Restore blinking animation for main headings */
   animation: blink 1s steps(1) infinite;
   /* Reduce the vertical offset for better bottom alignment */
   transform: translateY(-5px); /* Previously 0 or -2px, now slightly lower */
@@ -130,6 +139,8 @@ h1 {
   position: relative;
   padding: 0;
   margin: 0;
+  /* Scroll snap alignment for quadrant section */
+  scroll-snap-align: start;
 }
 .quadrant-grid {
   display: grid;
