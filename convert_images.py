@@ -20,9 +20,9 @@ except ImportError:
 SOURCE_DIR = Path("assets")
 TARGET_DIR = Path("photos")
 THUMBNAIL_DIR = TARGET_DIR / "thumbnails"
-THUMBNAIL_QUALITY = 55  # 55% quality for smoother thumbnails
+THUMBNAIL_QUALITY = 75  # 75% quality for higher quality thumbnails
 FULL_QUALITY = 85  # 85% quality for full images
-THUMBNAIL_MAX_SIZE = (400, 400)  # Max dimensions for thumbnails
+THUMBNAIL_MAX_SIZE = (600, 600)  # Max dimensions for thumbnails (increased resolution)
 
 # Create directories
 TARGET_DIR.mkdir(exist_ok=True)
