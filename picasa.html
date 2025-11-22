@@ -77,28 +77,18 @@
       z-index: 10;
     }
 
-    /* Progressive image loading with blur effect */
-    .image-wrapper {
-      position: relative;
-      width: 100%;
-      overflow: hidden;
-      border-radius: 8px;
-    }
-
-    .image-placeholder {
+    /* Loading state with blur effect */
+    .masonry-item.loading::after {
+      content: '';
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      filter: blur(20px);
-      transform: scale(1.1);
-      transition: opacity 0.4s ease;
-      z-index: 1;
-    }
-
-    .image-placeholder.loaded {
-      opacity: 0;
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(10px);
+      z-index: 10;
+      pointer-events: none;
     }
 
     .masonry-item img {
@@ -108,15 +98,13 @@
       object-fit: cover;
       display: block;
       border-radius: 8px;
-      transition: opacity 0.4s ease, transform 0.3s ease;
+      transition: opacity 0.3s ease, transform 0.3s ease;
       image-rendering: -webkit-optimize-contrast;
       image-rendering: crisp-edges;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
       transform: translate3d(0, 0, 0);
       -webkit-transform: translate3d(0, 0, 0);
-      position: relative;
-      z-index: 2;
       opacity: 0;
     }
 
@@ -531,30 +519,20 @@
         imagesToRender.forEach((imagePath, localIndex) => {
           const originalIndex = startIdx + (localIndex % columnImages.length);
           const item = document.createElement('div');
-          item.className = 'masonry-item';
+          item.className = 'masonry-item loading';
           
-          // Create image wrapper for progressive loading
-          const wrapper = document.createElement('div');
-          wrapper.className = 'image-wrapper';
-          
-          // Create placeholder image (thumbnail with blur)
-          const placeholder = document.createElement('img');
-          placeholder.className = 'image-placeholder';
-          placeholder.src = getThumbnailPath(imagePath);
-          placeholder.alt = '';
-          placeholder.setAttribute('aria-hidden', 'true');
-          
-          // Create main image
+          // Use thumbnail for gallery view
           const img = document.createElement('img');
-          img.src = imagePath;
+          img.src = getThumbnailPath(imagePath);
           img.alt = `Gallery image ${originalIndex + 1}`;
           img.loading = 'lazy';
           img.dataset.index = originalIndex;
+          img.dataset.fullPath = imagePath; // Store full path for lightbox
           
-          // Add load event to fade in main image and hide placeholder
+          // Remove loading state when thumbnail loads
           img.addEventListener('load', () => {
             img.classList.add('loaded');
-            placeholder.classList.add('loaded');
+            item.classList.remove('loading');
           });
           
           // Add click event for lightbox
@@ -564,9 +542,7 @@
             openLightbox(originalIndex);
           });
           
-          wrapper.appendChild(placeholder);
-          wrapper.appendChild(img);
-          item.appendChild(wrapper);
+          item.appendChild(img);
           column.appendChild(item);
         });
         
