@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Image conversion and optimization script for Picasa gallery.
-Converts images to WebP format, creates compressed versions, and generates low-quality thumbnails.
+Converts images to WebP format, creates compressed versions, and generates smooth thumbnails.
 """
 
 import os
@@ -9,18 +9,18 @@ import sys
 from pathlib import Path
 
 try:
-    from PIL import Image
+    from PIL import Image, ImageFilter
     import pillow_avif
 except ImportError:
     print("Installing required packages...")
     os.system(f"{sys.executable} -m pip install -q Pillow pillow-avif-plugin")
-    from PIL import Image
+    from PIL import Image, ImageFilter
 
 # Configuration
 SOURCE_DIR = Path("assets")
 TARGET_DIR = Path("photos")
 THUMBNAIL_DIR = TARGET_DIR / "thumbnails"
-THUMBNAIL_QUALITY = 30  # 30% quality for thumbnails
+THUMBNAIL_QUALITY = 55  # 55% quality for smoother thumbnails
 FULL_QUALITY = 85  # 85% quality for full images
 THUMBNAIL_MAX_SIZE = (400, 400)  # Max dimensions for thumbnails
 
@@ -28,7 +28,7 @@ THUMBNAIL_MAX_SIZE = (400, 400)  # Max dimensions for thumbnails
 TARGET_DIR.mkdir(exist_ok=True)
 THUMBNAIL_DIR.mkdir(exist_ok=True)
 
-def convert_image_to_webp(input_path, output_path, quality=85, max_size=None):
+def convert_image_to_webp(input_path, output_path, quality=85, max_size=None, smooth=False):
     """Convert an image to WebP format with specified quality."""
     try:
         with Image.open(input_path) as img:
@@ -46,6 +46,10 @@ def convert_image_to_webp(input_path, output_path, quality=85, max_size=None):
             # Resize if max_size is specified
             if max_size:
                 img.thumbnail(max_size, Image.Resampling.LANCZOS)
+            
+            # Apply slight blur for smoothness (reduces sharpness)
+            if smooth:
+                img = img.filter(ImageFilter.GaussianBlur(radius=0.5))
             
             # Save as WebP
             img.save(output_path, 'WEBP', quality=quality, method=6)
@@ -105,20 +109,22 @@ def main():
                 print(f"  ✗ Failed to convert full image")
                 continue
         
-        # Create thumbnail
+        # Create thumbnail with smoothness
         if thumb_output.exists():
-            print(f"  → Thumbnail already exists, skipping")
+            print(f"  → Thumbnail already exists, regenerating with new settings")
+            thumb_output.unlink()  # Remove old thumbnail
+        
+        success = convert_image_to_webp(
+            image_path, thumb_output, 
+            quality=THUMBNAIL_QUALITY, 
+            max_size=THUMBNAIL_MAX_SIZE,
+            smooth=True  # Apply smoothing to reduce sharpness
+        )
+        if success:
+            file_size = thumb_output.stat().st_size / 1024  # KB
+            print(f"  ✓ Thumbnail: {file_size:.1f} KB")
         else:
-            success = convert_image_to_webp(
-                image_path, thumb_output, 
-                quality=THUMBNAIL_QUALITY, 
-                max_size=THUMBNAIL_MAX_SIZE
-            )
-            if success:
-                file_size = thumb_output.stat().st_size / 1024  # KB
-                print(f"  ✓ Thumbnail: {file_size:.1f} KB")
-            else:
-                print(f"  ✗ Failed to create thumbnail")
+            print(f"  ✗ Failed to create thumbnail")
     
     print("-" * 60)
     print(f"Conversion complete!")
