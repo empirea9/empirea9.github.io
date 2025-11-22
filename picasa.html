@@ -3,10 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Picasa</title>
-  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap">
-  <link rel="preconnect" href="./assets">
-  <link rel="dns-prefetch" href="./assets">
   <style>
     body {
       background: #0c0c0d;
@@ -21,7 +19,7 @@
       width: 100vw;
       height: 100vh;
       z-index: 0;
-      background-image: url('./assets/IMG_20240708_081641.png');
+      background-image: url('../assets/image2.png');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -70,12 +68,37 @@
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       flex-shrink: 0;
       width: 100%;
+      background: #1a1a1a;
     }
 
     .masonry-item:hover {
       transform: scale(1.02);
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
       z-index: 10;
+    }
+
+    /* Progressive image loading with blur effect */
+    .image-wrapper {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      border-radius: 8px;
+    }
+
+    .image-placeholder {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      filter: blur(20px);
+      transform: scale(1.1);
+      transition: opacity 0.4s ease;
+      z-index: 1;
+    }
+
+    .image-placeholder.loaded {
+      opacity: 0;
     }
 
     .masonry-item img {
@@ -85,13 +108,20 @@
       object-fit: cover;
       display: block;
       border-radius: 8px;
-      transition: transform 0.3s ease;
+      transition: opacity 0.4s ease, transform 0.3s ease;
       image-rendering: -webkit-optimize-contrast;
       image-rendering: crisp-edges;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
       transform: translate3d(0, 0, 0);
       -webkit-transform: translate3d(0, 0, 0);
+      position: relative;
+      z-index: 2;
+      opacity: 0;
+    }
+
+    .masonry-item img.loaded {
+      opacity: 1;
     }
 
     /* Lightbox styles */
@@ -249,18 +279,31 @@
       padding-right: 20px;
     }
 
-    /* Performance optimizations */
-    .masonry-column img {
-      loading: lazy;
-      image-rendering: -webkit-optimize-contrast;
-      image-rendering: crisp-edges;
-      will-change: transform;
-      content-visibility: auto;
-      contain-intrinsic-size: 280px 400px;
+    /* Image metadata display */
+    .image-metadata {
+      margin-top: 20px;
+      padding: 15px 20px;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 8px;
+      max-width: 600px;
+      color: #ededed;
+      font-size: 0.9rem;
+      line-height: 1.6;
     }
-    
-    .masonry-column {
-      contain: layout style paint;
+
+    .metadata-row {
+      margin: 5px 0;
+    }
+
+    .metadata-label {
+      color: #aaa;
+      display: inline-block;
+      width: 120px;
+    }
+
+    .metadata-value {
+      color: #fff;
+      font-weight: 600;
     }
 
     /* Responsive sizing */
@@ -331,16 +374,16 @@
   </style>
 </head>
 <body>
-  <script src="./url-handler.js"></script>
+  <script src="../url-handler.js"></script>
   <div class="picasa-bg-blur"></div>
   <div class="picasa-content-wrapper">
     <nav>
       <div class="nav-links">
-        <a href="./">Home</a>
-        <a href="./arcade">Arcade</a>
-        <a href="./picasa" class="active">Picasa</a>
-        <a href="./cinema">Cinema</a>
-        <a href="./melody">Melody</a>
+        <a href="../">Home</a>
+        <a href="../arcade">Arcade</a>
+        <a href="../picasa" class="active">Picasa</a>
+        <a href="../cinema">Cinema</a>
+        <a href="../melody">Melody</a>
       </div>
     </nav>
     
@@ -362,7 +405,12 @@
     
     <div class="lightbox-content">
       <div class="lightbox-image-container">
-        <img src="" alt="Enlarged view" id="lightboxImg" loading="eager">
+        <img src="" alt="Enlarged view" id="lightboxImg">
+      </div>
+      
+      <!-- Image metadata -->
+      <div class="image-metadata" id="imageMetadata" style="display: none;">
+        <!-- Metadata will be populated here -->
       </div>
     </div>
     
@@ -375,43 +423,68 @@
   </div>
 
   <script>
-    // Images from assets folder (excluding those used in cinema.html or arcade.html)
+    // Images from photos folder (WebP format for better performance)
     const imagePaths = [
-      './assets/IMG_20240708_081641.png',
-      './assets/Test-4.png',
-      './assets/IMG_20240314_122106-ps.png',
-      './assets/IMG_20240709_122550.png',
-      './assets/Sunset.png',
-      './assets/post4-1.png',
-      './assets/IMG_20240707_191957-ps.png',
-      './assets/IMG_20240709_122741.png',
-      './assets/IMG_20240708_094943.png',
-      './assets/IMG_20240709_121543.png',
-      './assets/Parrot-3.png',
-      './assets/post-2.png',
-      './assets/IMG_20240709_120009.png',
-      './assets/post3-2.png',
-      './assets/Parrot-2.png',
-      './assets/Test-1.png',
-      './assets/Insta-2.png',
-      './assets/shiv.png',
-      './assets/post.png',
-      './assets/IMG_20240708_091039-ps.png',
-      './assets/IMG_20250411_184811.png',
-      './assets/IMG_20240709_121028.png',
-      './assets/IMG_20240709_121046.png',
-      './assets/done1.png',
-      './assets/post-3.png',
-      './assets/IMG_20240709_120404.png',
-      './assets/done1-1.png',
-      './assets/IMG_20240709_122256.png',
-      './assets/post-4.png',
-      './assets/post3.png',
-      './assets/IMG_20250607_081810.png',
-      './assets/post-1.png',
-      './assets/IMG_20240314_125103.png',
-      './assets/IMG_20240708_132053.png'
+      '../photos/IMG_20240314_122106-ps.webp',
+      '../photos/IMG_20240314_125103.webp',
+      '../photos/IMG_20240707_191957-ps.webp',
+      '../photos/IMG_20240708_081641.webp',
+      '../photos/IMG_20240708_091039-ps.webp',
+      '../photos/IMG_20240708_094943.webp',
+      '../photos/IMG_20240708_132053.webp',
+      '../photos/IMG_20240709_120009.webp',
+      '../photos/IMG_20240709_120404.webp',
+      '../photos/IMG_20240709_121028.webp',
+      '../photos/IMG_20240709_121046.webp',
+      '../photos/IMG_20240709_121543.webp',
+      '../photos/IMG_20240709_122256.webp',
+      '../photos/IMG_20240709_122550.webp',
+      '../photos/IMG_20240709_122741.webp',
+      '../photos/IMG_20250411_184811.webp',
+      '../photos/IMG_20250607_081810.webp',
+      '../photos/IMG_20250607_113913.webp',
+      '../photos/IMG_20250607_115325.webp',
+      '../photos/IMG_20250607_115620.webp',
+      '../photos/IMG_20250607_124726[1].webp',
+      '../photos/IMG_20250607_133643.webp',
+      '../photos/IMG_20250607_133654.webp',
+      '../photos/IMG_20250607_140358.webp',
+      '../photos/IMG_20250607_162802.webp',
+      '../photos/IMG_20250607_163003.webp',
+      '../photos/IMG_20250607_163255.webp',
+      '../photos/IMG_20250608_093739.webp',
+      '../photos/IMG_20250608_094940.webp',
+      '../photos/IMG_20250608_095348.webp',
+      '../photos/IMG_20250809_101547.webp',
+      '../photos/IMG_20250831_185402.webp',
+      '../photos/IMG_20250831_185711.webp',
+      '../photos/IMG_20250831_185730.webp',
+      '../photos/IMG_20250831_190528.webp',
+      '../photos/IMG_20250903_180808.webp',
+      '../photos/IMG_20250903_180928.webp',
+      '../photos/Insta-2.webp',
+      '../photos/Parrot-2.webp',
+      '../photos/Parrot-3.webp',
+      '../photos/Sunset.webp',
+      '../photos/Test-1.webp',
+      '../photos/Test-4.webp',
+      '../photos/done1-1.webp',
+      '../photos/done1.webp',
+      '../photos/post-1.webp',
+      '../photos/post-2.webp',
+      '../photos/post-3.webp',
+      '../photos/post-4.webp',
+      '../photos/post.webp',
+      '../photos/post3-2.webp',
+      '../photos/post3.webp',
+      '../photos/post4-1.webp',
+      '../photos/shiv.webp'
     ];
+
+    // Get thumbnail path from full image path
+    function getThumbnailPath(fullPath) {
+      return fullPath.replace('/photos/', '/photos/thumbnails/');
+    }
 
     let shuffledImages = [];
     let currentLightboxIndex = 0;
@@ -460,16 +533,29 @@
           const item = document.createElement('div');
           item.className = 'masonry-item';
           
+          // Create image wrapper for progressive loading
+          const wrapper = document.createElement('div');
+          wrapper.className = 'image-wrapper';
+          
+          // Create placeholder image (thumbnail with blur)
+          const placeholder = document.createElement('img');
+          placeholder.className = 'image-placeholder';
+          placeholder.src = getThumbnailPath(imagePath);
+          placeholder.alt = '';
+          placeholder.setAttribute('aria-hidden', 'true');
+          
+          // Create main image
           const img = document.createElement('img');
           img.src = imagePath;
           img.alt = `Gallery image ${originalIndex + 1}`;
-          img.loading = 'lazy'; // Native lazy loading
-          img.decoding = 'async'; // Async decoding for smoother rendering
+          img.loading = 'lazy';
           img.dataset.index = originalIndex;
           
-          // Optimize image rendering with CSS hints
-          img.style.contentVisibility = 'auto'; // Improve initial rendering performance
-          img.style.containIntrinsicSize = '280px 400px'; // Hint at size for better layout
+          // Add load event to fade in main image and hide placeholder
+          img.addEventListener('load', () => {
+            img.classList.add('loaded');
+            placeholder.classList.add('loaded');
+          });
           
           // Add click event for lightbox
           item.addEventListener('click', (e) => {
@@ -478,7 +564,9 @@
             openLightbox(originalIndex);
           });
           
-          item.appendChild(img);
+          wrapper.appendChild(placeholder);
+          wrapper.appendChild(img);
+          item.appendChild(wrapper);
           column.appendChild(item);
         });
         
@@ -516,8 +604,7 @@
         isPaused: false,
         hoverStartTime: null,
         userScrollVelocity: 0,
-        isUserScrolling: false,
-        lastRecycleTime: 0
+        isUserScrolling: false
       };
       
       const state = columnStates[colIndex];
@@ -571,9 +658,6 @@
         const deltaTime = (currentTime - lastFrameTime) / 1000; // Convert to seconds
         lastFrameTime = currentTime;
         
-        // Throttle expensive operations
-        const shouldRecycle = (currentTime - state.lastRecycleTime > 100); // Max 10 recycles/second
-        
         // Check if should pause due to hover (0.5 second delay)
         if (state.hoverStartTime && !state.isPaused) {
           const hoverDuration = currentTime - state.hoverStartTime;
@@ -603,36 +687,32 @@
         
         currentPosition += movement;
         
-        // Dynamic image recycling based on direction (throttled for performance)
+        // Dynamic image recycling based on direction
         // Only recycle when images are completely off-screen
-        if (shouldRecycle) {
-          const viewportHeight = window.innerHeight;
-          
-          if (direction === 1) {
-            // Scrolling upward - remove from bottom when completely off-screen below
-            const lastItem = column.lastElementChild;
-            if (lastItem) {
-              const itemRect = lastItem.getBoundingClientRect();
-              // Only recycle when image is completely below viewport
-              if (itemRect.top > viewportHeight + 100) {
-                column.removeChild(lastItem);
-                column.insertBefore(lastItem, column.firstElementChild);
-                currentPosition -= lastItem.offsetHeight + 16; // Adjust for gap
-                state.lastRecycleTime = currentTime;
-              }
+        const viewportHeight = window.innerHeight;
+        
+        if (direction === 1) {
+          // Scrolling upward - remove from bottom when completely off-screen below
+          const lastItem = column.lastElementChild;
+          if (lastItem) {
+            const itemRect = lastItem.getBoundingClientRect();
+            // Only recycle when image is completely below viewport
+            if (itemRect.top > viewportHeight + 100) {
+              column.removeChild(lastItem);
+              column.insertBefore(lastItem, column.firstElementChild);
+              currentPosition -= lastItem.offsetHeight + 16; // Adjust for gap
             }
-          } else {
-            // Scrolling downward - remove from top when completely off-screen above
-            const firstItem = column.firstElementChild;
-            if (firstItem) {
-              const itemRect = firstItem.getBoundingClientRect();
-              // Only recycle when image is completely above viewport
-              if (itemRect.bottom < -100) {
-                column.removeChild(firstItem);
-                column.appendChild(firstItem);
-                currentPosition += firstItem.offsetHeight + 16; // Adjust for gap
-                state.lastRecycleTime = currentTime;
-              }
+          }
+        } else {
+          // Scrolling downward - remove from top when completely off-screen above
+          const firstItem = column.firstElementChild;
+          if (firstItem) {
+            const itemRect = firstItem.getBoundingClientRect();
+            // Only recycle when image is completely above viewport
+            if (itemRect.bottom < -100) {
+              column.removeChild(firstItem);
+              column.appendChild(firstItem);
+              currentPosition += firstItem.offsetHeight + 16; // Adjust for gap
             }
           }
         }
@@ -646,7 +726,87 @@
       animationId = requestAnimationFrame(animate);
     }
 
+    // Read EXIF metadata from image
+    function readImageMetadata(imgElement, callback) {
+      // Check if EXIF library is available
+      if (typeof EXIF === 'undefined') {
+        callback({}); // Return empty metadata if library not available
+        return;
+      }
+      
+      EXIF.getData(imgElement, function() {
+        const metadata = {
+          make: EXIF.getTag(this, "Make"),
+          model: EXIF.getTag(this, "Model"),
+          dateTime: EXIF.getTag(this, "DateTime"),
+          focalLength: EXIF.getTag(this, "FocalLength"),
+          aperture: EXIF.getTag(this, "FNumber"),
+          iso: EXIF.getTag(this, "ISOSpeedRatings"),
+          exposureTime: EXIF.getTag(this, "ExposureTime"),
+          lens: EXIF.getTag(this, "LensModel")
+        };
+        callback(metadata);
+      });
+    }
 
+    // Display image metadata
+    function displayMetadata(metadata) {
+      const metadataDiv = document.getElementById('imageMetadata');
+      let hasMetadata = false;
+      let html = '';
+
+      if (metadata.dateTime) {
+        html += `<div class="metadata-row"><span class="metadata-label">Date & Time:</span> <span class="metadata-value">${metadata.dateTime}</span></div>`;
+        hasMetadata = true;
+      }
+
+      if (metadata.make || metadata.model) {
+        const camera = [metadata.make, metadata.model].filter(Boolean).join(' ');
+        html += `<div class="metadata-row"><span class="metadata-label">Camera:</span> <span class="metadata-value">${camera}</span></div>`;
+        hasMetadata = true;
+      }
+
+      if (metadata.lens) {
+        html += `<div class="metadata-row"><span class="metadata-label">Lens:</span> <span class="metadata-value">${metadata.lens}</span></div>`;
+        hasMetadata = true;
+      }
+
+      if (metadata.focalLength) {
+        const focal = metadata.focalLength.numerator ? 
+          `${metadata.focalLength.numerator / metadata.focalLength.denominator}mm` : 
+          `${metadata.focalLength}mm`;
+        html += `<div class="metadata-row"><span class="metadata-label">Focal Length:</span> <span class="metadata-value">${focal}</span></div>`;
+        hasMetadata = true;
+      }
+
+      if (metadata.aperture) {
+        const aperture = metadata.aperture.numerator ? 
+          `f/${(metadata.aperture.numerator / metadata.aperture.denominator).toFixed(1)}` : 
+          `f/${metadata.aperture}`;
+        html += `<div class="metadata-row"><span class="metadata-label">Aperture:</span> <span class="metadata-value">${aperture}</span></div>`;
+        hasMetadata = true;
+      }
+
+      if (metadata.exposureTime) {
+        const exposure = metadata.exposureTime.numerator ? 
+          `${metadata.exposureTime.numerator}/${metadata.exposureTime.denominator}s` : 
+          `${metadata.exposureTime}s`;
+        html += `<div class="metadata-row"><span class="metadata-label">Shutter Speed:</span> <span class="metadata-value">${exposure}</span></div>`;
+        hasMetadata = true;
+      }
+
+      if (metadata.iso) {
+        html += `<div class="metadata-row"><span class="metadata-label">ISO:</span> <span class="metadata-value">${metadata.iso}</span></div>`;
+        hasMetadata = true;
+      }
+
+      if (hasMetadata) {
+        metadataDiv.innerHTML = html;
+        metadataDiv.style.display = 'block';
+      } else {
+        metadataDiv.style.display = 'none';
+      }
+    }
 
     // Lightbox functionality
     const lightbox = document.getElementById('lightbox');
@@ -666,19 +826,16 @@
       const imageSrc = shuffledImages[currentLightboxIndex];
       lightboxImg.src = imageSrc;
       
-      // Remove zoomed class when changing images
-      lightboxImg.classList.remove('zoomed');
+      // Read and display metadata
+      lightboxImg.onload = function() {
+        readImageMetadata(lightboxImg, displayMetadata);
+      };
     }
-
-    // Toggle zoom on image click/tap
-    lightboxImg.addEventListener('click', function(e) {
-      e.stopPropagation();
-      this.classList.toggle('zoomed');
-    });
 
     function closeLightbox() {
       lightbox.classList.remove('active');
       document.body.style.overflow = '';
+      document.getElementById('imageMetadata').style.display = 'none';
     }
 
     function showPrevImage() {
