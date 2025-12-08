@@ -61,7 +61,8 @@
       will-change: transform;
       -webkit-transform: translate3d(0, 0, 0);
       -webkit-backface-visibility: hidden;
-      perspective: 1000px;
+      -webkit-font-smoothing: subpixel-antialiased;
+      transform-style: preserve-3d;
     }
 
     .masonry-item {
@@ -107,8 +108,9 @@
       display: block;
       border-radius: 8px;
       transition: opacity 0.3s ease;
-      image-rendering: -webkit-optimize-contrast;
-      image-rendering: crisp-edges;
+      image-rendering: auto;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
       opacity: 0;
     }
 
@@ -579,6 +581,7 @@
       let smoothPosition = 0;
       let velocity = 0;
       let smoothVelocity = 0;
+      let renderedPosition = 0; // Track last rendered position for stability
       
       let animationId = null;
       let lastFrameTime = performance.now();
@@ -589,8 +592,9 @@
         hoverStartTime: null,
         userScrollVelocity: 0,
         isUserScrolling: false,
-        smoothFactor: 0.08, // Lower = more smoothing (0.08 vs 0.15 for ultra-smooth)
-        velocitySmoothing: 0.12 // Smoothing factor for velocity changes
+        smoothFactor: 0.06, // Even lower for smoother motion (was 0.08)
+        velocitySmoothing: 0.08, // Smoother velocity transitions (was 0.12)
+        minMovementThreshold: 0.1 // Minimum movement before rendering update
       };
       
       const state = columnStates[colIndex];
@@ -690,6 +694,14 @@
         // Use the smoothed position for rendering
         currentPosition = smoothPosition;
         
+        // Only update DOM if movement is significant enough (reduces micro-jitter)
+        const roundedPosition = Math.round(currentPosition);
+        if (Math.abs(roundedPosition - renderedPosition) >= 1) {
+          renderedPosition = roundedPosition;
+          // Use transform for smooth GPU-accelerated animation with integer pixel values
+          column.style.transform = `translate3d(0, ${renderedPosition}px, 0)`;
+        }
+        
         // Dynamic image recycling based on direction
         // Only recycle when images are completely off-screen
         const viewportHeight = window.innerHeight;
@@ -707,6 +719,7 @@
               currentPosition -= adjustment;
               targetPosition -= adjustment;
               smoothPosition -= adjustment;
+              renderedPosition -= adjustment;
             }
           }
         } else {
@@ -722,13 +735,10 @@
               currentPosition += adjustment;
               targetPosition += adjustment;
               smoothPosition += adjustment;
+              renderedPosition += adjustment;
             }
           }
         }
-        
-        // Use transform for smooth GPU-accelerated animation with integer pixel values
-        // Using Math.round() prevents sub-pixel jitter in images
-        column.style.transform = `translate3d(0, ${Math.round(currentPosition)}px, 0)`;
         animationId = requestAnimationFrame(animate);
       }
       
