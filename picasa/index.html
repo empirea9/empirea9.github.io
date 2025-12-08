@@ -73,6 +73,10 @@
       flex-shrink: 0;
       width: 100%;
       background: #1a1a1a;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
     }
 
     .masonry-item:hover {
@@ -102,13 +106,9 @@
       object-fit: cover;
       display: block;
       border-radius: 8px;
-      transition: opacity 0.3s ease, transform 0.3s ease;
+      transition: opacity 0.3s ease;
       image-rendering: -webkit-optimize-contrast;
       image-rendering: crisp-edges;
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-      transform: translate3d(0, 0, 0);
-      -webkit-transform: translate3d(0, 0, 0);
       opacity: 0;
     }
 
@@ -726,8 +726,9 @@
           }
         }
         
-        // Use transform for smooth GPU-accelerated animation with sub-pixel precision
-        column.style.transform = `translate3d(0, ${currentPosition.toFixed(2)}px, 0)`;
+        // Use transform for smooth GPU-accelerated animation with integer pixel values
+        // Using Math.round() prevents sub-pixel jitter in images
+        column.style.transform = `translate3d(0, ${Math.round(currentPosition)}px, 0)`;
         animationId = requestAnimationFrame(animate);
       }
       
