@@ -58,6 +58,10 @@
       flex-shrink: 0;
       backface-visibility: hidden;
       transform: translate3d(0, 0, 0);
+      will-change: transform;
+      -webkit-transform: translate3d(0, 0, 0);
+      -webkit-backface-visibility: hidden;
+      perspective: 1000px;
     }
 
     .masonry-item {
@@ -554,7 +558,7 @@
     // Track hover state and pause info for each column
     const columnStates = {};
     
-    // Vertical infinite scroll animation with dynamic image recycling
+    // Vertical infinite scroll animation with dynamic image recycling and smooth interpolation
     function startColumnAnimation(column, colIndex) {
       // Get all images in column (already tripled)
       const items = Array.from(column.children);
@@ -571,6 +575,8 @@
       
       // Start position
       let currentPosition = 0;
+      let targetPosition = 0;
+      let smoothPosition = 0;
       
       let animationId = null;
       let lastFrameTime = performance.now();
@@ -580,7 +586,8 @@
         isPaused: false,
         hoverStartTime: null,
         userScrollVelocity: 0,
-        isUserScrolling: false
+        isUserScrolling: false,
+        smoothFactor: 0.15 // Smoothing factor for interpolation (0.15 = smoother)
       };
       
       const state = columnStates[colIndex];
@@ -630,8 +637,13 @@
         }
       }, { passive: false });
       
+      // Easing function for smoother transitions
+      function easeOutCubic(t) {
+        return 1 - Math.pow(1 - t, 3);
+      }
+      
       function animate(currentTime) {
-        const deltaTime = (currentTime - lastFrameTime) / 1000; // Convert to seconds
+        const deltaTime = Math.min((currentTime - lastFrameTime) / 1000, 0.1); // Cap at 100ms to prevent large jumps
         lastFrameTime = currentTime;
         
         // Check if should pause due to hover (0.5 second delay)
@@ -661,7 +673,13 @@
           }
         }
         
-        currentPosition += movement;
+        targetPosition += movement;
+        
+        // Smooth interpolation for buttery smooth animation
+        smoothPosition += (targetPosition - smoothPosition) * state.smoothFactor;
+        
+        // Use the smoothed position for rendering
+        currentPosition = smoothPosition;
         
         // Dynamic image recycling based on direction
         // Only recycle when images are completely off-screen
@@ -676,7 +694,10 @@
             if (itemRect.top > viewportHeight + 100) {
               column.removeChild(lastItem);
               column.insertBefore(lastItem, column.firstElementChild);
-              currentPosition -= lastItem.offsetHeight + 16; // Adjust for gap
+              const adjustment = lastItem.offsetHeight + 16;
+              currentPosition -= adjustment;
+              targetPosition -= adjustment;
+              smoothPosition -= adjustment;
             }
           }
         } else {
@@ -688,13 +709,16 @@
             if (itemRect.bottom < -100) {
               column.removeChild(firstItem);
               column.appendChild(firstItem);
-              currentPosition += firstItem.offsetHeight + 16; // Adjust for gap
+              const adjustment = firstItem.offsetHeight + 16;
+              currentPosition += adjustment;
+              targetPosition += adjustment;
+              smoothPosition += adjustment;
             }
           }
         }
         
-        // Use transform for smooth GPU-accelerated animation
-        column.style.transform = `translateY(${currentPosition}px)`;
+        // Use transform for smooth GPU-accelerated animation with sub-pixel precision
+        column.style.transform = `translate3d(0, ${currentPosition.toFixed(2)}px, 0)`;
         animationId = requestAnimationFrame(animate);
       }
       
