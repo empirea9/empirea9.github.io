@@ -568,26 +568,29 @@
       const baseSpeed = 5;
       const speedVariation = (colIndex * 0.2) - 0.4; // Slight variation per column
       const duration = baseSpeed + speedVariation;
-      const pixelsPerSecond = 50; // Constant scroll speed in pixels/sec
+      const pixelsPerSecond = 30; // Reduced scroll speed for smoother motion
       
       // Alternate directions for variety
       const direction = colIndex % 2 === 0 ? 1 : -1;
       
-      // Start position
+      // Start position with velocity tracking
       let currentPosition = 0;
       let targetPosition = 0;
       let smoothPosition = 0;
+      let velocity = 0;
+      let smoothVelocity = 0;
       
       let animationId = null;
       let lastFrameTime = performance.now();
       
-      // Initialize column state
+      // Initialize column state with enhanced smoothing
       columnStates[colIndex] = {
         isPaused: false,
         hoverStartTime: null,
         userScrollVelocity: 0,
         isUserScrolling: false,
-        smoothFactor: 0.15 // Smoothing factor for interpolation (0.15 = smoother)
+        smoothFactor: 0.08, // Lower = more smoothing (0.08 vs 0.15 for ultra-smooth)
+        velocitySmoothing: 0.12 // Smoothing factor for velocity changes
       };
       
       const state = columnStates[colIndex];
@@ -643,7 +646,7 @@
       }
       
       function animate(currentTime) {
-        const deltaTime = Math.min((currentTime - lastFrameTime) / 1000, 0.1); // Cap at 100ms to prevent large jumps
+        const deltaTime = Math.min((currentTime - lastFrameTime) / 1000, 0.05); // Tighter cap at 50ms for more consistent frames
         lastFrameTime = currentTime;
         
         // Check if should pause due to hover (0.5 second delay)
@@ -654,28 +657,34 @@
           }
         }
         
-        // Calculate movement
-        let movement = 0;
+        // Calculate target velocity based on state
+        let targetVelocity = 0;
         
         if (state.isPaused && !state.isUserScrolling) {
-          // Paused - no movement
-          movement = 0;
+          // Paused - target velocity is zero
+          targetVelocity = 0;
         } else if (state.isUserScrolling) {
           // User is scrolling - use user velocity
-          movement = state.userScrollVelocity * deltaTime * 60; // Scale for frame rate
+          targetVelocity = state.userScrollVelocity * 60; // Scale for frame rate
         } else {
           // Auto-scroll mode
-          movement = (pixelsPerSecond * deltaTime) * direction;
+          targetVelocity = pixelsPerSecond * direction;
           
           // Blend in any remaining user velocity
           if (Math.abs(state.userScrollVelocity) > 0.1) {
-            movement += state.userScrollVelocity * deltaTime * 30;
+            targetVelocity += state.userScrollVelocity * 30;
           }
         }
         
+        // Smooth velocity transitions to prevent jerky changes
+        smoothVelocity += (targetVelocity - smoothVelocity) * state.velocitySmoothing;
+        
+        // Calculate movement from smoothed velocity
+        const movement = smoothVelocity * deltaTime;
+        
         targetPosition += movement;
         
-        // Smooth interpolation for buttery smooth animation
+        // Multi-pass smoothing for ultra-smooth animation
         smoothPosition += (targetPosition - smoothPosition) * state.smoothFactor;
         
         // Use the smoothed position for rendering
