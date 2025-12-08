@@ -702,40 +702,49 @@
           column.style.transform = `translate3d(0, ${renderedPosition}px, 0)`;
         }
         
-        // Dynamic image recycling based on direction
-        // Only recycle when images are completely off-screen
+        // Dynamic image recycling based on direction with improved thresholds
+        // Use larger buffer zone to prevent visible gaps and glitches
         const viewportHeight = window.innerHeight;
+        const recycleBuffer = 200; // Larger buffer to prevent premature recycling
         
         if (direction === 1) {
-          // Scrolling upward - remove from bottom when completely off-screen below
+          // Scrolling upward - recycle from bottom to top
           const lastItem = column.lastElementChild;
           if (lastItem) {
             const itemRect = lastItem.getBoundingClientRect();
-            // Only recycle when image is completely below viewport
-            if (itemRect.top > viewportHeight + 100) {
+            // Recycle when item is well beyond viewport (prevents glitches)
+            if (itemRect.top > viewportHeight + recycleBuffer) {
+              // Move to top
+              const adjustment = lastItem.offsetHeight + 16;
               column.removeChild(lastItem);
               column.insertBefore(lastItem, column.firstElementChild);
-              const adjustment = lastItem.offsetHeight + 16;
+              // Adjust all position trackers atomically
               currentPosition -= adjustment;
               targetPosition -= adjustment;
               smoothPosition -= adjustment;
               renderedPosition -= adjustment;
+              // Force immediate DOM update to prevent visible jump
+              column.style.transform = `translate3d(0, ${Math.round(currentPosition)}px, 0)`;
             }
           }
         } else {
-          // Scrolling downward - remove from top when completely off-screen above
+          // Scrolling downward - recycle from top to bottom
           const firstItem = column.firstElementChild;
           if (firstItem) {
             const itemRect = firstItem.getBoundingClientRect();
-            // Only recycle when image is completely above viewport
-            if (itemRect.bottom < -100) {
+            // Recycle when item is well beyond viewport (prevents glitches)
+            if (itemRect.bottom < -recycleBuffer) {
+              // Move to bottom
+              const adjustment = firstItem.offsetHeight + 16;
               column.removeChild(firstItem);
               column.appendChild(firstItem);
-              const adjustment = firstItem.offsetHeight + 16;
+              // Adjust all position trackers atomically
               currentPosition += adjustment;
               targetPosition += adjustment;
               smoothPosition += adjustment;
               renderedPosition += adjustment;
+              // Force immediate DOM update to prevent visible jump
+              column.style.transform = `translate3d(0, ${Math.round(currentPosition)}px, 0)`;
             }
           }
         }
