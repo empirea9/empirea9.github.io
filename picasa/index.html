@@ -58,6 +58,11 @@
       flex-shrink: 0;
       backface-visibility: hidden;
       transform: translate3d(0, 0, 0);
+      will-change: transform;
+      -webkit-transform: translate3d(0, 0, 0);
+      -webkit-backface-visibility: hidden;
+      -webkit-font-smoothing: subpixel-antialiased;
+      transform-style: preserve-3d;
     }
 
     .masonry-item {
@@ -68,12 +73,31 @@
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       flex-shrink: 0;
       width: 100%;
+      background: #1a1a1a;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
     }
 
     .masonry-item:hover {
       transform: scale(1.02);
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
       z-index: 10;
+    }
+
+    /* Loading state with blur effect */
+    .masonry-item.loading::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(10px);
+      z-index: 10;
+      pointer-events: none;
     }
 
     .masonry-item img {
@@ -83,13 +107,15 @@
       object-fit: cover;
       display: block;
       border-radius: 8px;
-      transition: transform 0.3s ease;
-      image-rendering: -webkit-optimize-contrast;
-      image-rendering: crisp-edges;
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-      transform: translate3d(0, 0, 0);
-      -webkit-transform: translate3d(0, 0, 0);
+      transition: opacity 0.3s ease;
+      image-rendering: auto;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      opacity: 0;
+    }
+
+    .masonry-item img.loaded {
+      opacity: 1;
     }
 
     /* Lightbox styles */
@@ -391,45 +417,68 @@
   </div>
 
   <script>
-    // Images from assets folder (excluding those used in cinema.html or arcade.html)
+    // Images from photos folder (WebP format for better performance)
     const imagePaths = [
-      '../assets/IMG_20240708_081641.png',
-      '../assets/Test-4.png',
-      '../assets/IMG_20240314_122106-ps.png',
-      '../assets/IMG_20240709_122550.png',
-      '../assets/Sunset.png',
-      '../assets/post4-1.png',
-      '../assets/IMG_20240707_191957-ps.png',
-      '../assets/IMG_20240709_122741.png',
-      '../assets/IMG_20240708_094943.png',
-      '../assets/IMG_20240709_121543.png',
-      '../assets/Parrot-3.png',
-      '../assets/post-2.png',
-      '../assets/IMG_20240709_120009.png',
-      '../assets/post3-2.png',
-      '../assets/Parrot-2.png',
-      '../assets/Test-1.png',
-      '../assets/Insta-2.png',
-      '../assets/shiv.png',
-      '../assets/post.png',
-      '../assets/IMG_20240708_091039-ps.png',
-      '../assets/IMG_20250411_184811.png',
-      '../assets/IMG_20240709_121028.png',
-      '../assets/image2.png',
-      '../assets/IMG_20240709_121046.png',
-      '../assets/done1.png',
-      '../assets/post-3.png',
-      '../assets/IMG_20240709_120404.png',
-      '../assets/done1-1.png',
-      '../assets/IMG_20240709_122256.png',
-      '../assets/post-4.png',
-      '../assets/post3.png',
-      '../assets/IMG_20250607_081810.png',
-      '../assets/post-1.png',
-      '../assets/IMG_20240314_125103.png',
-      '../assets/image3.png',
-      '../assets/IMG_20240708_132053.png'
+      '../photos/IMG_20240314_122106-ps.webp',
+      '../photos/IMG_20240314_125103.webp',
+      '../photos/IMG_20240707_191957-ps.webp',
+      '../photos/IMG_20240708_081641.webp',
+      '../photos/IMG_20240708_091039-ps.webp',
+      '../photos/IMG_20240708_094943.webp',
+      '../photos/IMG_20240708_132053.webp',
+      '../photos/IMG_20240709_120009.webp',
+      '../photos/IMG_20240709_120404.webp',
+      '../photos/IMG_20240709_121028.webp',
+      '../photos/IMG_20240709_121046.webp',
+      '../photos/IMG_20240709_121543.webp',
+      '../photos/IMG_20240709_122256.webp',
+      '../photos/IMG_20240709_122550.webp',
+      '../photos/IMG_20240709_122741.webp',
+      '../photos/IMG_20250411_184811.webp',
+      '../photos/IMG_20250607_081810.webp',
+      '../photos/IMG_20250607_113913.webp',
+      '../photos/IMG_20250607_115325.webp',
+      '../photos/IMG_20250607_115620.webp',
+      '../photos/IMG_20250607_124726[1].webp',
+      '../photos/IMG_20250607_133643.webp',
+      '../photos/IMG_20250607_133654.webp',
+      '../photos/IMG_20250607_140358.webp',
+      '../photos/IMG_20250607_162802.webp',
+      '../photos/IMG_20250607_163003.webp',
+      '../photos/IMG_20250607_163255.webp',
+      '../photos/IMG_20250608_093739.webp',
+      '../photos/IMG_20250608_094940.webp',
+      '../photos/IMG_20250608_095348.webp',
+      '../photos/IMG_20250809_101547.webp',
+      '../photos/IMG_20250831_185402.webp',
+      '../photos/IMG_20250831_185711.webp',
+      '../photos/IMG_20250831_185730.webp',
+      '../photos/IMG_20250831_190528.webp',
+      '../photos/IMG_20250903_180808.webp',
+      '../photos/IMG_20250903_180928.webp',
+      '../photos/Insta-2.webp',
+      '../photos/Parrot-2.webp',
+      '../photos/Parrot-3.webp',
+      '../photos/Sunset.webp',
+      '../photos/Test-1.webp',
+      '../photos/Test-4.webp',
+      '../photos/done1-1.webp',
+      '../photos/done1.webp',
+      '../photos/post-1.webp',
+      '../photos/post-2.webp',
+      '../photos/post-3.webp',
+      '../photos/post-4.webp',
+      '../photos/post.webp',
+      '../photos/post3-2.webp',
+      '../photos/post3.webp',
+      '../photos/post4-1.webp',
+      '../photos/shiv.webp'
     ];
+
+    // Get thumbnail path from full image path
+    function getThumbnailPath(fullPath) {
+      return fullPath.replace('/photos/', '/photos/thumbnails/');
+    }
 
     let shuffledImages = [];
     let currentLightboxIndex = 0;
@@ -476,13 +525,21 @@
         imagesToRender.forEach((imagePath, localIndex) => {
           const originalIndex = startIdx + (localIndex % columnImages.length);
           const item = document.createElement('div');
-          item.className = 'masonry-item';
+          item.className = 'masonry-item loading';
           
+          // Use thumbnail for gallery view
           const img = document.createElement('img');
-          img.src = imagePath;
+          img.src = getThumbnailPath(imagePath);
           img.alt = `Gallery image ${originalIndex + 1}`;
           img.loading = 'lazy';
           img.dataset.index = originalIndex;
+          img.dataset.fullPath = imagePath; // Store full path for lightbox
+          
+          // Remove loading state when thumbnail loads
+          img.addEventListener('load', () => {
+            img.classList.add('loaded');
+            item.classList.remove('loading');
+          });
           
           // Add click event for lightbox
           item.addEventListener('click', (e) => {
@@ -503,7 +560,7 @@
     // Track hover state and pause info for each column
     const columnStates = {};
     
-    // Vertical infinite scroll animation with dynamic image recycling
+    // Vertical infinite scroll animation with dynamic image recycling and smooth interpolation
     function startColumnAnimation(column, colIndex) {
       // Get all images in column (already tripled)
       const items = Array.from(column.children);
@@ -513,23 +570,31 @@
       const baseSpeed = 5;
       const speedVariation = (colIndex * 0.2) - 0.4; // Slight variation per column
       const duration = baseSpeed + speedVariation;
-      const pixelsPerSecond = 50; // Constant scroll speed in pixels/sec
+      const pixelsPerSecond = 30; // Reduced scroll speed for smoother motion
       
       // Alternate directions for variety
       const direction = colIndex % 2 === 0 ? 1 : -1;
       
-      // Start position
+      // Start position with velocity tracking
       let currentPosition = 0;
+      let targetPosition = 0;
+      let smoothPosition = 0;
+      let velocity = 0;
+      let smoothVelocity = 0;
+      let renderedPosition = 0; // Track last rendered position for stability
       
       let animationId = null;
       let lastFrameTime = performance.now();
       
-      // Initialize column state
+      // Initialize column state with enhanced smoothing
       columnStates[colIndex] = {
         isPaused: false,
         hoverStartTime: null,
         userScrollVelocity: 0,
-        isUserScrolling: false
+        isUserScrolling: false,
+        smoothFactor: 0.06, // Even lower for smoother motion (was 0.08)
+        velocitySmoothing: 0.08, // Smoother velocity transitions (was 0.12)
+        minMovementThreshold: 0.1 // Minimum movement before rendering update
       };
       
       const state = columnStates[colIndex];
@@ -579,8 +644,13 @@
         }
       }, { passive: false });
       
+      // Easing function for smoother transitions
+      function easeOutCubic(t) {
+        return 1 - Math.pow(1 - t, 3);
+      }
+      
       function animate(currentTime) {
-        const deltaTime = (currentTime - lastFrameTime) / 1000; // Convert to seconds
+        const deltaTime = Math.min((currentTime - lastFrameTime) / 1000, 0.05); // Tighter cap at 50ms for more consistent frames
         lastFrameTime = currentTime;
         
         // Check if should pause due to hover (0.5 second delay)
@@ -591,59 +661,93 @@
           }
         }
         
-        // Calculate movement
-        let movement = 0;
+        // Calculate target velocity based on state
+        let targetVelocity = 0;
         
         if (state.isPaused && !state.isUserScrolling) {
-          // Paused - no movement
-          movement = 0;
+          // Paused - target velocity is zero
+          targetVelocity = 0;
         } else if (state.isUserScrolling) {
           // User is scrolling - use user velocity
-          movement = state.userScrollVelocity * deltaTime * 60; // Scale for frame rate
+          targetVelocity = state.userScrollVelocity * 60; // Scale for frame rate
         } else {
           // Auto-scroll mode
-          movement = (pixelsPerSecond * deltaTime) * direction;
+          targetVelocity = pixelsPerSecond * direction;
           
           // Blend in any remaining user velocity
           if (Math.abs(state.userScrollVelocity) > 0.1) {
-            movement += state.userScrollVelocity * deltaTime * 30;
+            targetVelocity += state.userScrollVelocity * 30;
           }
         }
         
-        currentPosition += movement;
+        // Smooth velocity transitions to prevent jerky changes
+        smoothVelocity += (targetVelocity - smoothVelocity) * state.velocitySmoothing;
         
-        // Dynamic image recycling based on direction
-        // Only recycle when images are completely off-screen
+        // Calculate movement from smoothed velocity
+        const movement = smoothVelocity * deltaTime;
+        
+        targetPosition += movement;
+        
+        // Multi-pass smoothing for ultra-smooth animation
+        smoothPosition += (targetPosition - smoothPosition) * state.smoothFactor;
+        
+        // Use the smoothed position for rendering
+        currentPosition = smoothPosition;
+        
+        // Only update DOM if movement is significant enough (reduces micro-jitter)
+        const roundedPosition = Math.round(currentPosition);
+        if (Math.abs(roundedPosition - renderedPosition) >= 1) {
+          renderedPosition = roundedPosition;
+          // Use transform for smooth GPU-accelerated animation with integer pixel values
+          column.style.transform = `translate3d(0, ${renderedPosition}px, 0)`;
+        }
+        
+        // Dynamic image recycling based on direction with improved thresholds
+        // Use larger buffer zone to prevent visible gaps and glitches
         const viewportHeight = window.innerHeight;
+        const recycleBuffer = 200; // Larger buffer to prevent premature recycling
         
         if (direction === 1) {
-          // Scrolling upward - remove from bottom when completely off-screen below
+          // Scrolling upward - recycle from bottom to top
           const lastItem = column.lastElementChild;
           if (lastItem) {
             const itemRect = lastItem.getBoundingClientRect();
-            // Only recycle when image is completely below viewport
-            if (itemRect.top > viewportHeight + 100) {
+            // Recycle when item is well beyond viewport (prevents glitches)
+            if (itemRect.top > viewportHeight + recycleBuffer) {
+              // Move to top
+              const adjustment = lastItem.offsetHeight + 16;
               column.removeChild(lastItem);
               column.insertBefore(lastItem, column.firstElementChild);
-              currentPosition -= lastItem.offsetHeight + 16; // Adjust for gap
+              // Adjust all position trackers atomically
+              currentPosition -= adjustment;
+              targetPosition -= adjustment;
+              smoothPosition -= adjustment;
+              renderedPosition -= adjustment;
+              // Force immediate DOM update to prevent visible jump
+              column.style.transform = `translate3d(0, ${Math.round(currentPosition)}px, 0)`;
             }
           }
         } else {
-          // Scrolling downward - remove from top when completely off-screen above
+          // Scrolling downward - recycle from top to bottom
           const firstItem = column.firstElementChild;
           if (firstItem) {
             const itemRect = firstItem.getBoundingClientRect();
-            // Only recycle when image is completely above viewport
-            if (itemRect.bottom < -100) {
+            // Recycle when item is well beyond viewport (prevents glitches)
+            if (itemRect.bottom < -recycleBuffer) {
+              // Move to bottom
+              const adjustment = firstItem.offsetHeight + 16;
               column.removeChild(firstItem);
               column.appendChild(firstItem);
-              currentPosition += firstItem.offsetHeight + 16; // Adjust for gap
+              // Adjust all position trackers atomically
+              currentPosition += adjustment;
+              targetPosition += adjustment;
+              smoothPosition += adjustment;
+              renderedPosition += adjustment;
+              // Force immediate DOM update to prevent visible jump
+              column.style.transform = `translate3d(0, ${Math.round(currentPosition)}px, 0)`;
             }
           }
         }
-        
-        // Use transform for smooth GPU-accelerated animation
-        column.style.transform = `translateY(${currentPosition}px)`;
         animationId = requestAnimationFrame(animate);
       }
       

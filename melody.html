@@ -2,23 +2,245 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Melody - Coming Soon</title>
-  <link rel="stylesheet" href="../style.css">
+  <title>Melody</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap">
 </head>
 <body>
-  <script src="../url-handler.js"></script>
-  <nav>
-    <div class="nav-links">
-      <a href="index">Home</a>
-      <a href="arcade">Arcade</a>
-      <a href="picasa">Picasa</a>
-      <a href="cinema">Cinema</a>
-      <a href="melody" class="active">Melody</a>
+  <script src="url-handler.js"></script>
+  <div class="melody-bg-blur"></div>
+  <div class="melody-content-wrapper">
+    <nav>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="arcade.html">Arcade</a>
+        <a href="picasa.html">Picasa</a>
+        <a href="cinema.html">Cinema</a>
+        <a href="melody.html" class="active">Melody</a>
+      </div>
+    </nav>
+
+    <!-- Floating Music Player Widget -->
+    <div class="music-player-widget" id="musicPlayerWidget">
+      <h3>Recently Played</h3>
+      <div class="music-player-album" id="playerAlbum">
+        <div style="display: flex; align-items: center; justify-content: center; height: 100%; background: rgba(0, 0, 0, 0.3);">
+          <div class="loading-spinner"></div>
+        </div>
+      </div>
+      <div class="music-player-info">
+        <div class="music-player-track" id="playerTrack">Loading...</div>
+        <div class="music-player-artist" id="playerArtist">...</div>
+      </div>
     </div>
-  </nav>
-  <main>
-    <h1>Melody</h1>
-    <p>Coming Soon - My Playlists showcase</p>
-  </main>
+    
+    <main class="melody-main">
+      <!-- Recently Played Carousel -->
+      <section class="carousel-section" id="recently-played-section">
+        <h2 class="carousel-title">Recently Played</h2>
+        <div class="carousel-container">
+          <div class="carousel-track" id="recent-track">
+            <!-- JS will populate this -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Top Tracks Carousel -->
+      <section class="carousel-section" id="top-tracks-section">
+        <div class="carousel-header">
+          <h2 class="carousel-title">Top Tracks</h2>
+          <div class="time-filter-dropdown">
+            <select id="time-filter" onchange="fetchTop('tracks', this.value)">
+              <option value="1month">This Month</option>
+              <option value="7day">This Week</option>
+              <option value="3month">Last 3 Months</option>
+              <option value="12month">This Year</option>
+              <option value="overall">All Time</option>
+            </select>
+          </div>
+        </div>
+        <div class="carousel-container">
+          <div class="carousel-track" id="top-tracks-track">
+            <!-- JS will populate this -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Top Albums Carousel -->
+      <section class="carousel-section" id="top-albums-section">
+        <h2 class="carousel-title">Top Albums</h2>
+        <div class="carousel-container">
+          <div class="carousel-track" id="top-albums-track">
+            <!-- JS will populate this -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Top Artists Carousel -->
+      <section class="carousel-section" id="top-artists-section">
+        <h2 class="carousel-title">Top Artists</h2>
+        <div class="carousel-container">
+          <div class="carousel-track" id="top-artists-track">
+            <!-- JS will populate this -->
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Profile Quadrants Section -->
+    <footer class="melody-footer">
+      <div class="profile-quadrant-container">
+        <div class="profile-quadrant">
+          <div class="quadrant-logo-wrapper">
+             <img src="./assets/logo.png" alt="Logo" class="quadrant-logo"/>
+          </div>
+          <h3>Last.fm</h3>
+          <p>My music listening history</p>
+          <a href="https://www.last.fm/user/empirea" target="_blank" rel="noopener">Visit Profile</a>
+        </div>
+        <div class="profile-quadrant">
+          <div class="quadrant-logo-wrapper">
+             <img src="./assets/logo.png" alt="Logo" class="quadrant-logo"/>
+          </div>
+          <h3>Spotify</h3>
+          <p>My playlists and profile</p>
+          <a href="https://open.spotify.com/user/ronogamy" target="_blank" rel="noopener">Visit Profile</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const apiKey = '680d8b864fff0670aafdaa898d10c31a';
+    const user = 'empirea';
+    const API_BASE = 'https://ws.audioscrobbler.com/2.0/';
+
+    function buildUrl(method, params = {}) {
+        let url = `${API_BASE}?method=${method}&user=${user}&api_key=${apiKey}&format=json`;
+        for (const [key, value] of Object.entries(params)) {
+            url += `&${key}=${value}`;
+        }
+        return url;
+    }
+
+    async function fetchData(url) {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            return response.json();
+        } catch (error) {
+            console.error("Failed to fetch data:", error);
+            return null;
+        }
+    }
+
+    function createCarouselItems(items, type) {
+      if (!items || items.length === 0) return '';
+      let content = items.map(item => {
+        let imageUrl, name, subText;
+        try {
+            switch (type) {
+                case 'recent':
+                case 'tracks':
+                    imageUrl = item.image.find(img => img.size === 'extralarge')['#text'];
+                    name = item.name;
+                    subText = item.artist['#text'];
+                    break;
+                case 'albums':
+                    imageUrl = item.image.find(img => img.size === 'extralarge')['#text'];
+                    name = item.name;
+                    subText = item.artist.name;
+                    break;
+                case 'artists':
+                    imageUrl = item.image.find(img => img.size === 'extralarge')['#text'];
+                    name = item.name;
+                    subText = `${parseInt(item.playcount).toLocaleString()} plays`;
+                    break;
+            }
+        
+            return `
+                <div class="carousel-item ${type === 'artists' ? 'artist-item' : ''}">
+                    <div class="item-image">
+                        <img src="${imageUrl || './assets/melody.jpg'}" alt="${name}" loading="lazy">
+                    </div>
+                    <div class="item-info">
+                        <p class="item-name">${name}</p>
+                        <p class="item-subtext">${subText}</p>
+                    </div>
+                </div>
+            `;
+        } catch (e) {
+            return ''; // Skip item if data is malformed
+        }
+      }).join('');
+
+      // Duplicate for infinite loop
+      return content + content;
+    }
+
+    async function fetchRecentlyPlayed() {
+        const url = buildUrl('user.getrecenttracks', { limit: 15 });
+        const data = await fetchData(url);
+        if (data && data.recenttracks) {
+            const items = data.recenttracks.track;
+            document.getElementById('recent-track').innerHTML = createCarouselItems(items, 'recent');
+            
+            // Update floating music player with most recent track
+            if (items && items.length > 0) {
+                updateMusicPlayer(items[0]);
+            }
+        }
+    }
+
+    async function updateMusicPlayer(track) {
+        const playerAlbum = document.getElementById('playerAlbum');
+        const playerTrack = document.getElementById('playerTrack');
+        const playerArtist = document.getElementById('playerArtist');
+        
+        try {
+            const imageUrl = track.image.find(img => img.size === 'extralarge' || img.size === 'large')?.['#text'];
+            const trackName = track.name;
+            const artistName = track.artist['#text'] || track.artist.name;
+            
+            if (imageUrl) {
+                playerAlbum.innerHTML = `<img src="${imageUrl}" alt="${trackName}" onerror="this.src='./assets/melody.jpg'">`;
+            } else {
+                playerAlbum.innerHTML = `<img src="./assets/melody.jpg" alt="${trackName}">`;
+            }
+            
+            playerTrack.textContent = trackName;
+            playerArtist.textContent = artistName;
+        } catch (e) {
+            console.error('Error updating music player:', e);
+            playerAlbum.innerHTML = `<img src="./assets/melody.jpg" alt="No track">`;
+            playerTrack.textContent = 'No recent tracks';
+            playerArtist.textContent = 'Last.fm user';
+        }
+    }
+
+    async function fetchTop(type, period = '1month') {
+        const methods = {
+            tracks: 'user.gettoptracks',
+            albums: 'user.gettopalbums',
+            artists: 'user.gettopartists',
+        };
+        const url = buildUrl(methods[type], { period, limit: 15 });
+        const data = await fetchData(url);
+        
+        if (data) {
+            const key = `top${type}`;
+            const subKey = type.slice(0, -1);
+            const items = data[key] ? data[key][subKey] : [];
+            document.getElementById(`top-${type}-track`).innerHTML = createCarouselItems(items, type);
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        fetchRecentlyPlayed();
+        fetchTop('tracks');
+        fetchTop('albums');
+        fetchTop('artists');
+    });
+  </script>
 </body>
 </html>

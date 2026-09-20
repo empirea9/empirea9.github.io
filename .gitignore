@@ -4,4 +4,4 @@
 .DS_Store
 
 # Browser testing files
-node_modules/
+node_modules/convert_images.py
